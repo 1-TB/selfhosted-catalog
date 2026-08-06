@@ -1,0 +1,31 @@
+slug: wastebin
+name: Wastebin
+category: utilities
+description: Minimalist pastebin with syntax highlighting, written in Rust.
+homepage: https://github.com/matze/wastebin
+source: https://github.com/matze/wastebin
+
+image: quxfoo/wastebin
+version: "3.7.1"
+arch: [amd64]
+
+port: 8088
+mem_limit: 512m
+auth: none
+
+env:
+  - name: WASTEBIN_BASE_URL
+    value: "https://wastebin.${DOMAIN}/"
+  - name: WASTEBIN_DATABASE_PATH
+    value: "/data/state.db"
+  - name: WASTEBIN_SIGNING_KEY
+    secret: true
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  amd64-only image. No user accounts of its own; paste deletion is
+  authorized via a signed owner token instead. WASTEBIN_SIGNING_KEY must
+  be at least 64 bytes.

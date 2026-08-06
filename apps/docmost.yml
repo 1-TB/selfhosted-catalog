@@ -1,0 +1,34 @@
+slug: docmost
+name: Docmost
+category: documents
+description: Collaborative wiki and documentation platform.
+homepage: https://docmost.com
+source: https://github.com/docmost/docmost
+
+image: docmost/docmost
+version: "0.95"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: postgres
+needs: [redis]
+auth: proxy
+
+env:
+  - name: APP_URL
+    value: "https://docmost.${DOMAIN}/"
+  - name: APP_SECRET
+    secret: true
+  - name: DATABASE_URL
+    value: "postgresql://docmost:${DOCMOST_DB_PASSWORD}@docmost-postgres:5432/docmost"
+  - name: REDIS_URL
+    value: "redis://docmost-redis:6379"
+
+volumes:
+  - path: data
+    mount: /app/data/storage
+
+notes: |
+  APP_SECRET must be at least 32 characters. Community edition has no
+  OIDC/OAuth support (SAML is Enterprise-only), so put a proxy in front.
