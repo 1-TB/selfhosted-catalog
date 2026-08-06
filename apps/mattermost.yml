@@ -1,0 +1,41 @@
+slug: mattermost
+name: Mattermost
+category: communication
+description: Open-source, self-hosted team chat and collaboration platform.
+homepage: https://mattermost.com
+source: https://github.com/mattermost/mattermost
+
+image: mattermost/mattermost-team-edition
+version: "11.10.0"
+arch: [amd64]
+
+port: 8065
+mem_limit: 512m
+database: postgres
+auth: proxy
+health_path: /api/v4/system/ping
+
+env:
+  - name: MM_SERVICESETTINGS_SITEURL
+    value: "https://mattermost.${DOMAIN}"
+  - name: MM_SQLSETTINGS_DATASOURCE
+    value: "postgres://mattermost:${MATTERMOST_DB_PASSWORD}@mattermost-postgres:5432/mattermost?sslmode=disable&connect_timeout=10"
+
+volumes:
+  - path: data
+    mount: /mattermost/data
+  - path: config
+    mount: /mattermost/config
+  - path: logs
+    mount: /mattermost/logs
+  - path: plugins
+    mount: /mattermost/plugins
+  - path: client-plugins
+    mount: /mattermost/client/plugins
+
+notes: |
+  Team Edition is amd64-only per the registry. OpenID Connect / SAML SSO
+  were moved behind the paid Professional/Enterprise tiers, so Team
+  Edition only speaks OAuth2 against a handful of hardcoded providers
+  (GitLab, Google, Office365) - none of that is "oidc" as this schema
+  means it, so use a proxy in front instead.

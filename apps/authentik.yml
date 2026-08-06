@@ -1,0 +1,46 @@
+slug: authentik
+name: authentik
+category: security
+description: Open-source identity provider with SSO, OIDC/SAML, MFA and RBAC.
+homepage: https://goauthentik.io
+source: https://github.com/goauthentik/authentik
+
+image: ghcr.io/goauthentik/server
+version: "2026.5.6"
+arch: [amd64, arm64]
+
+port: 9000
+mem_limit: 512m
+database: postgres
+needs: [worker]
+auth: none
+health_path: /-/health/live/
+
+env:
+  - name: AUTHENTIK_SECRET_KEY
+    secret: true
+  - name: AUTHENTIK_POSTGRESQL__HOST
+    value: authentik-postgres
+  - name: AUTHENTIK_POSTGRESQL__USER
+    value: authentik
+  - name: AUTHENTIK_POSTGRESQL__NAME
+    value: authentik
+  - name: AUTHENTIK_POSTGRESQL__PASSWORD
+    value: "${AUTHENTIK_DB_PASSWORD}"
+
+volumes:
+  - path: media
+    mount: /data
+  - path: templates
+    mount: /templates
+
+notes: |
+  Needs a second container running the same image with `command: worker`
+  (same env and volumes) to run background tasks - flow execution,
+  email, outpost sync. The web UI comes up without it, but those silently
+  don't run. Upstream's own compose also mounts the worker's
+  /var/run/docker.sock for auto-deploying Outposts; skip that if you
+  don't use Outposts. Redis was dropped as a dependency in recent
+  releases, so no cache sidecar is needed. This app is an OIDC/SAML
+  provider in its own right rather than a consumer of one, so it's meant
+  to stay reachable without being gated behind another login.
