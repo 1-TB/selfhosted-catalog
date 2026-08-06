@@ -1,0 +1,36 @@
+slug: metabase
+name: Metabase
+category: productivity
+description: Open-source business intelligence and dashboarding tool.
+homepage: https://www.metabase.com
+source: https://github.com/metabase/metabase
+
+image: metabase/metabase
+version: "v0.63.5"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: MB_DB_TYPE
+    value: postgres
+  - name: MB_DB_HOST
+    value: metabase-postgres
+  - name: MB_DB_PORT
+    value: "5432"
+  - name: MB_DB_DBNAME
+    value: metabase
+  - name: MB_DB_USER
+    value: metabase
+  - name: MB_DB_PASS
+    secret: true
+
+notes: |
+  Ships with an embedded H2 database, but upstream's own docs warn that
+  data is lost if the container is removed, so this entry points it at
+  Postgres via MB_DB_* instead. First run walks through an admin account
+  setup wizard in the browser; no OIDC of its own, only SAML/JWT SSO
+  which are paid-tier features.

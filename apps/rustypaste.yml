@@ -1,0 +1,28 @@
+slug: rustypaste
+name: Rustypaste
+category: utilities
+description: Minimalist, self-hosted pastebin server written in Rust.
+homepage: https://github.com/orhun/rustypaste
+source: https://github.com/orhun/rustypaste
+
+image: orhunp/rustypaste
+version: "0.17.0"
+arch: [amd64, arm64]
+
+port: 8000
+mem_limit: 512m
+auth: none
+
+env:
+  - name: AUTH_TOKEN
+    secret: true
+
+volumes:
+  - path: upload
+    mount: /app/upload
+
+notes: |
+  No user accounts; AUTH_TOKEN (optional) gates uploads behind a single
+  bearer token checked by the app itself, not a login form. The image
+  binds to 0.0.0.0:8000 by default. Other server behavior (expiry, size
+  limits, MIME blacklist) is set via a mounted config.toml, not env vars.

@@ -1,0 +1,30 @@
+slug: note-mark
+name: Note Mark
+category: documents
+description: Fast, minimal web-based Markdown notes app.
+homepage: https://notemark.docs.enchantedcode.co.uk
+source: https://github.com/enchant97/note-mark
+
+image: ghcr.io/enchant97/note-mark
+version: "1.0.2"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: PUBLIC_URL
+    value: "https://note-mark.${DOMAIN}"
+  - name: AUTH_TOKEN__SECRET
+    secret: true
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  Supports OIDC login (OIDC__ISSUER_URL, OIDC__CLIENT_ID) but its docs don't
+  document a fixed callback path, so this entry is set up for proxy auth
+  instead. AUTH_TOKEN__SECRET must be a base64 string of at least 32 bytes.

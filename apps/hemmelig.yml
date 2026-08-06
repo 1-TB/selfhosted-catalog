@@ -1,0 +1,48 @@
+slug: hemmelig
+name: Hemmelig
+category: security
+description: Encrypted, self-destructing secret and file sharing with accounts.
+homepage: https://hemmelig.app
+source: https://github.com/HemmeligOrg/Hemmelig.app
+
+image: hemmeligapp/hemmelig
+version: "v7.4.8"
+arch: [amd64, arm64]
+
+port: 3000
+health_path: /api/healthz
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: SECRET_LOCAL_HOSTNAME
+    value: "0.0.0.0"
+  - name: SECRET_PORT
+    value: "3000"
+  - name: SECRET_HOST
+    value: "hemmelig.${DOMAIN}"
+  - name: SECRET_ROOT_USER
+    value: "admin"
+  - name: SECRET_ROOT_PASSWORD
+    secret: true
+  - name: SECRET_ROOT_EMAIL
+    secret: true
+  - name: SECRET_FILE_SIZE
+    value: "4"
+  - name: SECRET_FORCED_LANGUAGE
+    value: "en"
+  - name: SECRET_JWT_SECRET
+    secret: true
+  - name: SECRET_MAX_TEXT_SIZE
+    value: "256"
+
+volumes:
+  - path: uploads
+    mount: /var/tmp/hemmelig/upload/files
+  - path: database
+    mount: /home/node/hemmelig/database
+
+notes: |
+  Own account system (SECRET_ROOT_* seeds the admin on first run) plus an
+  optional GitHub OAuth login, not generic OIDC, so it's proxy-auth here.
+  Database is SQLite on the database volume - no external database needed.

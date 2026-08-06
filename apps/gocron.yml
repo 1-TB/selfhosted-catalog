@@ -1,0 +1,25 @@
+slug: gocron
+name: GoCron
+category: automation
+description: YAML-defined cron job runner with a web UI and SQLite job history.
+homepage: https://github.com/flohoss/gocron
+source: https://github.com/flohoss/gocron
+
+image: ghcr.io/flohoss/gocron
+version: "v0.10.0"
+arch: [amd64, arm64]
+
+port: 8156
+mem_limit: 256m
+auth: proxy
+
+volumes:
+  - path: config
+    mount: /app/config
+
+notes: |
+  Creates a default config.yml with example jobs on first start if the
+  config volume is empty; jobs, schedules and per-job env vars are all
+  defined in that file, not through the UI. No login of its own, and the
+  web terminal can run any allow-listed command, so keep it behind a
+  proxy with auth.
