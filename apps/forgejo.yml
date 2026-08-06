@@ -1,0 +1,41 @@
+slug: forgejo
+name: Forgejo
+category: developer
+description: Lightweight, community-run git forge forked from Gitea.
+homepage: https://forgejo.org
+source: https://codeberg.org/forgejo/forgejo
+
+image: codeberg.org/forgejo/forgejo
+version: "16.0.2"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 1g
+database: postgres
+auth: oidc
+redirect_path: /user/oauth2/authentik/callback
+
+env:
+  - name: FORGEJO__database__DB_TYPE
+    value: "postgres"
+  - name: FORGEJO__database__HOST
+    value: "forgejo-postgres:5432"
+  - name: FORGEJO__database__NAME
+    value: "forgejo"
+  - name: FORGEJO__database__USER
+    value: "forgejo"
+  - name: FORGEJO__database__PASSWD
+    value: "${FORGEJO_DB_PASSWORD}"
+  - name: FORGEJO__server__ROOT_URL
+    value: "https://forgejo.${DOMAIN}/"
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  Same codebase and OAuth2 login flow as Gitea (it's a hard fork), so
+  the authentik callback path is identical. Also listens for git-over-
+  SSH on container port 22; not modeled here since this schema carries
+  one port, so SSH clone access needs its own forwarded port outside
+  the HTTP proxy.
