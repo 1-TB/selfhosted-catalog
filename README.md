@@ -71,8 +71,8 @@ tools/registry.py arch REPO TAG  architectures that tag was built for
 tools/check-arch.sh            compare every entry against the registry
 ```
 
-`registry.py` speaks the OCI distribution API directly, so it needs no docker
-and no login. For Docker Hub images it reads architectures from the Hub API
+These need python and network access. Nothing here needs docker or a registry
+login — `registry.py` speaks the OCI distribution API directly. For Docker Hub images it reads architectures from the Hub API
 rather than pulling manifests, because manifest requests count against the
 anonymous pull limit and resolving a few dozen images exhausts it — after which
 every lookup returns nothing and looks like "no architectures" rather than
