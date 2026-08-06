@@ -1,0 +1,26 @@
+slug: goatcounter
+name: GoatCounter
+category: monitoring
+description: Privacy-friendly web analytics, no cookies or tracking of personal data.
+homepage: https://www.goatcounter.com
+source: https://github.com/arp242/goatcounter
+
+image: arp242/goatcounter
+version: "2.7.0"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /home/goatcounter/goatcounter-data
+
+notes: |
+  Ships its own SQLite database in the data volume; no external database
+  needed. First run requires creating the site once via `docker exec
+  <container> goatcounter db create site -vhost=goatcounter.${DOMAIN}
+  -user.email=you@example.com` before the login page will work. No OIDC
+  support of its own.
