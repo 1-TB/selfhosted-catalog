@@ -1,0 +1,22 @@
+slug: scrutiny
+name: Scrutiny
+category: monitoring
+description: S.M.A.R.T. disk health dashboard.
+homepage: https://github.com/AnalogJ/scrutiny
+source: https://github.com/AnalogJ/scrutiny
+
+image: ghcr.io/analogj/scrutiny
+version: "v0.9.2-omnibus"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+auth: proxy
+
+volumes:
+  - path: config
+    mount: /opt/scrutiny/config
+
+notes: |
+  Collecting SMART data needs the host's block devices, which is a
+  privileged mount. The web half runs unprivileged.

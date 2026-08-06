@@ -1,0 +1,39 @@
+slug: planka
+name: Planka
+category: productivity
+description: Kanban boards.
+homepage: https://planka.app
+source: https://github.com/plankanban/planka
+
+image: ghcr.io/plankanban/planka
+version: "2.1.1"
+arch: [amd64, arm64]
+
+port: 1337
+mem_limit: 512m
+database: postgres
+auth: oidc
+redirect_path: /oidc-callback
+
+env:
+  - name: BASE_URL
+    value: "https://planka.${DOMAIN}"
+  - name: DATABASE_URL
+    value: "postgresql://planka:${PLANKA_DB_PASSWORD}@planka-postgres/planka"
+  - name: SECRET_KEY
+    secret: true
+  - name: OIDC_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: OIDC_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+  - name: OIDC_ISSUER
+    secret: true
+    source: oidc_issuer
+
+volumes:
+  - path: avatars
+    mount: /app/public/user-avatars
+  - path: attachments
+    mount: /app/private/attachments

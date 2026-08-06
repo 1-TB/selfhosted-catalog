@@ -1,0 +1,18 @@
+slug: linkding
+name: linkding
+category: productivity
+description: Bookmark manager, deliberately minimal.
+homepage: https://linkding.link
+source: https://github.com/sissbruecker/linkding
+
+image: sissbruecker/linkding
+version: "1.45.0"
+arch: [amd64, arm64]
+
+port: 9090
+mem_limit: 256m
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /etc/linkding/data

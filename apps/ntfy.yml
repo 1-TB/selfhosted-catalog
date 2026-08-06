@@ -1,0 +1,26 @@
+slug: ntfy
+name: ntfy
+category: communication
+description: Push notifications over HTTP.
+homepage: https://ntfy.sh
+source: https://github.com/binwiederhier/ntfy
+
+image: binwiederhier/ntfy
+version: "v2.27"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 256m
+auth: proxy
+
+env:
+  - name: NTFY_BASE_URL
+    value: "https://ntfy.${DOMAIN}"
+  - name: NTFY_BEHIND_PROXY
+    value: "true"
+
+volumes:
+  - path: cache
+    mount: /var/cache/ntfy
+  - path: etc
+    mount: /etc/ntfy

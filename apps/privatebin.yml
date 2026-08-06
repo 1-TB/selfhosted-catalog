@@ -1,0 +1,18 @@
+slug: privatebin
+name: PrivateBin
+category: security
+description: Pastebin where the server cannot read the paste.
+homepage: https://privatebin.info
+source: https://github.com/PrivateBin/PrivateBin
+
+image: privatebin/nginx-fpm-alpine
+version: "2.0.5"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 256m
+auth: none
+
+volumes:
+  - path: data
+    mount: /srv/data

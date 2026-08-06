@@ -1,0 +1,18 @@
+slug: memos
+name: Memos
+category: documents
+description: Lightweight note taking, one thought per note.
+homepage: https://usememos.com
+source: https://github.com/usememos/memos
+
+image: neosmemo/memos
+version: "0.30"
+arch: [amd64, arm64]
+
+port: 5230
+mem_limit: 256m
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /var/opt/memos

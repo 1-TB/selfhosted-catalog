@@ -1,0 +1,22 @@
+slug: homepage
+name: Homepage
+category: utilities
+description: Application dashboard with service integrations.
+homepage: https://gethomepage.dev
+source: https://github.com/gethomepage/homepage
+
+image: ghcr.io/gethomepage/homepage
+version: "v1.13.2"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 256m
+auth: proxy
+
+env:
+  - name: HOMEPAGE_ALLOWED_HOSTS
+    value: "homepage.${DOMAIN}"
+
+volumes:
+  - path: config
+    mount: /app/config

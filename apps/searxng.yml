@@ -1,0 +1,30 @@
+slug: searxng
+name: SearXNG
+category: network
+description: Metasearch engine that aggregates other engines.
+homepage: https://docs.searxng.org
+source: https://github.com/searxng/searxng
+
+image: searxng/searxng
+version: "2026.8.5-1689cb1b5"
+arch: [amd64, arm64]
+
+port: 8080
+health_path: /healthz
+mem_limit: 512m
+needs: [redis]
+auth: proxy
+
+env:
+  - name: SEARXNG_BASE_URL
+    value: "https://search.${DOMAIN}/"
+  - name: SEARXNG_SECRET
+    secret: true
+
+volumes:
+  - path: config
+    mount: /etc/searxng
+
+notes: |
+  Recent images run Granian, not uWSGI; the old UWSGI_* variables are
+  no longer read.

@@ -1,0 +1,20 @@
+slug: calibre-web
+name: Calibre-Web
+category: media
+description: Web interface for a Calibre ebook library.
+homepage: https://github.com/janeczku/calibre-web
+source: https://github.com/janeczku/calibre-web
+
+image: lscr.io/linuxserver/calibre-web
+version: "version-v5.7.2"
+arch: [amd64]
+
+port: 8083
+mem_limit: 512m
+auth: proxy
+
+volumes:
+  - path: config
+    mount: /config
+  - path: books
+    mount: /books

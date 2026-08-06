@@ -1,0 +1,22 @@
+slug: convertx
+name: ConvertX
+category: utilities
+description: Converts files between a few hundred formats.
+homepage: https://github.com/C4illin/ConvertX
+source: https://github.com/C4illin/ConvertX
+
+image: ghcr.io/c4illin/convertx
+version: "v0.18.0"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 2g
+auth: proxy
+
+env:
+  - name: JWT_SECRET
+    secret: true
+
+volumes:
+  - path: data
+    mount: /app/data

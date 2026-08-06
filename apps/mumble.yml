@@ -1,0 +1,22 @@
+slug: mumble
+name: Mumble
+category: communication
+description: Low-latency voice chat server.
+homepage: https://www.mumble.info
+source: https://github.com/mumble-voip/mumble
+
+image: mumblevoip/mumble-server
+version: "v1.6.870"
+arch: [amd64, arm64]
+
+port: 64738
+mem_limit: 256m
+auth: none
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  Speaks its own protocol on 64738/tcp+udp, not HTTP. A reverse proxy
+  does not help; the port must reach the host.

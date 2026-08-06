@@ -1,0 +1,29 @@
+slug: hedgedoc
+name: HedgeDoc
+category: documents
+description: Collaborative markdown editor.
+homepage: https://hedgedoc.org
+source: https://github.com/hedgedoc/hedgedoc
+
+image: quay.io/hedgedoc/hedgedoc
+version: "1.11.1"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: CMD_DOMAIN
+    value: "hedgedoc.${DOMAIN}"
+  - name: CMD_PROTOCOL_USESSL
+    value: "true"
+  - name: CMD_URL_ADDPORT
+    value: "false"
+  - name: CMD_DB_URL
+    value: "postgres://hedgedoc:${HEDGEDOC_DB_PASSWORD}@hedgedoc-postgres:5432/hedgedoc"
+
+volumes:
+  - path: uploads
+    mount: /hedgedoc/public/uploads

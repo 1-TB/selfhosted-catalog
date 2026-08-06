@@ -1,0 +1,15 @@
+slug: yopass
+name: Yopass
+category: security
+description: Share a secret once, then it is gone.
+homepage: https://yopass.se
+source: https://github.com/jhaals/yopass
+
+image: jhaals/yopass
+version: "14.8.0"
+arch: [amd64, arm64]
+
+port: 1337
+mem_limit: 256m
+needs: [memcached]
+auth: none

@@ -1,0 +1,21 @@
+slug: tubearchivist
+name: Tube Archivist
+category: archiving
+description: Downloads and indexes a YouTube collection.
+homepage: https://www.tubearchivist.com
+source: https://github.com/tubearchivist/tubearchivist
+
+image: bbilly1/tubearchivist
+version: "v0.5.10"
+arch: [amd64, arm64]
+
+port: 8000
+mem_limit: 2g
+needs: [redis, elasticsearch]
+auth: proxy
+
+volumes:
+  - path: media
+    mount: /youtube
+  - path: cache
+    mount: /cache

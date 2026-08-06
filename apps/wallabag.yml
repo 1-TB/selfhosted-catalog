@@ -1,0 +1,35 @@
+slug: wallabag
+name: Wallabag
+category: archiving
+description: Read-it-later that keeps a readable copy.
+homepage: https://wallabag.org
+source: https://github.com/wallabag/wallabag
+
+image: wallabag/wallabag
+version: "2.6.14"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 1g
+database: mariadb
+auth: proxy
+
+env:
+  - name: SYMFONY__ENV__DOMAIN_NAME
+    value: "https://wallabag.${DOMAIN}"
+  - name: SYMFONY__ENV__DATABASE_DRIVER
+    value: "pdo_mysql"
+  - name: SYMFONY__ENV__DATABASE_HOST
+    value: "wallabag-mariadb"
+  - name: SYMFONY__ENV__DATABASE_NAME
+    value: "wallabag"
+  - name: SYMFONY__ENV__DATABASE_USER
+    value: "wallabag"
+  - name: SYMFONY__ENV__DATABASE_PASSWORD
+    value: "${WALLABAG_DB_PASSWORD}"
+  - name: SYMFONY__ENV__SECRET
+    secret: true
+
+volumes:
+  - path: images
+    mount: /var/www/wallabag/web/assets/images

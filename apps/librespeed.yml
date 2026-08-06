@@ -1,0 +1,14 @@
+slug: librespeed
+name: LibreSpeed
+category: network
+description: Browser speed test.
+homepage: https://librespeed.org
+source: https://github.com/librespeed/speedtest
+
+image: lscr.io/linuxserver/librespeed
+version: "version-v6.2.0"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 256m
+auth: proxy

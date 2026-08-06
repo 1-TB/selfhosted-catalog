@@ -1,0 +1,30 @@
+slug: archivebox
+name: ArchiveBox
+category: archiving
+description: Archives pages as HTML, screenshots, PDFs and WARC.
+homepage: https://archivebox.io
+source: https://github.com/ArchiveBox/ArchiveBox
+
+image: archivebox/archivebox
+version: "0.7.4"
+arch: [amd64, arm64]
+
+port: 8000
+mem_limit: 2g
+auth: proxy
+
+env:
+  - name: ALLOWED_HOSTS
+    value: "*"
+  - name: CSRF_TRUSTED_ORIGINS
+    value: "https://archive.${DOMAIN}"
+  - name: PUBLIC_INDEX
+    value: "False"
+  - name: PUBLIC_SNAPSHOTS
+    value: "False"
+  - name: PUBLIC_ADD_VIEW
+    value: "False"
+
+volumes:
+  - path: data
+    mount: /data

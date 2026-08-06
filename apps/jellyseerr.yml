@@ -1,0 +1,18 @@
+slug: jellyseerr
+name: Jellyseerr
+category: media
+description: Request manager for Jellyfin and Plex libraries.
+homepage: https://docs.jellyseerr.dev
+source: https://github.com/fallenbagel/jellyseerr
+
+image: fallenbagel/jellyseerr
+version: "2.7.3"
+arch: [amd64, arm64]
+
+port: 5055
+mem_limit: 1g
+auth: proxy
+
+volumes:
+  - path: config
+    mount: /app/config

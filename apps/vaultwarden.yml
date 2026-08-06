@@ -1,0 +1,34 @@
+slug: vaultwarden
+name: Vaultwarden
+category: security
+description: Bitwarden-compatible password manager.
+homepage: https://github.com/dani-garcia/vaultwarden
+source: https://github.com/dani-garcia/vaultwarden
+
+image: vaultwarden/server
+version: "1.37.1"
+arch: [amd64, arm64]
+
+port: 80
+health_path: /alive
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: DOMAIN
+    value: "https://vault.${DOMAIN}"
+  - name: DATABASE_URL
+    value: "postgresql://vaultwarden:${VAULTWARDEN_DB_PASSWORD}@vaultwarden-postgres:5432/vaultwarden"
+  - name: SIGNUPS_ALLOWED
+    value: "false"
+  - name: ADMIN_TOKEN
+    secret: true
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  Putting a forward-auth proxy in front breaks the mobile and browser
+  clients, which cannot complete an interactive login. Gate /admin only.

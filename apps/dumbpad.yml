@@ -1,0 +1,18 @@
+slug: dumbpad
+name: dumbpad
+category: productivity
+description: A notepad with no accounts and no formatting.
+homepage: https://github.com/DumbWareio/DumbPad
+source: https://github.com/DumbWareio/DumbPad
+
+image: dumbwareio/dumbpad
+version: "1.0.5"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 128m
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /app/data

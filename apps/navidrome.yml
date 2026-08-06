@@ -1,0 +1,27 @@
+slug: navidrome
+name: Navidrome
+category: media
+description: Music server, Subsonic API compatible.
+homepage: https://www.navidrome.org
+source: https://github.com/navidrome/navidrome
+
+image: deluan/navidrome
+version: "0.63.2"
+arch: [amd64, arm64]
+
+port: 4533
+health_path: /ping
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: ND_SCANSCHEDULE
+    value: "1h"
+  - name: ND_BASEURL
+    value: ""
+
+volumes:
+  - path: data
+    mount: /data
+  - path: music
+    mount: /music

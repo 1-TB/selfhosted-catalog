@@ -1,0 +1,18 @@
+slug: uptime-kuma
+name: Uptime Kuma
+category: monitoring
+description: Uptime monitoring with status pages.
+homepage: https://uptime.kuma.pet
+source: https://github.com/louislam/uptime-kuma
+
+image: louislam/uptime-kuma
+version: "2.5.0"
+arch: [amd64, arm64]
+
+port: 3001
+mem_limit: 512m
+auth: proxy
+
+volumes:
+  - path: app
+    mount: /app/data

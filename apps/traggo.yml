@@ -1,0 +1,18 @@
+slug: traggo
+name: Traggo
+category: productivity
+description: Tag-based time tracking.
+homepage: https://traggo.net
+source: https://github.com/traggo/server
+
+image: traggo/server
+version: "0.8.3"
+arch: [amd64, arm64]
+
+port: 3030
+mem_limit: 256m
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /opt/traggo/data

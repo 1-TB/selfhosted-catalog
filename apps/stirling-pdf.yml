@@ -1,0 +1,18 @@
+slug: stirling-pdf
+name: Stirling PDF
+category: documents
+description: Merge, split, convert, OCR and sign PDFs.
+homepage: https://stirlingpdf.com
+source: https://github.com/Stirling-Tools/Stirling-PDF
+
+image: ghcr.io/stirling-tools/stirling-pdf
+version: "2.14.2"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 2g
+auth: proxy
+
+volumes:
+  - path: configs
+    mount: /configs

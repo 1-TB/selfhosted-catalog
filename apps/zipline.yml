@@ -1,0 +1,29 @@
+slug: zipline
+name: Zipline
+category: files
+description: File and image host with a ShareX-compatible API.
+homepage: https://zipline.diced.sh
+source: https://github.com/diced/zipline
+
+image: ghcr.io/diced/zipline
+version: "4.4.2"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 1g
+database: postgres
+auth: proxy
+
+env:
+  - name: CORE_RETURN_HTTPS
+    value: "true"
+  - name: CORE_DATABASE_URL
+    value: "postgresql://zipline:${ZIPLINE_DB_PASSWORD}@zipline-postgres:5432/zipline"
+  - name: CORE_SECRET
+    secret: true
+
+volumes:
+  - path: uploads
+    mount: /zipline/uploads
+  - path: public
+    mount: /zipline/public

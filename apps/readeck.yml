@@ -1,0 +1,22 @@
+slug: readeck
+name: Readeck
+category: archiving
+description: Save and read articles later, with full-text search.
+homepage: https://readeck.org
+source: https://codeberg.org/readeck/readeck
+
+image: codeberg.org/readeck/readeck
+version: "0.22.3"
+arch: [amd64, arm64]
+
+port: 8000
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: READECK_SERVER_HOST
+    value: "0.0.0.0"
+
+volumes:
+  - path: data
+    mount: /readeck

@@ -1,0 +1,41 @@
+slug: paperless-ngx
+name: Paperless-ngx
+category: documents
+description: Scans, OCRs and indexes paper documents.
+homepage: https://docs.paperless-ngx.com
+source: https://github.com/paperless-ngx/paperless-ngx
+
+image: ghcr.io/paperless-ngx/paperless-ngx
+version: "3.0.5"
+arch: [amd64, arm64]
+
+port: 8000
+mem_limit: 2g
+database: postgres
+needs: [redis]
+auth: oidc
+redirect_path: /accounts/oidc/authentik/login/callback/
+
+env:
+  - name: PAPERLESS_URL
+    value: "https://paperless.${DOMAIN}"
+  - name: PAPERLESS_REDIS
+    value: "redis://paperless-redis:6379"
+  - name: PAPERLESS_DBHOST
+    value: "paperless-ngx-postgres"
+  - name: PAPERLESS_APPS
+    value: "allauth.socialaccount.providers.openid_connect"
+  - name: PAPERLESS_SECRET_KEY
+    secret: true
+
+volumes:
+  - path: data
+    mount: /usr/src/paperless/data
+  - path: media
+    mount: /usr/src/paperless/media
+  - path: consume
+    mount: /usr/src/paperless/consume
+
+notes: |
+  The OIDC server_url must be the application-scoped
+  .well-known/openid-configuration, including the app slug.

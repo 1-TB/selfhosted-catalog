@@ -1,0 +1,23 @@
+slug: firefox
+name: Firefox
+category: utilities
+description: A full Firefox in a container, over KasmVNC.
+homepage: https://docs.linuxserver.io/images/docker-firefox/
+source: https://github.com/linuxserver/docker-firefox
+
+image: lscr.io/linuxserver/firefox
+version: "135.0.1build1-0ubuntu0.24.04.1mt1-ls220"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 3g
+auth: proxy
+
+volumes:
+  - path: config
+    mount: /config
+
+notes: |
+  Port 3000 is HTTP and 3001 is the same UI over a self-signed cert.
+  Use 3000 unless your proxy is configured to skip verification.
+  Needs a larger /dev/shm than the 64m default or tabs crash.

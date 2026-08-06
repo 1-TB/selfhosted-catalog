@@ -1,0 +1,18 @@
+slug: shiori
+name: Shiori
+category: productivity
+description: Bookmark manager in a single binary.
+homepage: https://github.com/go-shiori/shiori
+source: https://github.com/go-shiori/shiori
+
+image: ghcr.io/go-shiori/shiori
+version: "v1.8.0"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 256m
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /shiori

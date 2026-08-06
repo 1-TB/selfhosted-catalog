@@ -1,0 +1,35 @@
+slug: mealie
+name: Mealie
+category: productivity
+description: Recipe manager and meal planner.
+homepage: https://mealie.io
+source: https://github.com/mealie-recipes/mealie
+
+image: ghcr.io/mealie-recipes/mealie
+version: "v3.22.0"
+arch: [amd64, arm64]
+
+port: 9000
+health_path: /api/app/about
+mem_limit: 1g
+database: postgres
+auth: oidc
+redirect_path: /login
+
+env:
+  - name: BASE_URL
+    value: "https://mealie.${DOMAIN}"
+  - name: DB_ENGINE
+    value: "postgres"
+  - name: POSTGRES_SERVER
+    value: "mealie-postgres"
+  - name: POSTGRES_USER
+    value: "mealie"
+  - name: POSTGRES_DB
+    value: "mealie"
+  - name: POSTGRES_PASSWORD
+    value: "${MEALIE_DB_PASSWORD}"
+
+volumes:
+  - path: data
+    mount: /app/data

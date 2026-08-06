@@ -1,0 +1,37 @@
+slug: photoprism
+name: PhotoPrism
+category: media
+description: Photo library with automatic tagging.
+homepage: https://www.photoprism.app
+source: https://github.com/photoprism/photoprism
+
+image: photoprism/photoprism
+version: "260728"
+arch: [amd64, arm64]
+
+port: 2342
+mem_limit: 4g
+database: mariadb
+auth: proxy
+
+env:
+  - name: PHOTOPRISM_SITE_URL
+    value: "https://photos.${DOMAIN}/"
+  - name: PHOTOPRISM_DATABASE_DRIVER
+    value: "mysql"
+  - name: PHOTOPRISM_DATABASE_SERVER
+    value: "photoprism-mariadb:3306"
+  - name: PHOTOPRISM_DATABASE_NAME
+    value: "photoprism"
+  - name: PHOTOPRISM_DATABASE_USER
+    value: "photoprism"
+  - name: PHOTOPRISM_DATABASE_PASSWORD
+    value: "${PHOTOPRISM_DB_PASSWORD}"
+  - name: PHOTOPRISM_ADMIN_PASSWORD
+    secret: true
+
+volumes:
+  - path: originals
+    mount: /photoprism/originals
+  - path: storage
+    mount: /photoprism/storage

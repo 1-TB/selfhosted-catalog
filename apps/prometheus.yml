@@ -1,0 +1,21 @@
+slug: prometheus
+name: Prometheus
+category: monitoring
+description: Metrics collection and alerting.
+homepage: https://prometheus.io
+source: https://github.com/prometheus/prometheus
+
+image: prom/prometheus
+version: "v3.13.2"
+arch: [amd64, arm64]
+
+port: 9090
+health_path: /-/healthy
+mem_limit: 2g
+auth: proxy
+
+volumes:
+  - path: config
+    mount: /etc/prometheus
+  - path: tsdb
+    mount: /prometheus

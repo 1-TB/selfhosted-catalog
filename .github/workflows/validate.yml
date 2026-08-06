@@ -1,0 +1,31 @@
+name: validate
+
+on:
+  push:
+  pull_request:
+  schedule:
+    # Weekly, to catch an upstream dropping an architecture or retagging.
+    - cron: '0 6 * * 1'
+
+jobs:
+  schema:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pyyaml
+      - run: python tools/validate.py
+
+  arch:
+    # Only on the schedule: it talks to several registries and is slow.
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pyyaml
+      - run: tools/check-arch.sh

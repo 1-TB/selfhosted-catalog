@@ -1,0 +1,22 @@
+slug: changedetection
+name: changedetection.io
+category: feeds
+description: Watches web pages and alerts on changes.
+homepage: https://changedetection.io
+source: https://github.com/dgtlmoon/changedetection.io
+
+image: ghcr.io/dgtlmoon/changedetection.io
+version: "0.55.8"
+arch: [amd64, arm64]
+
+port: 5000
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: BASE_URL
+    value: "https://changedetection.${DOMAIN}"
+
+volumes:
+  - path: data
+    mount: /datastore

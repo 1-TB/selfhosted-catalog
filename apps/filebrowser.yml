@@ -1,0 +1,20 @@
+slug: filebrowser
+name: File Browser
+category: files
+description: Web file manager for a directory.
+homepage: https://filebrowser.org
+source: https://github.com/filebrowser/filebrowser
+
+image: filebrowser/filebrowser
+version: "v2.63.18"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 128m
+auth: proxy
+
+volumes:
+  - path: srv
+    mount: /srv
+  - path: database
+    mount: /database

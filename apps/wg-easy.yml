@@ -1,0 +1,22 @@
+slug: wg-easy
+name: wg-easy
+category: network
+description: WireGuard with a web UI.
+homepage: https://github.com/wg-easy/wg-easy
+source: https://github.com/wg-easy/wg-easy
+
+image: ghcr.io/wg-easy/wg-easy
+version: "15.3.0"
+arch: [amd64, arm64]
+
+port: 51821
+mem_limit: 256m
+auth: proxy
+
+volumes:
+  - path: config
+    mount: /etc/wireguard
+
+notes: |
+  Needs NET_ADMIN and a UDP port; the tunnel itself cannot go through
+  a HTTP proxy.

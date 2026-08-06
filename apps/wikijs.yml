@@ -1,0 +1,29 @@
+slug: wikijs
+name: Wiki.js
+category: documents
+description: Wiki with a WYSIWYG and markdown editor.
+homepage: https://js.wiki
+source: https://github.com/requarks/wiki
+
+image: ghcr.io/requarks/wiki
+version: "2.5.314"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 1g
+database: postgres
+auth: proxy
+
+env:
+  - name: DB_TYPE
+    value: "postgres"
+  - name: DB_HOST
+    value: "wikijs-postgres"
+  - name: DB_PORT
+    value: "5432"
+  - name: DB_NAME
+    value: "wikijs"
+  - name: DB_USER
+    value: "wikijs"
+  - name: DB_PASS
+    value: "${WIKIJS_DB_PASSWORD}"

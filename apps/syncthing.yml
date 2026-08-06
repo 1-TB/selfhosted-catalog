@@ -1,0 +1,24 @@
+slug: syncthing
+name: Syncthing
+category: files
+description: Continuous file sync between devices.
+homepage: https://syncthing.net
+source: https://github.com/syncthing/syncthing
+
+image: lscr.io/linuxserver/syncthing
+version: "version-v1.29.6"
+arch: [amd64, arm64]
+
+port: 8384
+mem_limit: 1g
+auth: proxy
+
+volumes:
+  - path: config
+    mount: /config
+  - path: sync
+    mount: /data1
+
+notes: |
+  The web UI is 8384. Sync traffic uses 22000/tcp+udp and needs a
+  direct path; a HTTP proxy only covers the UI.

@@ -1,0 +1,22 @@
+slug: gotify
+name: Gotify
+category: communication
+description: Push notification server with its own clients.
+homepage: https://gotify.net
+source: https://github.com/gotify/server
+
+image: gotify/server
+version: "3.0"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 256m
+auth: proxy
+
+env:
+  - name: GOTIFY_DEFAULTUSER_PASS
+    secret: true
+
+volumes:
+  - path: data
+    mount: /app/data

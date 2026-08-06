@@ -1,0 +1,14 @@
+slug: ittools
+name: Omni Tools
+category: utilities
+description: Another set of browser-side developer utilities.
+homepage: https://omnitools.app
+source: https://github.com/iib0011/omni-tools
+
+image: iib0011/omni-tools
+version: "0.6"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 128m
+auth: proxy

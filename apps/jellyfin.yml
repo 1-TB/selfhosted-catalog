@@ -1,0 +1,25 @@
+slug: jellyfin
+name: Jellyfin
+category: media
+description: Media server for film, TV and music.
+homepage: https://jellyfin.org
+source: https://github.com/jellyfin/jellyfin
+
+image: jellyfin/jellyfin
+version: "10.11.11"
+arch: [amd64, arm64]
+
+port: 8096
+health_path: /health
+mem_limit: 2g
+auth: proxy
+
+volumes:
+  - path: config
+    mount: /config
+  - path: cache
+    mount: /cache
+
+notes: |
+  Hardware transcoding needs a device mount, which most sandboxes
+  refuse. Software transcoding works everywhere but costs CPU.

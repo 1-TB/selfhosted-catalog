@@ -1,0 +1,14 @@
+slug: it-tools
+name: IT Tools
+category: developer
+description: Collection of small developer utilities.
+homepage: https://it-tools.tech
+source: https://github.com/CorentinTh/it-tools
+
+image: corentinth/it-tools
+version: "2024.5.13-a0bc346"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 128m
+auth: proxy

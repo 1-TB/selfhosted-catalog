@@ -1,0 +1,14 @@
+slug: cyberchef
+name: CyberChef
+category: developer
+description: Encoding, encryption, compression and data analysis in the browser.
+homepage: https://gchq.github.io/CyberChef/
+source: https://github.com/gchq/CyberChef
+
+image: mpepping/cyberchef
+version: "v11.2.0"
+arch: [amd64, arm64]
+
+port: 8000
+mem_limit: 128m
+auth: proxy

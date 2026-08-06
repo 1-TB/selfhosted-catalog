@@ -1,0 +1,24 @@
+slug: twofauth
+name: 2FAuth
+category: security
+description: Manages TOTP and HOTP accounts.
+homepage: https://docs.2fauth.app
+source: https://github.com/Bubka/2FAuth
+
+image: 2fauth/2fauth
+version: "8.0.1"
+arch: [amd64, arm64]
+
+port: 8000
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: APP_URL
+    value: "https://twofauth.${DOMAIN}"
+  - name: APP_KEY
+    secret: true
+
+volumes:
+  - path: data
+    mount: /2fauth

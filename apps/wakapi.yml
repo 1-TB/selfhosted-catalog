@@ -1,0 +1,32 @@
+slug: wakapi
+name: Wakapi
+category: developer
+description: Coding time tracker, compatible with WakaTime clients.
+homepage: https://wakapi.dev
+source: https://github.com/muety/wakapi
+
+image: ghcr.io/muety/wakapi
+version: "2.17.5"
+arch: [amd64, arm64]
+
+port: 3000
+health_path: /api/health
+mem_limit: 256m
+database: postgres
+auth: proxy
+
+env:
+  - name: WAKAPI_PUBLIC_URL
+    value: "https://wakapi.${DOMAIN}"
+  - name: WAKAPI_DB_TYPE
+    value: "postgres"
+  - name: WAKAPI_DB_HOST
+    value: "wakapi-postgres"
+  - name: WAKAPI_DB_NAME
+    value: "wakapi"
+  - name: WAKAPI_DB_USER
+    value: "wakapi"
+  - name: WAKAPI_DB_PASSWORD
+    value: "${WAKAPI_DB_PASSWORD}"
+  - name: WAKAPI_PASSWORD_SALT
+    secret: true

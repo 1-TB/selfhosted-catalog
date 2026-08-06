@@ -1,0 +1,25 @@
+slug: immich
+name: Immich
+category: media
+description: Photo and video backup from your phone.
+homepage: https://immich.app
+source: https://github.com/immich-app/immich
+
+image: ghcr.io/immich-app/immich-server
+version: "v1.128.0"
+arch: [amd64, arm64]
+
+port: 2283
+mem_limit: 4g
+database: postgres
+needs: [redis, machine-learning, pgvecto-rs]
+auth: oidc
+redirect_path: /auth/login
+
+volumes:
+  - path: upload
+    mount: /usr/src/app/upload
+
+notes: |
+  Needs a pgvecto.rs/pgvector Postgres, Redis and a machine-learning
+  container. Not a single-container install.

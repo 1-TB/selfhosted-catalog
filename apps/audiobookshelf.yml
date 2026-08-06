@@ -1,0 +1,22 @@
+slug: audiobookshelf
+name: Audiobookshelf
+category: media
+description: Audiobook and podcast server.
+homepage: https://www.audiobookshelf.org
+source: https://github.com/advplyr/audiobookshelf
+
+image: ghcr.io/advplyr/audiobookshelf
+version: "2.36.0"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 1g
+auth: proxy
+
+volumes:
+  - path: config
+    mount: /config
+  - path: metadata
+    mount: /metadata
+  - path: audiobooks
+    mount: /audiobooks

@@ -1,0 +1,18 @@
+slug: grocy
+name: Grocy
+category: productivity
+description: Groceries and household management.
+homepage: https://grocy.info
+source: https://github.com/grocy/grocy
+
+image: lscr.io/linuxserver/grocy
+version: "version-v4.6.0"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 256m
+auth: proxy
+
+volumes:
+  - path: config
+    mount: /config

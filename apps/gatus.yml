@@ -1,0 +1,19 @@
+slug: gatus
+name: Gatus
+category: monitoring
+description: Health dashboard driven by a YAML config.
+homepage: https://gatus.io
+source: https://github.com/TwiN/gatus
+
+image: twinproduction/gatus
+version: "v5.36.0"
+arch: [amd64, arm64]
+
+port: 8080
+health_path: /health
+mem_limit: 256m
+auth: proxy
+
+volumes:
+  - path: config
+    mount: /config

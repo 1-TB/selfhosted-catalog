@@ -1,0 +1,25 @@
+slug: kimai
+name: Kimai
+category: productivity
+description: Time tracking for freelancers and teams.
+homepage: https://www.kimai.org
+source: https://github.com/kimai/kimai
+
+image: kimai/kimai2
+version: "2.63.0"
+arch: [amd64, arm64]
+
+port: 8001
+mem_limit: 1g
+database: mariadb
+auth: proxy
+
+env:
+  - name: APP_URL
+    value: "https://kimai.${DOMAIN}"
+  - name: DATABASE_URL
+    value: "mysql://kimai:${KIMAI_DB_PASSWORD}@kimai-mariadb/kimai?charset=utf8mb4&serverVersion=11.4.5-MariaDB"
+  - name: ADMINMAIL
+    value: "admin@${DOMAIN}"
+  - name: ADMINPASS
+    secret: true

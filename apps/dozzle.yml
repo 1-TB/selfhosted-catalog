@@ -1,0 +1,18 @@
+slug: dozzle
+name: Dozzle
+category: developer
+description: Live container log viewer.
+homepage: https://dozzle.dev
+source: https://github.com/amir20/dozzle
+
+image: amir20/dozzle
+version: "8.10.3"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 128m
+auth: proxy
+
+notes: |
+  Needs the docker socket, which is a privileged mount. Consider a
+  read-only socket proxy in front of it.

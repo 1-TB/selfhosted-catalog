@@ -1,0 +1,44 @@
+slug: miniflux
+name: Miniflux
+category: feeds
+description: Minimalist feed reader.
+homepage: https://miniflux.app
+source: https://github.com/miniflux/v2
+
+image: ghcr.io/miniflux/miniflux
+version: "2.3.3"
+arch: [amd64, arm64]
+
+port: 8080
+health_path: /healthcheck
+mem_limit: 256m
+database: postgres
+auth: oidc
+redirect_path: /oauth2/oidc/callback
+
+env:
+  - name: BASE_URL
+    value: "https://miniflux.${DOMAIN}/"
+  - name: RUN_MIGRATIONS
+    value: "1"
+  - name: CREATE_ADMIN
+    value: "1"
+  - name: DATABASE_URL
+    value: "postgres://miniflux:${MINIFLUX_DB_PASSWORD}@miniflux-postgres:5432/miniflux?sslmode=disable"
+  - name: OAUTH2_PROVIDER
+    value: "oidc"
+  - name: OAUTH2_USER_CREATION
+    value: "1"
+  - name: OAUTH2_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: OAUTH2_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+  - name: OAUTH2_OIDC_DISCOVERY_ENDPOINT
+    secret: true
+    source: oidc_issuer
+
+notes: |
+  OAUTH2_OIDC_DISCOVERY_ENDPOINT takes the issuer URL without the
+  .well-known suffix; the client appends it.

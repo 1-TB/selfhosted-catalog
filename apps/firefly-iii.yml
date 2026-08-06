@@ -1,0 +1,35 @@
+slug: firefly-iii
+name: Firefly III
+category: productivity
+description: Personal finance manager.
+homepage: https://www.firefly-iii.org
+source: https://github.com/firefly-iii/firefly-iii
+
+image: fireflyiii/core
+version: "version-6.6.6"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 1g
+database: mariadb
+auth: proxy
+
+env:
+  - name: APP_URL
+    value: "https://firefly.${DOMAIN}"
+  - name: DB_CONNECTION
+    value: "mysql"
+  - name: DB_HOST
+    value: "firefly-iii-mariadb"
+  - name: DB_DATABASE
+    value: "firefly_iii"
+  - name: DB_USERNAME
+    value: "firefly_iii"
+  - name: DB_PASSWORD
+    value: "${FIREFLY_III_DB_PASSWORD}"
+  - name: APP_KEY
+    secret: true
+
+volumes:
+  - path: upload
+    mount: /var/www/html/storage/upload

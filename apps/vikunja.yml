@@ -1,0 +1,36 @@
+slug: vikunja
+name: Vikunja
+category: productivity
+description: Task and project management.
+homepage: https://vikunja.io
+source: https://code.vikunja.io/vikunja
+
+image: vikunja/vikunja
+version: "2.5"
+arch: [amd64, arm64]
+
+port: 3456
+mem_limit: 512m
+database: postgres
+auth: oidc
+redirect_path: /auth/openid/authentik
+
+env:
+  - name: VIKUNJA_SERVICE_PUBLICURL
+    value: "https://vikunja.${DOMAIN}"
+  - name: VIKUNJA_DATABASE_TYPE
+    value: "postgres"
+  - name: VIKUNJA_DATABASE_HOST
+    value: "vikunja-postgres"
+  - name: VIKUNJA_DATABASE_DATABASE
+    value: "vikunja"
+  - name: VIKUNJA_DATABASE_USER
+    value: "vikunja"
+  - name: VIKUNJA_DATABASE_PASSWORD
+    value: "${VIKUNJA_DB_PASSWORD}"
+  - name: VIKUNJA_SERVICE_JWTSECRET
+    secret: true
+
+volumes:
+  - path: files
+    mount: /app/vikunja/files
