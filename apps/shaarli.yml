@@ -1,0 +1,26 @@
+slug: shaarli
+name: Shaarli
+category: productivity
+description: Personal, minimalist bookmarking and link-sharing service with no database.
+homepage: https://shaarli.readthedocs.io
+source: https://github.com/shaarli/Shaarli
+
+image: ghcr.io/shaarli/shaarli
+version: "v0.16.5"
+arch: [amd64]
+
+port: 80
+mem_limit: 256m
+database: none
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /var/www/shaarli/data
+  - path: cache
+    mount: /var/www/shaarli/cache
+
+notes: |
+  No env vars to set up an admin account - the first visit to the
+  instance runs Shaarli's own web installer, which creates the admin
+  user interactively.

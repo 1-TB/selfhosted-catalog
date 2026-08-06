@@ -1,0 +1,38 @@
+slug: donetick
+name: Donetick
+category: productivity
+description: Self-hosted task and chore management for families and housemates.
+homepage: https://donetick.com
+source: https://github.com/donetick/donetick
+
+image: donetick/donetick
+version: "v0.1.76"
+arch: [amd64, arm64]
+
+port: 2021
+health_path: /api/v1/health
+mem_limit: 256m
+database: none
+auth: proxy
+
+env:
+  - name: DT_ENV
+    value: "selfhosted"
+  - name: DT_SQLITE_PATH
+    value: "/donetick-data/donetick.db"
+  - name: TZ
+    value: "Etc/UTC"
+  - name: DT_JWT_SECRET
+    secret: true
+
+volumes:
+  - path: data
+    mount: /donetick-data
+  - path: config
+    mount: /config
+
+notes: |
+  Upstream's own quick-start requires a selfhosted.yaml (based on the
+  template at config/selfhosted.yaml in the repo) placed in the /config
+  volume before first run, with jwt.secret changed from the placeholder.
+  DT_JWT_SECRET as an env var covers the same setting.

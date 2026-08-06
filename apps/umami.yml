@@ -1,0 +1,27 @@
+slug: umami
+name: Umami
+category: monitoring
+description: Privacy-focused, self-hosted web analytics, an alternative to Google Analytics.
+homepage: https://umami.is
+source: https://github.com/umami-software/umami
+
+image: ghcr.io/umami-software/umami
+version: "3.2.0"
+arch: [amd64, arm64]
+
+port: 3000
+health_path: /api/heartbeat
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: DATABASE_URL
+    value: "postgresql://umami:${UMAMI_DB_PASSWORD}@umami-postgres:5432/umami"
+  - name: APP_SECRET
+    secret: true
+
+notes: |
+  APP_SECRET must be a random string, generated once and kept stable -
+  changing it invalidates existing sessions. No native SSO in the open
+  source edition.
