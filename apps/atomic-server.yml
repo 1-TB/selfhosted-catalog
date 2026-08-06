@@ -1,0 +1,31 @@
+slug: atomic-server
+name: Atomic Server
+category: documents
+description: Self-contained knowledge graph database with documents, tables and full-text search.
+homepage: https://atomicdata.dev
+source: https://github.com/atomicdata-dev/atomic-server
+
+image: joepmeneer/atomic-server
+version: "v0.38.0"
+arch: [amd64]
+
+port: 9883
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: ATOMIC_DOMAIN
+    value: "atomic-server.${DOMAIN}"
+  - name: ATOMIC_SERVER_URL
+    value: "https://atomic-server.${DOMAIN}"
+
+volumes:
+  - path: data
+    mount: /atomic-storage
+
+notes: |
+  Single self-contained binary - no external database. First run needs
+  an admin agent set up at /setup; there's no username/password or
+  OIDC login of its own, so put a forward-auth proxy in front for
+  centralized SSO. Only publishes amd64 images.
