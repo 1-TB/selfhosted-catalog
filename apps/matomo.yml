@@ -1,0 +1,39 @@
+slug: matomo
+name: Matomo
+category: monitoring
+description: Open-source web analytics platform with full data ownership.
+homepage: https://matomo.org
+source: https://github.com/matomo-org/matomo
+
+image: matomo
+version: "5.12.0"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: mariadb
+auth: proxy
+
+env:
+  - name: MATOMO_DATABASE_HOST
+    value: matomo-mariadb
+  - name: MATOMO_DATABASE_ADAPTER
+    value: mysql
+  - name: MATOMO_DATABASE_TABLES_PREFIX
+    value: matomo_
+  - name: MATOMO_DATABASE_USERNAME
+    value: matomo
+  - name: MATOMO_DATABASE_PASSWORD
+    secret: true
+  - name: MATOMO_DATABASE_DBNAME
+    value: matomo
+
+volumes:
+  - path: data
+    mount: /var/www/html
+
+notes: |
+  MATOMO_DATABASE_* env vars pre-fill the database step, but first run
+  still walks through a browser setup wizard (admin account, site setup,
+  tracking code). No OIDC of its own in the free edition; SSO exists
+  only as a paid plugin.
