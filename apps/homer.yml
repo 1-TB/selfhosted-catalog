@@ -1,0 +1,27 @@
+slug: homer
+name: Homer
+category: utilities
+description: Static, YAML-configured homepage for your self-hosted services.
+homepage: https://github.com/bastienwirtz/homer
+source: https://github.com/bastienwirtz/homer
+
+image: b4bz/homer
+version: "v26.4.2"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 128m
+auth: proxy
+
+env:
+  - name: INIT_ASSETS
+    value: "1"
+
+volumes:
+  - path: config
+    mount: /www/assets
+
+notes: |
+  INIT_ASSETS=1 drops a starter config.yml and sample assets into the
+  config volume on first run if it's empty; edit that file to add your
+  own links, there's no admin UI for it.
