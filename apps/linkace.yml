@@ -1,0 +1,49 @@
+slug: linkace
+name: LinkAce
+category: archiving
+description: Bookmark archive manager with automatic backups to the Internet Archive.
+homepage: https://www.linkace.org
+source: https://github.com/Kovah/LinkAce
+
+image: linkace/linkace
+version: "v2.6.1"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: mariadb
+needs: [redis, meilisearch]
+auth: proxy
+
+env:
+  - name: APP_URL
+    value: "https://linkace.${DOMAIN}"
+  - name: APP_KEY
+    secret: true
+  - name: DB_CONNECTION
+    value: "mysql"
+  - name: DB_HOST
+    value: "linkace-mariadb"
+  - name: DB_DATABASE
+    value: "linkace"
+  - name: DB_USERNAME
+    value: "linkace"
+  - name: DB_PASSWORD
+    value: "${LINKACE_DB_PASSWORD}"
+  - name: REDIS_HOST
+    value: "linkace-redis"
+  - name: REDIS_PASSWORD
+    secret: true
+  - name: APP_SEARCH_DRIVER
+    value: "meilisearch"
+  - name: MEILISEARCH_HOST
+    value: "http://linkace-meilisearch:7700"
+  - name: MEILISEARCH_KEY
+    secret: true
+
+notes: |
+  Matches upstream's own production docker-compose, which pairs the app with
+  MariaDB, Redis and Meilisearch; APP_SEARCH_DRIVER can be set to "database"
+  to drop the Meilisearch dependency if that tradeoff is preferred. Supports
+  OAuth/OIDC SSO but the docs page describing its callback path returned 403
+  during research, so this entry uses proxy auth instead.

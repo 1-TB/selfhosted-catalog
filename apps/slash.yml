@@ -1,0 +1,19 @@
+slug: slash
+name: Slash
+category: productivity
+description: Bookmark and link-sharing platform for organizing and sharing links with a team.
+homepage: https://github.com/yourselfhosted/slash
+source: https://github.com/yourselfhosted/slash
+
+image: yourselfhosted/slash
+version: "0.5.3"
+arch: [amd64, arm64]
+
+port: 5231
+mem_limit: 512m
+database: none
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /var/opt/slash

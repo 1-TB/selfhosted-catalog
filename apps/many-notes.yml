@@ -1,0 +1,36 @@
+slug: many-notes
+name: Many Notes
+category: documents
+description: Simple markdown note-taking web application with built-in full-text search.
+homepage: https://github.com/brufdev/many-notes
+source: https://github.com/brufdev/many-notes
+
+image: brufdev/many-notes
+version: "0.16"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: APP_URL
+    value: "https://many-notes.${DOMAIN}"
+
+volumes:
+  - path: database
+    mount: /var/www/html/database/sqlite
+  - path: logs
+    mount: /var/www/html/storage/logs
+  - path: private
+    mount: /var/www/html/storage/app/private
+  - path: typesense
+    mount: /var/www/html/typesense
+
+notes: |
+  Bundles its own Typesense instance inside the container (persisted at
+  /var/www/html/typesense), so this is a single-container deployment despite
+  Typesense usually being a separate service. Supports per-provider OAuth
+  (GitHub, Google, GitLab, Azure, Keycloak, etc.) rather than a single
+  generic OIDC flow, so it's modeled here as proxy auth.
