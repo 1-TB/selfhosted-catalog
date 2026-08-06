@@ -1,0 +1,50 @@
+slug: karakeep
+name: Karakeep
+category: archiving
+description: Bookmark manager that archives, tags and full-text-searches saved pages.
+homepage: https://karakeep.app
+source: https://github.com/karakeep-app/karakeep
+
+image: ghcr.io/karakeep-app/karakeep
+version: "0.33.1"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+needs: [meilisearch, headless-chrome]
+auth: oidc
+redirect_path: /api/auth/callback/custom
+
+env:
+  - name: NEXTAUTH_URL
+    value: "https://karakeep.${DOMAIN}/"
+  - name: NEXTAUTH_SECRET
+    secret: true
+  - name: DATA_DIR
+    value: "/data"
+  - name: MEILI_ADDR
+    value: "http://karakeep-meilisearch:7700"
+  - name: MEILI_MASTER_KEY
+    secret: true
+  - name: BROWSER_WEB_URL
+    value: "http://karakeep-chrome:9222"
+  - name: OAUTH_WELLKNOWN_URL
+    secret: true
+    source: oidc_discovery_url
+  - name: OAUTH_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: OAUTH_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  Needs a Meilisearch container (search) and a headless-Chrome container
+  (screenshots/crawling) alongside the app itself; not a one-shot single
+  install. OAuth login uses NextAuth's generic "custom" provider, so the
+  callback registered with the identity provider is
+  /api/auth/callback/custom.

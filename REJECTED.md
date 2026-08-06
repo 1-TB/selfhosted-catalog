@@ -20,6 +20,7 @@ release tags should be moved into `apps/`.
 | RSS-Bridge | `rssbridge/rss-bridge` only publishes date-stamped tags (e.g. `2025-08-05`) plus `latest`/`latest-arch` floats. No semver or calver release tag to pin. |
 | Tiny Tiny RSS | Both `ghcr.io/tt-rss/tt-rss` and `ghcr.io/tt-rss/tt-rss-web-nginx` publish only `latest` and `sha-<commit>` tags. Nothing pinnable. |
 | JupyterLab (Jupyter Docker Stacks) | `quay.io/jupyter/base-notebook` (and siblings) publish only date-stamped tags, same problem as RSS-Bridge. No numbered release to pin. |
+| BookStack | The project itself publishes no container image; the only actively maintained image is the third-party `linuxserver/bookstack` rebuild. No official namespace to point at. |
 
 ## Not rejections
 

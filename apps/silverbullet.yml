@@ -1,0 +1,27 @@
+slug: silverbullet
+name: SilverBullet
+category: productivity
+description: Markdown-based personal knowledge base and note-taking web app.
+homepage: https://silverbullet.md
+source: https://github.com/silverbulletmd/silverbullet
+
+image: ghcr.io/silverbulletmd/silverbullet
+version: "2.10.0"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: SB_USER
+    secret: true
+
+volumes:
+  - path: space
+    mount: /space
+
+notes: |
+  SB_USER is a single "username:password" pair for built-in HTTP basic
+  auth, not a real user system or OIDC - put a proxy in front if more
+  than one identity is needed.
