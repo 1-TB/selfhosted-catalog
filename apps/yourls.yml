@@ -1,0 +1,41 @@
+slug: yourls
+name: YOURLS
+category: utilities
+description: Self-hosted URL shortener with click stats and a plugin system.
+homepage: https://yourls.org
+source: https://github.com/YOURLS/YOURLS
+
+image: yourls
+version: "1.10.4"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 256m
+database: mariadb
+auth: proxy
+
+env:
+  - name: YOURLS_SITE
+    value: "https://yourls.${DOMAIN}"
+  - name: YOURLS_USER
+    value: admin
+  - name: YOURLS_PASS
+    secret: true
+  - name: YOURLS_DB_HOST
+    value: "yourls-mariadb"
+  - name: YOURLS_DB_USER
+    value: yourls
+  - name: YOURLS_DB_PASS
+    value: "${YOURLS_DB_PASSWORD}"
+  - name: YOURLS_DB_NAME
+    value: yourls
+
+volumes:
+  - path: user
+    mount: /var/www/html/user
+
+notes: |
+  All URL data lives in the database; the /var/www/html/user volume only
+  persists custom plugins, pages and languages installed through the admin
+  UI. YOURLS_USER/YOURLS_PASS is its own single-account login, not a proper
+  multi-user auth system, hence auth: proxy.

@@ -1,0 +1,45 @@
+slug: bytestash
+name: ByteStash
+category: developer
+description: Self-hosted code snippet manager with search, tags and sharing.
+homepage: https://github.com/jordan-dalby/ByteStash
+source: https://github.com/jordan-dalby/ByteStash
+
+image: ghcr.io/jordan-dalby/bytestash
+version: "1.5.12"
+arch: [amd64, arm64]
+
+port: 5000
+mem_limit: 512m
+auth: oidc
+redirect_path: /api/auth/oidc/callback
+
+env:
+  - name: BASE_PATH
+    value: ""
+  - name: JWT_SECRET
+    secret: true
+  - name: TOKEN_EXPIRY
+    value: "24h"
+  - name: ALLOW_NEW_ACCOUNTS
+    value: "false"
+  - name: OIDC_ENABLED
+    value: "true"
+  - name: OIDC_ISSUER_URL
+    secret: true
+    source: oidc_issuer
+  - name: OIDC_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: OIDC_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+
+volumes:
+  - path: data
+    mount: /data/snippets
+
+notes: |
+  SQLite storage under /data/snippets. ALLOW_NEW_ACCOUNTS is set false so
+  the only way in is the OIDC login once an identity provider is wired up;
+  flip it to allow the built-in username/password signup instead.

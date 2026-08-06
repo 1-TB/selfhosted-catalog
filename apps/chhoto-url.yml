@@ -1,0 +1,33 @@
+slug: chhoto-url
+name: Chhoto URL
+category: utilities
+description: Minimal, fast URL shortener with SQLite storage.
+homepage: https://chhoto.link
+source: https://github.com/SinTan1729/chhoto-url
+
+image: sintan1729/chhoto-url
+version: "7.5"
+arch: [amd64, arm64]
+
+port: 4567
+mem_limit: 256m
+auth: proxy
+
+env:
+  - name: CHHOTO_PASSWORD
+    secret: true
+  - name: CHHOTO_SITE_URL
+    value: "https://chhoto-url.${DOMAIN}"
+  - name: CHHOTO_DB_URL
+    value: "/data/urls.sqlite"
+  - name: CHHOTO_SQLITE_USE_WAL_MODE
+    value: "True"
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  Single-password admin auth, sent over plain HTTP by the app itself -
+  keep it behind TLS. Leaving CHHOTO_PASSWORD unset makes shortening
+  public, so it must be set for a private instance.
