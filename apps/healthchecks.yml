@@ -1,0 +1,41 @@
+slug: healthchecks
+name: Healthchecks
+category: monitoring
+description: Cron job and scheduled task monitoring with dead man's switches.
+homepage: https://healthchecks.io
+source: https://github.com/healthchecks/healthchecks
+
+image: healthchecks/healthchecks
+version: "v4.3"
+arch: [amd64, arm64]
+
+port: 8000
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: DB
+    value: "postgres"
+  - name: DB_HOST
+    value: "healthchecks-postgres"
+  - name: DB_NAME
+    value: "healthchecks"
+  - name: DB_USER
+    value: "healthchecks"
+  - name: DB_PASSWORD
+    secret: true
+  - name: ALLOWED_HOSTS
+    value: "healthchecks.${DOMAIN}"
+  - name: SITE_ROOT
+    value: "https://healthchecks.${DOMAIN}"
+  - name: SECRET_KEY
+    secret: true
+  - name: REMOTE_USER_HEADER
+    value: "Remote-User"
+
+notes: |
+  REMOTE_USER_HEADER trusts a username forwarded by a proxy for login;
+  only set it if the proxy in front strips any client-supplied value
+  with that header name. Superuser creation is a one-off exec:
+  manage.py createsuperuser.
