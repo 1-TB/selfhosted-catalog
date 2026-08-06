@@ -1,0 +1,30 @@
+slug: baserow
+name: Baserow
+category: productivity
+description: No-code database and spreadsheet hybrid, an open-source Airtable alternative.
+homepage: https://baserow.io
+source: https://github.com/baserow/baserow
+
+image: baserow/baserow
+version: "2.3.3"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: BASEROW_PUBLIC_URL
+    value: "https://baserow.${DOMAIN}"
+
+volumes:
+  - path: data
+    mount: /baserow/data
+
+notes: |
+  The published image bundles its own Postgres, Redis, backend,
+  frontend and Caddy in a single container - that's why database and
+  needs are empty. BASEROW_PUBLIC_URL must exactly match the scheme and
+  host used to reach the instance, or Baserow treats requests as
+  belonging to a published application instead of the builder UI.

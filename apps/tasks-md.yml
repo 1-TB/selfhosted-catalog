@@ -1,0 +1,31 @@
+slug: tasks-md
+name: Tasks.md
+category: productivity
+description: Self-hosted, Markdown file based kanban task management board.
+homepage: https://github.com/BaldissaraMatheus/Tasks.md
+source: https://github.com/BaldissaraMatheus/Tasks.md
+
+image: baldissaramatheus/tasks.md
+version: "3.3"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 256m
+database: none
+auth: proxy
+
+env:
+  - name: PUID
+    value: "1000"
+  - name: PGID
+    value: "1000"
+
+volumes:
+  - path: tasks
+    mount: /tasks
+  - path: config
+    mount: /config
+
+notes: |
+  File-based, no database - every lane is a directory and every card a
+  Markdown file under the tasks volume. No login of its own.
