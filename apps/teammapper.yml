@@ -1,0 +1,39 @@
+slug: teammapper
+name: TeamMapper
+category: productivity
+description: Collaborative real-time mindmapping tool.
+homepage: https://github.com/b310-digital/teammapper
+source: https://github.com/b310-digital/teammapper
+
+image: ghcr.io/b310-digital/teammapper
+version: "v0.2.9-3"
+arch: [amd64, arm64]
+
+port: 3000
+database: postgres
+auth: proxy
+
+env:
+  - name: MODE
+    value: "PROD"
+  - name: BINDING
+    value: "0.0.0.0"
+  - name: POSTGRES_HOST
+    value: "teammapper-postgres"
+  - name: POSTGRES_PORT
+    value: "5432"
+  - name: POSTGRES_DATABASE
+    value: "teammapper"
+  - name: POSTGRES_USER
+    value: "teammapper"
+  - name: POSTGRES_PASSWORD
+    value: "${TEAMMAPPER_DB_PASSWORD}"
+  - name: POSTGRES_SSL
+    value: "false"
+  - name: JWT_SECRET
+    secret: true
+
+notes: |
+  No user accounts of its own; anyone with a map's link can view and
+  edit it. Put a proxy in front if that's not acceptable. Inactive maps
+  are deleted after DELETE_AFTER_DAYS (default 30).

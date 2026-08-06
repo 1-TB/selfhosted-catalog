@@ -1,0 +1,45 @@
+slug: glitchtip
+name: GlitchTip
+category: monitoring
+description: Sentry-compatible error tracking and performance monitoring.
+homepage: https://glitchtip.com
+source: https://gitlab.com/glitchtip/glitchtip
+
+image: glitchtip/glitchtip
+version: "6.2.3"
+arch: [amd64, arm64]
+
+port: 8000
+database: postgres
+needs: [redis]
+auth: oidc
+redirect_path: /accounts/authentik/login/callback/
+
+env:
+  - name: GLITCHTIP_DOMAIN
+    value: "https://glitchtip.${DOMAIN}"
+  - name: SECRET_KEY
+    secret: true
+  - name: DATABASE_URL
+    value: "postgres://glitchtip:${GLITCHTIP_DB_PASSWORD}@glitchtip-postgres:5432/glitchtip"
+  - name: VALKEY_URL
+    value: "redis://glitchtip-redis:6379"
+  - name: SERVER_ROLE
+    value: "all_in_one"
+  - name: EMAIL_URL
+    value: "consolemail://"
+  - name: DEFAULT_FROM_EMAIL
+    value: "glitchtip@${DOMAIN}"
+
+volumes:
+  - path: uploads
+    mount: /code/uploads
+
+notes: |
+  SERVER_ROLE=all_in_one runs web and worker in the one container, per
+  upstream's own compose.sample.yml; no separate worker container
+  needed. OIDC is added from the admin UI (Social Applications) rather
+  than env vars, and the provider slug is whatever the admin types in;
+  use "authentik" so it matches the redirect_path above. EMAIL_URL
+  defaults to console output (no real mail sent) until pointed at real
+  SMTP.

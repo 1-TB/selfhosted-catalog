@@ -1,0 +1,25 @@
+slug: trilium
+name: Trilium
+category: documents
+description: Hierarchical note-taking app for building a personal knowledge base.
+homepage: https://triliumnotes.org
+source: https://github.com/TriliumNext/Trilium
+
+image: ghcr.io/triliumnext/trilium
+version: "v0.104.1"
+arch: [amd64, arm64]
+
+port: 8080
+auth: proxy
+
+env:
+  - name: TRILIUM_DATA_DIR
+    value: "/home/node/trilium-data"
+
+volumes:
+  - path: data
+    mount: /home/node/trilium-data
+
+notes: |
+  Auth is a single shared password set on first run through the web UI;
+  no OIDC support upstream.

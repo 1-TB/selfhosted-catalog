@@ -1,0 +1,37 @@
+slug: fusion
+name: Fusion
+category: feeds
+description: Lightweight self-hosted RSS/Atom feed reader.
+homepage: https://github.com/0x2E/fusion
+source: https://github.com/0x2E/fusion
+
+image: ghcr.io/0x2e/fusion
+version: "1.2.1"
+arch: [amd64, arm64]
+
+port: 8080
+auth: oidc
+redirect_path: /api/oidc/callback
+
+env:
+  - name: FUSION_PASSWORD
+    secret: true
+  - name: FUSION_OIDC_ISSUER
+    secret: true
+    source: oidc_issuer
+  - name: FUSION_OIDC_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: FUSION_OIDC_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+  - name: FUSION_OIDC_REDIRECT_URI
+    value: "https://fusion.${DOMAIN}/api/oidc/callback"
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  FUSION_PASSWORD is a required fallback login even when OIDC is
+  configured; there is no option to disable password auth entirely.
