@@ -21,6 +21,11 @@ release tags should be moved into `apps/`.
 | Tiny Tiny RSS | Both `ghcr.io/tt-rss/tt-rss` and `ghcr.io/tt-rss/tt-rss-web-nginx` publish only `latest` and `sha-<commit>` tags. Nothing pinnable. |
 | JupyterLab (Jupyter Docker Stacks) | `quay.io/jupyter/base-notebook` (and siblings) publish only date-stamped tags, same problem as RSS-Bridge. No numbered release to pin. |
 | BookStack | The project itself publishes no container image; the only actively maintained image is the third-party `linuxserver/bookstack` rebuild. No official namespace to point at. |
+| RSSHub | `ghcr.io/diygod/rsshub` only publishes commit-hash tags (e.g. `c92f107...`) and date-stamped tags (e.g. `2026-08-06`) plus a floating `latest`/`chromium-bundled`. Nothing semver to pin. |
+| Recipya | No official image resolves at all - `reaper47/recipya` returns no tags on Docker Hub or GHCR. |
+| TinyFeed | `thebigroomxxl/tinyfeed` resolves fine, but the app itself is a static-site generator (or a daemon that periodically regenerates a static file), not a web server - its own docs say a separate web server container (Caddy/nginx) is required to actually serve the output. Doesn't fit the one-container-behind-a-subdomain model. |
+| SiYuan | `b3log/siyuan` resolves fine, but since v3.7.0 the container requires the workspace path and access code to be passed as command-line arguments to an explicit `serve` subcommand, not environment variables. This schema has no field for a command override, so modeling it here would mean guessing whether an env-var equivalent is honored. |
+| Wekan | `wekanteam/wekan`/`ghcr.io/wekan/wekan` resolves fine, but real-time updates require MongoDB running with a single-node replica set (`--replSet`) and a `MONGO_OPLOG_URL`, not a plain mongo sidecar - upstream's own current docker-compose has moved to bundling FerretDB instead of plain MongoDB precisely because of this. Too special-cased for the single-database-sidecar model this catalogue assumes for `database: mongo`. |
 
 ## Not rejections
 

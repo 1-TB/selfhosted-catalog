@@ -1,0 +1,35 @@
+slug: blinko
+name: Blinko
+category: documents
+description: Self-hosted note-taking app for quick capture and card-style notes.
+homepage: https://blinko.space
+source: https://github.com/blinkospace/blinko
+
+image: blinkospace/blinko
+version: "1.8.8"
+arch: [amd64, arm64]
+
+port: 1111
+database: postgres
+auth: oidc
+redirect_path: /api/auth/callback/authentik
+
+env:
+  - name: NEXTAUTH_URL
+    value: "https://blinko.${DOMAIN}"
+  - name: NEXTAUTH_SECRET
+    secret: true
+  - name: NEXT_PUBLIC_BASE_URL
+    value: "https://blinko.${DOMAIN}"
+  - name: DATABASE_URL
+    value: "postgresql://blinko:${BLINKO_DB_PASSWORD}@blinko-postgres:5432/blinko"
+
+volumes:
+  - path: data
+    mount: /app/.blinko
+
+notes: |
+  OIDC is configured entirely from the admin web UI (Settings > SSO),
+  not env vars, and the callback path is /api/auth/callback/<Provider
+  ID> where Provider ID is whatever the admin types in. Use "authentik"
+  as the Provider ID so it matches the redirect_path above.
