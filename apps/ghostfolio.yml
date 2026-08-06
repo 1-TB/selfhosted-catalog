@@ -1,0 +1,48 @@
+slug: ghostfolio
+name: Ghostfolio
+category: productivity
+description: Open source wealth management app for tracking stocks, ETFs and crypto.
+homepage: https://ghostfol.io
+source: https://github.com/ghostfolio/ghostfolio
+
+image: ghostfolio/ghostfolio
+version: "3.43.0"
+arch: [amd64, arm64]
+
+port: 3333
+mem_limit: 1g
+database: postgres
+needs: [redis]
+auth: oidc
+redirect_path: /api/auth/oidc/callback
+
+env:
+  - name: ENABLE_FEATURE_AUTH_OIDC
+    value: "true"
+  - name: OIDC_ISSUER
+    secret: true
+    source: oidc_issuer
+  - name: OIDC_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: OIDC_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+  - name: ACCESS_TOKEN_SALT
+    secret: true
+  - name: JWT_SECRET_KEY
+    secret: true
+  - name: DATABASE_URL
+    value: "postgresql://ghostfolio:${GHOSTFOLIO_DB_PASSWORD}@ghostfolio-postgres:5432/ghostfolio?connect_timeout=300"
+  - name: REDIS_HOST
+    value: "ghostfolio-redis"
+  - name: REDIS_PORT
+    value: "6379"
+  - name: REDIS_PASSWORD
+    secret: true
+
+notes: |
+  Redis requires a password (the official compose file refuses to start
+  it without REDIS_PASSWORD set). ACCESS_TOKEN_SALT and JWT_SECRET_KEY
+  must both be random strings generated once and never changed after
+  first run, or existing sessions/API keys break.

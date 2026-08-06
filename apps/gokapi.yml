@@ -1,0 +1,28 @@
+slug: gokapi
+name: Gokapi
+category: files
+description: Lightweight file-sharing server with expiring links and download limits.
+homepage: https://gokapi.readthedocs.io
+source: https://github.com/Forceu/Gokapi
+
+image: f0rc3/gokapi
+version: "v2.2.4"
+arch: [amd64, arm64]
+
+port: 53842
+mem_limit: 512m
+auth: oidc
+redirect_path: /oauth-callback
+
+volumes:
+  - path: data
+    mount: /app/data
+  - path: config
+    mount: /app/config
+
+notes: |
+  SQLite/local storage only, no external database. First run needs a
+  visit to /setup to finish the configuration wizard, including the
+  OIDC client ID/secret/provider URL if SSO is wanted - none of that is
+  settable via env vars, but the callback path it registers is always
+  /oauth-callback regardless of provider.
