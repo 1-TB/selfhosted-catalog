@@ -1,0 +1,31 @@
+slug: wallos
+name: Wallos
+category: productivity
+description: Lightweight personal subscription tracker with statistics and notifications.
+homepage: https://wallosapp.com
+source: https://github.com/ellite/Wallos
+
+image: bellamy/wallos
+version: "5.4.2"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+auth: oidc
+redirect_path: /index.php
+
+env:
+  - name: TZ
+    value: "Etc/UTC"
+
+volumes:
+  - path: db
+    mount: /var/www/html/db
+  - path: logos
+    mount: /var/www/html/images/uploads/logos
+
+notes: |
+  SQLite only, no external database. OIDC is configured entirely from
+  the Admin page in-app (issuer, client ID/secret, endpoints), not env
+  vars; the fixed redirect/callback URL it expects is the app root,
+  https://wallos.${DOMAIN}/index.php.

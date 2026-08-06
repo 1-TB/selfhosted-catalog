@@ -1,0 +1,31 @@
+slug: papra
+name: Papra
+category: documents
+description: Minimalist document storage and archiving platform.
+homepage: https://papra.app
+source: https://github.com/papra-hq/papra
+
+image: ghcr.io/papra-hq/papra
+version: "26.6.1-rootless"
+arch: [amd64, arm64]
+
+port: 1221
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: APP_BASE_URL
+    value: "https://papra.${DOMAIN}/"
+  - name: AUTH_SECRET
+    secret: true
+
+volumes:
+  - path: app-data
+    mount: /app/app-data
+
+notes: |
+  SQLite and local filesystem storage by default; S3-compatible object
+  storage is supported but optional. Custom OIDC providers are
+  configured as a JSON blob (AUTH_PROVIDERS_CUSTOMS) via better-auth,
+  and the callback path is per-provider-ID rather than fixed, so put a
+  proxy in front instead of guessing a redirect path.

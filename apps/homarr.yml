@@ -1,0 +1,40 @@
+slug: homarr
+name: Homarr
+category: utilities
+description: Sleek, modern homepage dashboard with many service integrations.
+homepage: https://homarr.dev
+source: https://github.com/homarr-labs/homarr
+
+image: ghcr.io/homarr-labs/homarr
+version: "v1.73.0"
+arch: [amd64, arm64]
+
+port: 7575
+mem_limit: 512m
+auth: oidc
+redirect_path: /api/auth/callback/oidc
+
+env:
+  - name: SECRET_ENCRYPTION_KEY
+    secret: true
+  - name: AUTH_PROVIDERS
+    value: "oidc"
+  - name: AUTH_OIDC_ISSUER
+    secret: true
+    source: oidc_issuer
+  - name: AUTH_OIDC_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: AUTH_OIDC_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+
+volumes:
+  - path: appdata
+    mount: /appdata
+
+notes: |
+  SECRET_ENCRYPTION_KEY must be a 64-character hex string (openssl rand
+  -hex 32). No external database. Optionally bind-mounting the Docker
+  socket enables container-discovery widgets, but that's a capability
+  grant rather than persistent data so it isn't modeled here.
