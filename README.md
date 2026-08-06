@@ -93,6 +93,10 @@ Things that will get an entry rejected:
 Corrections are as welcome as additions. A wrong port or a stale env var is
 worse than a missing entry, because it looks like it works.
 
+[REJECTED.md](REJECTED.md) lists apps that were looked at and left out, with
+the reason. Check it before adding something, and add to it if you rule
+something out, so the same dead ends don't get researched twice.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
