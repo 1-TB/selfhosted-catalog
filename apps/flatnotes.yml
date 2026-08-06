@@ -1,0 +1,32 @@
+slug: flatnotes
+name: flatnotes
+category: documents
+description: Self-hosted note-taking app that stores notes as plain markdown files.
+homepage: https://github.com/dullage/flatnotes
+source: https://github.com/dullage/flatnotes
+
+image: dullage/flatnotes
+version: "v5.5.4"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 256m
+auth: proxy
+
+env:
+  - name: FLATNOTES_AUTH_TYPE
+    value: "password"
+  - name: FLATNOTES_USERNAME
+    secret: true
+  - name: FLATNOTES_PASSWORD
+    secret: true
+  - name: FLATNOTES_SECRET_KEY
+    secret: true
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  Notes are stored as plain .md files under the data volume, with a
+  search index alongside them. No database.
