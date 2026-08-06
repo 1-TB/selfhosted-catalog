@@ -1,0 +1,36 @@
+slug: redmine
+name: Redmine
+category: productivity
+description: Flexible, mature project management and issue tracking web app.
+homepage: https://www.redmine.org
+source: https://github.com/redmine/redmine
+
+image: redmine
+version: "7.0.0"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: REDMINE_DB_POSTGRES
+    value: "redmine-postgres"
+  - name: REDMINE_DB_USERNAME
+    value: "redmine"
+  - name: REDMINE_DB_PASSWORD
+    value: "${REDMINE_DB_PASSWORD}"
+  - name: REDMINE_DB_DATABASE
+    value: "redmine"
+  - name: REDMINE_SECRET_KEY_BASE
+    secret: true
+
+volumes:
+  - path: files
+    mount: /usr/src/redmine/files
+
+notes: |
+  OpenID Connect/OAuth login needs a third-party plugin (e.g.
+  redmine_omniauth_oidc); core Redmine only does local accounts, hence
+  proxy auth here.

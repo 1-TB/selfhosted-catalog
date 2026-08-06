@@ -1,0 +1,54 @@
+slug: documenso
+name: Documenso
+category: documents
+description: Open source document signing platform, an alternative to DocuSign.
+homepage: https://documenso.com
+source: https://github.com/documenso/documenso
+
+image: documenso/documenso
+version: "v2.16.0"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: postgres
+auth: oidc
+redirect_path: /api/auth/callback/oidc
+
+env:
+  - name: NEXT_PUBLIC_WEBAPP_URL
+    value: "https://documenso.${DOMAIN}"
+  - name: NEXT_PRIVATE_INTERNAL_WEBAPP_URL
+    value: "http://localhost:3000"
+  - name: NEXTAUTH_SECRET
+    secret: true
+  - name: NEXT_PRIVATE_ENCRYPTION_KEY
+    secret: true
+  - name: NEXT_PRIVATE_ENCRYPTION_SECONDARY_KEY
+    secret: true
+  - name: NEXT_PRIVATE_DATABASE_URL
+    value: "postgresql://documenso:${DOCUMENSO_DB_PASSWORD}@documenso-postgres:5432/documenso"
+  - name: NEXT_PRIVATE_SMTP_FROM_ADDRESS
+    value: "documenso@${DOMAIN}"
+  - name: NEXT_PRIVATE_SMTP_FROM_NAME
+    value: "Documenso"
+  - name: NEXT_PRIVATE_OIDC_WELL_KNOWN
+    value: "https://auth.${DOMAIN}/application/o/documenso/.well-known/openid-configuration"
+  - name: NEXT_PRIVATE_OIDC_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: NEXT_PRIVATE_OIDC_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+
+volumes:
+  - path: cert
+    mount: /opt/documenso
+
+notes: |
+  Needs a PKCS#12 signing certificate named cert.p12 placed in the
+  mounted directory before first run (a self-signed one works for
+  testing) - there's no way around generating one first. Both
+  encryption keys must be at least 32 characters. Real SMTP relay
+  settings (NEXT_PRIVATE_SMTP_HOST/PORT/USERNAME/PASSWORD) are also
+  required or signup/verification emails silently never send.

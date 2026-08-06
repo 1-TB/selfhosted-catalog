@@ -1,0 +1,46 @@
+slug: mayan-edms
+name: Mayan EDMS
+category: documents
+description: Document management system with OCR, tagging and full-text search.
+homepage: https://www.mayan-edms.com
+source: https://gitlab.com/mayan-edms/mayan-edms
+
+image: mayanedms/mayanedms
+version: "v4.11.5"
+arch: [amd64, arm64]
+
+port: 8000
+mem_limit: 512m
+database: postgres
+needs: [redis, rabbitmq]
+auth: proxy
+
+env:
+  - name: MAYAN_DATABASES
+    value: "{'default':{'ENGINE':'django.db.backends.postgresql','NAME':'mayan','PASSWORD':'${MAYAN_DB_PASSWORD}','USER':'mayan','HOST':'mayan-postgres'}}"
+  - name: MAYAN_CELERY_BROKER_URL
+    value: "amqp://mayan:${MAYAN_RABBITMQ_PASSWORD}@mayan-rabbitmq:5672/mayan"
+  - name: MAYAN_CELERY_RESULT_BACKEND
+    value: "redis://mayan-redis:6379/1"
+  - name: MAYAN_LOCK_MANAGER_BACKEND
+    value: "mayan.apps.lock_manager.backends.redis_lock.RedisLock"
+  - name: MAYAN_LOCK_MANAGER_BACKEND_ARGUMENTS
+    value: "{'redis_url':'redis://mayan-redis:6379/2'}"
+
+volumes:
+  - path: data
+    mount: /var/lib/mayan
+
+notes: |
+  This is upstream's "all_in_one" profile: one container running the
+  web frontend and all Celery workers together, per their own
+  docker-compose.yml, rather than splitting workers into their own
+  containers. RabbitMQ has no default guest access from outside
+  localhost, so MAYAN_RABBITMQ_PASSWORD must match whatever the
+  rabbitmq sidecar is given. Has its own OIDC support
+  (authentication_oidc, added in 4.4) but it's configured through a
+  Python-dict-shaped MAYAN_AUTHENTICATION_BACKEND_ARGUMENTS setting
+  rather than plain client-id/secret env vars, so it isn't modeled
+  as auth: oidc here - put a proxy in front instead. OCR and thumbnail
+  generation are memory-hungry; watch actual usage and raise mem_limit
+  if it gets OOM-killed.
