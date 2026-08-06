@@ -1,0 +1,46 @@
+slug: coder
+name: Coder
+category: developer
+description: Self-hosted remote development environments, provisioned in your own infrastructure.
+homepage: https://coder.com
+source: https://github.com/coder/coder
+
+image: ghcr.io/coder/coder
+version: "v2.28.3"
+arch: [amd64, arm64]
+
+port: 7080
+mem_limit: 2g
+database: postgres
+auth: oidc
+redirect_path: /api/v2/users/oidc/callback
+
+env:
+  - name: CODER_ACCESS_URL
+    value: "https://coder.${DOMAIN}"
+  - name: CODER_HTTP_ADDRESS
+    value: "0.0.0.0:7080"
+  - name: CODER_PG_CONNECTION_URL
+    value: "postgres://coder:${CODER_DB_PASSWORD}@coder-postgres:5432/coder?sslmode=disable"
+  - name: CODER_OIDC_ISSUER_URL
+    secret: true
+    source: oidc_issuer
+  - name: CODER_OIDC_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: CODER_OIDC_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+
+volumes:
+  - path: home
+    mount: /home/coder
+
+notes: |
+  Needs the docker socket mounted (a privileged bind, not one of the
+  paths above) so it can provision workspace containers - consider a
+  read-only socket proxy in front of it. CODER_ACCESS_URL must be a
+  real externally-reachable URL, not localhost. CODER_OIDC_EMAIL_DOMAIN
+  restricts OIDC sign-in to specific email domains and has to be set by
+  hand; there's no generic value for it. Docs recommend 2+ CPU and 4GB+
+  RAM for the host.

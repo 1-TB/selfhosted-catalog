@@ -26,6 +26,9 @@ release tags should be moved into `apps/`.
 | TinyFeed | `thebigroomxxl/tinyfeed` resolves fine, but the app itself is a static-site generator (or a daemon that periodically regenerates a static file), not a web server - its own docs say a separate web server container (Caddy/nginx) is required to actually serve the output. Doesn't fit the one-container-behind-a-subdomain model. |
 | SiYuan | `b3log/siyuan` resolves fine, but since v3.7.0 the container requires the workspace path and access code to be passed as command-line arguments to an explicit `serve` subcommand, not environment variables. This schema has no field for a command override, so modeling it here would mean guessing whether an env-var equivalent is honored. |
 | Wekan | `wekanteam/wekan`/`ghcr.io/wekan/wekan` resolves fine, but real-time updates require MongoDB running with a single-node replica set (`--replSet`) and a `MONGO_OPLOG_URL`, not a plain mongo sidecar - upstream's own current docker-compose has moved to bundling FerretDB instead of plain MongoDB precisely because of this. Too special-cased for the single-database-sidecar model this catalogue assumes for `database: mongo`. |
+| OpenSign | `opensign/opensignserver` and `opensign/opensign` only publish a floating `main` tag - nothing pinnable. Even setting that aside, a real deployment is four containers (server, client, MongoDB, Caddy reverse proxy), well past this catalogue's one-extra-service model. |
+| Selfoss | No official Docker image. The project's docs and repo only cover uploading files to a webserver or building from source with Composer/npm; no Docker Hub or GHCR namespace is published. |
+| Docspell | Resolves fine (`docspell/restserver`, `docspell/joex`) but a real deployment needs the REST server, a separate job-executor (`joex`) container, and Solr for full-text search, on top of Postgres - two extra services beyond one database, past what `needs:` is meant to model here. |
 
 ## Not rejections
 
