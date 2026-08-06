@@ -40,8 +40,10 @@ release tags should be moved into `apps/`.
 | LinkStack | `linkstackorg/linkstack` publishes no numbered release tags on Docker Hub - just `latest`, `beta`, `V4`, `laravel12`, `unraid` and separate per-arch tags (`amd64`, `arm64v8`, `arm32v6`, `arm32v7`) instead of one multi-arch manifest per version. Nothing pinnable that also carries both architectures. |
 | Zammad | `zammad/zammad-docker-compose` resolves pinnable tags and multi-arch, but it's not a single app container - the real deployment splits the same image across railsserver/scheduler/websocket/nginx roles plus Postgres, Elasticsearch and Redis. Three extra services beyond one database, well past what `needs:` is meant to model. |
 | TimeTagger | `almarklein/timetagger` returns no tags at all from the registry - either the project doesn't publish to that namespace or distributes some other way. Didn't chase down the correct location this run. |
-
-## Not rejections
+| NetAlertX | `jokobsk/netalertx` / `ghcr.io/netalertx/netalertx` resolve fine (pinnable tags, amd64+arm64) and it has its own web UI, but its whole purpose is ARP/nmap scanning of the LAN, and upstream's own compose file requires `network_mode: host` plus `NET_ADMIN`/`NET_RAW`/`NET_BIND_SERVICE` capabilities to do it - neither fits this schema's one-container-on-a-bridge-network-behind-a-proxy model. Unlike Pi-hole, where the web UI works fully without host networking, NetAlertX's core feature (device discovery) is what needs it. |
+| UpSnap | `seriousm4x/upsnap` resolves fine (pinnable tags, amd64+arm64) with its own auth, but its own README's Docker instructions lead with `docker run --network=host` and explain that its two core features - sending WoL magic packets and nmap scanning - need host networking to reach the LAN. Same host-networking mismatch as NetAlertX. |
+| WatchYourLAN | `aceberg/watchyourlan` resolves fine (pinnable tags, amd64+arm64), but its compose file sets `network_mode: host` because ARP-scanning the LAN needs it - same reason as NetAlertX and UpSnap. |
+| Papermerge | `papermerge/papermerge:3.5.3` resolves fine (amd64 only) - note the registry's `latest` resolver is fooled by `3.6.0aN` tags into thinking they're newer stable releases; they're alphas and `3.5.3` is the real latest. Regardless, a real deployment needs Postgres, Redis, and a separate OCR-worker container - two extra services beyond one database, past what `needs:` is meant to model. |
 
 Two things that look like rejections but aren't:
 

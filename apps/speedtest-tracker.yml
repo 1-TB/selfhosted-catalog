@@ -1,0 +1,37 @@
+slug: speedtest-tracker
+name: Speedtest Tracker
+category: network
+description: Tracks internet speed and uptime over time with historical charts.
+homepage: https://speedtest-tracker.dev
+source: https://github.com/alexjustesen/speedtest-tracker
+
+image: lscr.io/linuxserver/speedtest-tracker
+version: "version-v1.10.0"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: PUID
+    value: "1000"
+  - name: PGID
+    value: "1000"
+  - name: APP_KEY
+    secret: true
+  - name: APP_URL
+    value: "https://speedtest-tracker.${DOMAIN}"
+  - name: DB_CONNECTION
+    value: "sqlite"
+
+volumes:
+  - path: config
+    mount: /config
+
+notes: |
+  APP_KEY must be a generated Laravel key (`base64:...`, e.g. via
+  `openssl rand -base64 32`) - the app refuses to boot without one.
+  Default database is SQLite inside the config volume; set
+  DB_CONNECTION to mariadb/postgres to use an external one instead.

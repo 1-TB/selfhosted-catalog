@@ -1,0 +1,23 @@
+slug: liwan
+name: Liwan
+category: monitoring
+description: Lightweight, privacy-first web analytics with no database to set up.
+homepage: https://liwan.dev
+source: https://github.com/explodingcamera/liwan
+
+image: ghcr.io/explodingcamera/liwan
+version: "1.6.0"
+arch: [amd64, arm64]
+
+port: 9042
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: LIWAN_BASE_URL
+    value: "https://liwan.${DOMAIN}"
+
+volumes:
+  - path: data
+    mount: /data
