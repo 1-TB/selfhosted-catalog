@@ -1,0 +1,39 @@
+slug: homebox
+name: HomeBox
+category: productivity
+description: Home inventory and asset tracker.
+homepage: https://homebox.software
+source: https://github.com/sysadminsmedia/homebox
+
+image: ghcr.io/sysadminsmedia/homebox
+version: "0.21.0"
+arch: [amd64, arm64]
+
+port: 7745
+mem_limit: 256m
+auth: oidc
+redirect_path: /api/v1/users/login/oidc/callback
+
+env:
+  - name: HBOX_AUTH_API_KEY_PEPPER
+    secret: true
+  - name: HBOX_OIDC_ENABLED
+    value: "true"
+  - name: HBOX_OIDC_ISSUER_URL
+    secret: true
+    source: oidc_issuer
+  - name: HBOX_OIDC_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: HBOX_OIDC_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  SQLite by default (no database: entry needed); Postgres is only used if
+  the HBOX_DATABASE_DRIVER/HBOX_DATABASE_POSTGRES_* vars are set instead.
+  Upstream reports idle memory under 50MB for the whole container.
