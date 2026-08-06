@@ -1,0 +1,26 @@
+slug: olivetin
+name: OliveTin
+category: automation
+description: Safe, simple web access to predefined shell commands.
+homepage: https://www.olivetin.app
+source: https://github.com/OliveTin/OliveTin
+
+image: jamesread/olivetin
+version: "3000.18.1"
+arch: [amd64, arm64]
+
+port: 1337
+mem_limit: 256m
+auth: proxy
+
+volumes:
+  - path: config
+    mount: /config
+
+notes: |
+  Everything is driven by a config.yaml dropped into the config volume,
+  defining which shell commands are exposed - there's nothing to run
+  without one. Runs arbitrary shell commands defined in that file, so
+  it should sit behind an authenticating proxy; it supports trusted-header
+  auth via AuthHttpHeaderUsername/AuthHttpHeaderUserGroup in config.yaml
+  for forward-auth setups.

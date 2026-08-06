@@ -1,0 +1,32 @@
+slug: cloudbeaver
+name: CloudBeaver
+category: developer
+description: Web-based SQL client for browsing and querying databases.
+homepage: https://dbeaver.com/docs/cloudbeaver
+source: https://github.com/dbeaver/cloudbeaver
+
+image: dbeaver/cloudbeaver
+version: "26.1.4"
+arch: [amd64, arm64]
+
+port: 8978
+mem_limit: 1g
+auth: proxy
+
+env:
+  - name: CB_SERVER_NAME
+    value: "cloudbeaver.${DOMAIN}"
+  - name: CB_ADMIN_NAME
+    value: "admin"
+  - name: CB_ADMIN_PASSWORD
+    secret: true
+
+volumes:
+  - path: workspace
+    mount: /opt/cloudbeaver/workspace
+
+notes: |
+  CB_SERVER_NAME/CB_ADMIN_NAME/CB_ADMIN_PASSWORD only seed the admin
+  account on first run; the setup wizard is skipped when they're set.
+  SSO (OpenID/SAML) is an Enterprise-only feature - community edition
+  is local accounts only, hence auth: proxy.

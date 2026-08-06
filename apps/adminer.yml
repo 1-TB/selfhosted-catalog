@@ -1,0 +1,19 @@
+slug: adminer
+name: Adminer
+category: developer
+description: Database management in a single PHP file.
+homepage: https://www.adminer.org
+source: https://github.com/vrana/adminer
+
+image: adminer
+version: "5.5.1"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 256m
+auth: proxy
+
+notes: |
+  Stateless - it's a login form to whatever database server you point it
+  at, with no data of its own to persist. Full read/write access to any
+  database it can reach, so it must not be exposed without a proxy in front.
