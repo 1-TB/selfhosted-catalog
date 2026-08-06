@@ -1,0 +1,41 @@
+slug: rallly
+name: Rallly
+category: productivity
+description: Scheduling polls for finding a meeting time.
+homepage: https://rallly.co
+source: https://github.com/lukevella/rallly
+
+image: lukevella/rallly
+version: "4.12.1"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: postgres
+auth: oidc
+redirect_path: /api/auth/callback/oidc
+
+env:
+  - name: NEXT_PUBLIC_BASE_URL
+    value: "https://rallly.${DOMAIN}"
+  - name: DATABASE_URL
+    value: "postgres://rallly:${RALLLY_DB_PASSWORD}@rallly-postgres:5432/rallly"
+  - name: SECRET_PASSWORD
+    secret: true
+  - name: OIDC_DISCOVERY_URL
+    secret: true
+    source: oidc_discovery_url
+  - name: OIDC_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: OIDC_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+
+notes: |
+  Login is via emailed magic links by default, which needs SMTP
+  (SUPPORT_EMAIL, SMTP_HOST, SMTP_PORT etc.) configured separately;
+  set DISABLE_EMAIL_LOGIN=true to require OIDC instead once that's
+  wired up. Poll and avatar image uploads need S3-compatible storage
+  (S3_ENDPOINT etc.) - without it the app works fine, that feature
+  just stays off.

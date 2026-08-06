@@ -1,0 +1,44 @@
+slug: technitium
+name: Technitium DNS Server
+category: network
+description: Authoritative and recursive DNS server with ad-blocking.
+homepage: https://technitium.com/dns/
+source: https://github.com/TechnitiumSoftware/DnsServer
+
+image: technitium/dns-server
+version: "15.4.0"
+arch: [amd64, arm64]
+
+port: 5380
+mem_limit: 512m
+auth: oidc
+redirect_path: /sso/callback
+
+env:
+  - name: DNS_SERVER_DOMAIN
+    value: "technitium.${DOMAIN}"
+  - name: DNS_SERVER_ADMIN_PASSWORD
+    secret: true
+  - name: DNS_SERVER_SSO_ENABLED
+    value: "true"
+  - name: DNS_SERVER_SSO_AUTHORITY
+    secret: true
+    source: oidc_issuer
+  - name: DNS_SERVER_SSO_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: DNS_SERVER_SSO_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+
+volumes:
+  - path: config
+    mount: /etc/dns
+  - path: logs
+    mount: /var/log/technitium/dns
+
+notes: |
+  Actually answering DNS needs port 53 tcp/udp on the host, which an
+  HTTP-only proxy cannot carry; only the web console on 5380 goes
+  through the proxy. DNS_SERVER_ADMIN_PASSWORD only takes effect on
+  the very first start, before any config exists.
