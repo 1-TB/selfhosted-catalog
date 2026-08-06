@@ -1,0 +1,41 @@
+slug: kutt
+name: Kutt
+category: utilities
+description: URL shortener with link stats.
+homepage: https://kutt.it
+source: https://github.com/thedevs-network/kutt
+
+image: kutt/kutt
+version: "v3.2.6"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 256m
+auth: oidc
+redirect_path: /login/oidc
+
+env:
+  - name: JWT_SECRET
+    secret: true
+  - name: DEFAULT_DOMAIN
+    value: "kutt.${DOMAIN}"
+  - name: OIDC_ENABLED
+    value: "true"
+  - name: OIDC_ISSUER
+    secret: true
+    source: oidc_issuer
+  - name: OIDC_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: OIDC_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+
+volumes:
+  - path: data
+    mount: /var/lib/kutt
+
+notes: |
+  SQLite by default; DB_CLIENT/DB_HOST etc. switch to Postgres or MySQL
+  instead. DEFAULT_DOMAIN must match the hostname the app is served on or
+  generated short links point at the wrong domain.

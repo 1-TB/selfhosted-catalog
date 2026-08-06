@@ -1,0 +1,37 @@
+slug: actual-budget
+name: Actual Budget
+category: productivity
+description: Local-first personal budgeting app.
+homepage: https://actualbudget.org
+source: https://github.com/actualbudget/actual
+
+image: actualbudget/actual-server
+version: "26.8.0"
+arch: [amd64, arm64]
+
+port: 5006
+mem_limit: 512m
+auth: oidc
+redirect_path: /openid/callback
+
+env:
+  - name: ACTUAL_LOGIN_METHOD
+    value: "openid"
+  - name: ACTUAL_OPENID_DISCOVERY_URL
+    secret: true
+    source: oidc_discovery_url
+  - name: ACTUAL_OPENID_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: ACTUAL_OPENID_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  Data directory holds account.sqlite plus each budget file as an encrypted
+  blob; there is no external database option. OIDC can also be finished
+  entirely from the in-app Settings modal instead of these env vars.

@@ -1,0 +1,27 @@
+slug: code-server
+name: code-server
+category: developer
+description: VS Code running in the browser.
+homepage: https://coder.com/docs/code-server
+source: https://github.com/coder/code-server
+
+image: codercom/code-server
+version: "4.131.0"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: PASSWORD
+    secret: true
+
+volumes:
+  - path: home
+    mount: /home/coder
+
+notes: |
+  PASSWORD is read at startup; HASHED_PASSWORD (argon2) can replace it for a
+  hashed value instead of plaintext. The home volume covers .config, .local
+  and any project files left in the workspace.
