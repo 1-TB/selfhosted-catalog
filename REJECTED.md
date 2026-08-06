@@ -52,6 +52,8 @@ release tags should be moved into `apps/`.
 | Keycloak | `quay.io/keycloak/keycloak` resolves tags, but quay.io's registry API only returns the oldest ~100 tags for this repo with no pagination, so `tools/registry.py latest` reports `23.0.4` when the project is several major versions past that. Resolving a real current version would mean guessing past what the tool can confirm; left out rather than pin a badly stale release. Worth revisiting if the tool grows pagination support. |
 | WordPress | `wordpress` (Docker Official Image) has the same pagination problem as Keycloak from the Docker Hub side: the repo has thousands of tags (every version × every PHP variant × apache/fpm), and the registry only returns the first 1000 alphabetically - which stops at `5.6`, years behind the real latest 6.x release. Not pinnable with confidence via this tool. |
 | Ghost | `ghost` (Docker Official Image) hits the identical 1000-tag cap as WordPress; the returned tags top out at `4.48.9` while upstream is well into the 5.x line. Same reasoning as WordPress - left out rather than pin a stale version. |
+| Betula | Codeberg-hosted; a `Dockerfile` exists in the repo but no built container image is published to any registry under the project's own namespace. Nothing to pin. |
+| Azimutt | `ghcr.io/azimuttapp/azimutt` resolves, but self-hosting needs Postgres plus S3-compatible object storage as a hard dependency (not optional), past the one-database model, and the docs lean heavily on Stripe/enterprise features that don't apply to self-hosting. Left out rather than guess at a minimal config. |
 
 Two things that look like rejections but aren't:
 

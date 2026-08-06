@@ -1,0 +1,17 @@
+slug: bentopdf
+name: BentoPDF
+category: documents
+description: Browser-side PDF toolkit for merging, splitting, converting and OCR.
+homepage: https://bentopdf.com
+source: https://github.com/alam00000/bentopdf
+
+image: bentopdfteam/bentopdf-simple
+version: "2.8.7"
+arch: [amd64, arm64]
+
+port: 8080
+auth: proxy
+
+notes: |
+  Stateless: all PDF processing happens client-side via WASM in the
+  browser, so there is no database and nothing to persist.

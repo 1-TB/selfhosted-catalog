@@ -1,0 +1,40 @@
+slug: jotty
+name: Jotty
+category: documents
+description: File-based notes and checklists with Kanban boards and sharing.
+homepage: https://jotty.page
+source: https://github.com/fccview/jotty
+
+image: ghcr.io/fccview/jotty
+version: "1.25.1"
+arch: [amd64, arm64]
+
+port: 3000
+auth: oidc
+redirect_path: /api/oidc/callback
+
+env:
+  - name: APP_URL
+    value: "https://jotty.${DOMAIN}"
+  - name: AUTH_MODE
+    value: "oidc"
+  - name: OIDC_ISSUER
+    secret: true
+    source: oidc_issuer
+  - name: OIDC_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: OIDC_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+
+volumes:
+  - path: data
+    mount: /app/data
+  - path: config
+    mount: /app/config
+
+notes: |
+  No database; notes and checklists are plain markdown/JSON files under
+  /app/data. AUTH_MODE=oidc disables local accounts unless
+  SSO_FALLBACK_LOCAL=yes is also set.

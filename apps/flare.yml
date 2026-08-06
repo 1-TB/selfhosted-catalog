@@ -1,0 +1,26 @@
+slug: flare
+name: Flare
+category: files
+description: File and screenshot host with ShareX/Flameshot support and OCR search.
+homepage: https://github.com/FlintSH/Flare
+source: https://github.com/FlintSH/Flare
+
+image: flintsh/flare
+version: "1.7.6"
+arch: [amd64, arm64]
+
+port: 3000
+database: postgres
+auth: proxy
+
+env:
+  - name: NEXTAUTH_URL
+    value: "https://flare.${DOMAIN}"
+  - name: NEXTAUTH_SECRET
+    secret: true
+  - name: DATABASE_URL
+    value: "postgresql://flare:${FLARE_DB_PASSWORD}@flare-postgres:5432/flare?schema=public"
+
+volumes:
+  - path: uploads
+    mount: /app/uploads
