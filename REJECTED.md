@@ -38,6 +38,7 @@ release tags should be moved into `apps/`.
 | Upvote RSS | `ghcr.io/johnwarne/upvote-rss` resolves fine (pinnable tags, amd64+arm64) and has a web UI with no login, but it's a narrow Reddit/HN/Lemmy-aggregation tool with ~25 mostly-optional env vars (AI provider keys, Redis, Browserless, Mercury/Readability parsers) and no clear "these are the ones that matter" subset. Left out for being more niche than widely-recommended. |
 | Monica (CRM) | The maintained image, `ghcr.io/monicahq/monica-next`, only publishes floating `main`/`main-fpm` tags - nothing pinnable. The old `monicahq/monicahq` image (last real tag `v2.19.0`) is explicitly documented upstream as "based on the previous major version" and deprecated in favor of monica-next. |
 | FreeScout | The project has no image in its own namespace; `freescout.net/docker/` redirects straight to a third-party rebuild (`tiredofit/docker-freescout`). No official image to point at. |
+| LinkStack | `linkstackorg/linkstack` publishes no numbered release tags on Docker Hub - just `latest`, `beta`, `V4`, `laravel12`, `unraid` and separate per-arch tags (`amd64`, `arm64v8`, `arm32v6`, `arm32v7`) instead of one multi-arch manifest per version. Nothing pinnable that also carries both architectures. |
 
 ## Not rejections
 

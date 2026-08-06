@@ -1,0 +1,47 @@
+slug: dagu
+name: Dagu
+category: automation
+description: Lightweight workflow/DAG scheduler with a web UI, no database needed.
+homepage: https://dagu.sh
+source: https://github.com/dagu-org/dagu
+
+image: ghcr.io/dagucloud/dagu
+version: "2.11.4"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+auth: oidc
+redirect_path: /oidc-callback
+
+env:
+  - name: DAGU_HOST
+    value: "0.0.0.0"
+  - name: DAGU_PORT
+    value: "8080"
+  - name: DAGU_AUTH_MODE
+    value: "builtin"
+  - name: DAGU_AUTH_TOKEN_SECRET
+    secret: true
+  - name: DAGU_AUTH_OIDC_CLIENT_URL
+    value: "https://dagu.${DOMAIN}"
+  - name: DAGU_AUTH_OIDC_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: DAGU_AUTH_OIDC_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+  - name: DAGU_AUTH_OIDC_ISSUER
+    secret: true
+    source: oidc_issuer
+
+volumes:
+  - path: data
+    mount: /var/lib/dagu
+
+notes: |
+  auth.mode stays "builtin" even when wiring up OIDC - that's what turns
+  on Dagu's own RBAC/login system, which OIDC then sits in front of. A
+  local admin account has to exist before OIDC sign-in is accepted; visit
+  /setup once after first start to create it (or set
+  DAGU_AUTH_BUILTIN_INITIAL_ADMIN_USERNAME/PASSWORD instead).
