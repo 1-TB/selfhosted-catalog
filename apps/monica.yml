@@ -1,0 +1,43 @@
+slug: monica
+name: Monica
+category: productivity
+description: Personal CRM to organize interactions with friends and family.
+homepage: https://www.monicahq.com
+source: https://github.com/monicahq/monica
+
+image: monica
+version: "4.1.2-apache"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: mariadb
+auth: proxy
+
+env:
+  - name: APP_URL
+    value: "https://monica.${DOMAIN}"
+  - name: APP_KEY
+    secret: true
+  - name: DB_HOST
+    value: "monica-mariadb"
+  - name: DB_DATABASE
+    value: "monica"
+  - name: DB_USERNAME
+    value: "monica"
+  - name: DB_PASSWORD
+    value: "${MONICA_DB_PASSWORD}"
+
+volumes:
+  - path: storage
+    mount: /var/www/html/storage
+
+notes: |
+  After the first start, run `docker compose exec app php artisan
+  setup:production` once to finish migrations. APP_KEY must be a 32-byte
+  base64 key, e.g. the output of `echo -n 'base64:'; openssl rand -base64
+  32`. The actively-developed rewrite (ghcr.io/monicahq/monica-next) only
+  publishes a floating `main` tag, so this entry tracks the classic
+  Docker Official Image line instead, which is still receiving 4.x
+  releases (the `5.0-apache` tag on the same repo is actually a beta
+  build under an unlabeled alias — avoid it despite the higher number).

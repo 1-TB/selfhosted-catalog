@@ -1,0 +1,27 @@
+slug: spoolman
+name: Spoolman
+category: productivity
+description: Inventory manager for 3D printer filament spools.
+homepage: https://donkie.github.io/Spoolman/
+source: https://github.com/Donkie/Spoolman
+
+image: ghcr.io/donkie/spoolman
+version: "0.26.0"
+arch: [amd64, arm64]
+
+port: 8000
+mem_limit: 256m
+auth: proxy
+
+env:
+  - name: TZ
+    value: "Etc/UTC"
+
+volumes:
+  - path: data
+    mount: /home/app/.local/share/spoolman
+
+notes: |
+  SQLite by default, a single .db file under the data volume. Postgres,
+  MySQL and CockroachDB are supported as alternatives via SPOOLMAN_DB_*
+  env vars, but aren't required. No authentication of its own.

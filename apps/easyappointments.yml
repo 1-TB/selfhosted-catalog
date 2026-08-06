@@ -1,0 +1,33 @@
+slug: easyappointments
+name: Easy!Appointments
+category: productivity
+description: Web-based appointment scheduler for customers to book with you.
+homepage: https://easyappointments.org
+source: https://github.com/alextselegidis/easyappointments
+
+image: alextselegidis/easyappointments
+version: "1.6.0"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: mariadb
+auth: proxy
+
+env:
+  - name: BASE_URL
+    value: "https://easyappointments.${DOMAIN}"
+  - name: DB_HOST
+    value: "easyappointments-mariadb"
+  - name: DB_NAME
+    value: "easyappointments"
+  - name: DB_USERNAME
+    value: "easyappointments"
+  - name: DB_PASSWORD
+    value: "${EASYAPPOINTMENTS_DB_PASSWORD}"
+
+notes: |
+  Email notifications need the MAIL_SMTP_* env vars set (host, port,
+  auth, from address) or they silently never send. The maintainer's own
+  Docker image and compose example carry no volume for the app itself —
+  all state lives in the database.

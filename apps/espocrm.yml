@@ -1,0 +1,48 @@
+slug: espocrm
+name: EspoCRM
+category: productivity
+description: Web-based CRM for managing people, companies, projects and opportunities.
+homepage: https://www.espocrm.com
+source: https://github.com/espocrm/espocrm
+
+image: espocrm/espocrm
+version: "10.0.3"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: mariadb
+needs: [daemon]
+auth: proxy
+
+env:
+  - name: ESPOCRM_SITE_URL
+    value: "https://espocrm.${DOMAIN}"
+  - name: ESPOCRM_DATABASE_HOST
+    value: "espocrm-mariadb"
+  - name: ESPOCRM_DATABASE_USER
+    value: "espocrm"
+  - name: ESPOCRM_DATABASE_PASSWORD
+    value: "${ESPOCRM_DB_PASSWORD}"
+  - name: ESPOCRM_ADMIN_USERNAME
+    value: "admin"
+  - name: ESPOCRM_ADMIN_PASSWORD
+    secret: true
+
+volumes:
+  - path: data
+    mount: /var/www/html/data
+  - path: custom
+    mount: /var/www/html/custom
+  - path: custom-client
+    mount: /var/www/html/client/custom
+
+notes: |
+  Wants a second container running the same image with
+  `entrypoint: docker-daemon.sh` and no published port, sharing the app
+  container's volumes — it runs EspoCRM's internal cron/queue jobs. The
+  web UI works without it, but scheduled jobs (email fetching, reminders,
+  mass actions) silently never run. EspoCRM supports OIDC login natively
+  (Administration > Authentication), but the exact Authorization Redirect
+  URI is only shown inside the running instance, not published in the
+  docs, so this entry uses proxy auth instead.
