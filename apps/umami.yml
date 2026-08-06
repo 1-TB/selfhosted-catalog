@@ -1,0 +1,28 @@
+slug: umami
+name: Umami
+category: monitoring
+description: Privacy-focused, open-source website analytics.
+homepage: https://umami.is
+source: https://github.com/umami-software/umami
+
+image: ghcr.io/umami-software/umami
+version: "3.2.0"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: postgres
+auth: proxy
+health_path: /api/heartbeat
+
+env:
+  - name: DATABASE_URL
+    value: "postgresql://umami:${UMAMI_DB_PASSWORD}@umami-postgres:5432/umami"
+  - name: APP_SECRET
+    secret: true
+
+notes: |
+  APP_SECRET should be a long random string. Ships with its own
+  username/password login (default admin/umami on first run, change it
+  immediately) and no OIDC support, so a proxy is optional but still the
+  recommended way to add SSO.
