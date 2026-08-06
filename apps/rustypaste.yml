@@ -1,0 +1,29 @@
+slug: rustypaste
+name: rustypaste
+category: utilities
+description: Minimalist pastebin and file-upload server written in Rust.
+homepage: https://github.com/orhun/rustypaste
+source: https://github.com/orhun/rustypaste
+
+image: orhunp/rustypaste
+version: "0.17.0"
+arch: [amd64, arm64]
+
+port: 8000
+mem_limit: 512m
+auth: none
+
+env:
+  - name: AUTH_TOKEN
+    secret: true
+
+volumes:
+  - path: upload
+    mount: /app/upload
+
+notes: |
+  No user accounts. AUTH_TOKEN is optional - unset, uploads and deletes
+  are unauthenticated; set it to require a bearer token on the upload
+  endpoint. Further tuning (expiry, MIME rules, size limits) lives in an
+  optional config.toml mounted at /app/config.toml - the image runs fine
+  with just the env defaults if you skip it.

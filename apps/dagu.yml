@@ -1,0 +1,33 @@
+slug: dagu
+name: Dagu
+category: automation
+description: Local-first workflow engine and DAG scheduler with a single-binary web UI.
+homepage: https://dagu.sh
+source: https://github.com/dagu-org/dagu
+
+image: ghcr.io/dagucloud/dagu
+version: "2.11.4"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: DAGU_HOST
+    value: "0.0.0.0"
+  - name: DAGU_PORT
+    value: "8080"
+
+volumes:
+  - path: data
+    mount: /var/lib/dagu
+
+notes: |
+  DAGU_HOST must be set to 0.0.0.0 - it defaults to 127.0.0.1, which is
+  unreachable from outside the container. DAGs go in the data volume under
+  dags/ (DAGU_DAGS_DIR, default /var/lib/dagu/dags). Ships with its own
+  login (DAGU_AUTH_MODE=builtin by default, creating an admin account on
+  first run); set DAGU_AUTH_MODE=none to rely solely on the front proxy
+  instead. Mounting /var/run/docker.sock is only needed for DAGs that run
+  Docker-based steps - not required for basic scheduling.

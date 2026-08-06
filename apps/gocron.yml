@@ -1,0 +1,25 @@
+slug: gocron
+name: GoCron
+category: automation
+description: Self-hosted cron job scheduler with a web UI, built with Go and Vue.
+homepage: https://github.com/flohoss/gocron
+source: https://github.com/flohoss/gocron
+
+image: ghcr.io/flohoss/gocron
+version: "v0.10.0"
+arch: [amd64, arm64]
+
+port: 8156
+mem_limit: 512m
+auth: proxy
+
+volumes:
+  - path: config
+    mount: /app/config
+
+notes: |
+  No login of its own - jobs and settings live in config/config.yaml,
+  auto-created with example jobs on first run, alongside a SQLite db in
+  the same directory. The web UI includes a sandboxed terminal gated by an
+  allow-list of commands, so put it behind an authenticating proxy rather
+  than exposing it directly.
