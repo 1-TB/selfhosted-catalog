@@ -1,0 +1,43 @@
+slug: passbolt
+name: Passbolt
+category: security
+description: Team password manager with GPG-based encryption.
+homepage: https://www.passbolt.com
+source: https://github.com/passbolt/passbolt_api
+
+image: passbolt/passbolt
+version: "5.14.0-1-ce"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: APP_FULL_BASE_URL
+    value: "https://passbolt.${DOMAIN}"
+  - name: DATASOURCES_DEFAULT_DRIVER
+    value: "Cake\\Database\\Driver\\Postgres"
+  - name: DATASOURCES_DEFAULT_URL
+    value: "postgres://passbolt:${PASSBOLT_DB_PASSWORD}@passbolt-postgres:5432/passbolt?schema=passbolt"
+  - name: EMAIL_TRANSPORT_DEFAULT_HOST
+    value: "smtp.${DOMAIN}"
+  - name: EMAIL_TRANSPORT_DEFAULT_PORT
+    value: "587"
+
+volumes:
+  - path: gpg
+    mount: /etc/passbolt/gpg
+  - path: jwt
+    mount: /etc/passbolt/jwt
+
+notes: |
+  First run needs two manual steps beyond env vars: the container
+  generates its own GPG server keypair into the gpg volume on first
+  boot, and the first admin account has to be created from a shell
+  in the running container: `su -m -c "bin/cake passbolt
+  register_user -u you@example.com -f First -l Last -r admin"
+  -s /bin/sh www-data`, which prints a one-time setup URL. A
+  forward-auth proxy in front will break the browser extension's
+  GPG challenge-response login; if you use one, exempt the app.

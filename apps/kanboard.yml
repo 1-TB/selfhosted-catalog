@@ -1,0 +1,30 @@
+slug: kanboard
+name: Kanboard
+category: productivity
+description: Kanban project management tool.
+homepage: https://kanboard.org/
+source: https://github.com/kanboard/kanboard
+
+image: kanboard/kanboard
+version: "v1.2.53"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: DATABASE_URL
+    value: "postgres://kanboard:${KANBOARD_DB_PASSWORD}@kanboard-postgres:5432/kanboard"
+
+volumes:
+  - path: data
+    mount: /var/www/app/data
+  - path: plugins
+    mount: /var/www/app/plugins
+
+notes: |
+  Also supports reverse-proxy auth natively via a REMOTE_USER-style
+  header, configurable under Settings > Authentication, as an
+  alternative to local accounts.
