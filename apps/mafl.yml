@@ -1,0 +1,17 @@
+slug: mafl
+name: Mafl
+category: utilities
+description: Minimalistic, flexible homepage dashboard.
+homepage: https://mafl.hywax.space
+source: https://github.com/hywax/mafl
+
+image: hywax/mafl
+version: "v1.4.1"
+arch: [amd64]
+
+port: 3000
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /app/data
