@@ -1,0 +1,32 @@
+slug: snipo
+name: Snipo
+category: developer
+description: Single-user snippet manager with tags, folders and GitHub Gist sync.
+homepage: https://github.com/MohamedElashri/snipo
+source: https://github.com/MohamedElashri/snipo
+
+image: ghcr.io/mohamedelashri/snipo
+version: "1.7.4"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: SNIPO_MASTER_PASSWORD
+    secret: true
+  - name: SNIPO_SESSION_SECRET
+    secret: true
+  - name: SNIPO_TRUST_PROXY
+    value: "true"
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  Single-user by design - SNIPO_MASTER_PASSWORD is the only login. Stores
+  everything in SQLite under /data, no external database. SNIPO_SESSION_SECRET
+  should be a random value, e.g. `openssl rand -hex 32`.

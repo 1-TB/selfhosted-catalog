@@ -1,0 +1,36 @@
+slug: tamari
+name: Tamari
+category: productivity
+description: Recipe manager with meal planning and shopping lists.
+homepage: https://tamariapp.com
+source: https://github.com/alexbates/Tamari
+
+image: alexbates/tamari
+version: "1.6"
+arch: [amd64, arm64]
+
+port: 4888
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: MAIL_SERVER
+    value: ""
+  - name: MAIL_PORT
+    value: "587"
+  - name: MAIL_USE_TLS
+    value: "1"
+  - name: MAIL_USERNAME
+    value: ""
+  - name: MAIL_PASSWORD
+    secret: true
+
+volumes:
+  - path: data
+    mount: /app/appdata
+
+notes: |
+  Stores everything in SQLite under /app/appdata - no external database.
+  MAIL_* vars are only needed to enable password-reset emails; leave them
+  unset otherwise.
