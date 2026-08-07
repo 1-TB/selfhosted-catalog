@@ -1,0 +1,26 @@
+slug: whois
+name: WHOIS
+category: network
+description: WHOIS/RDAP lookup API and web UI for domains and IPs.
+homepage: https://github.com/KincaidYang/whois
+source: https://github.com/KincaidYang/whois
+
+image: jinzeyang/whois
+version: "v1.2.0"
+arch: [amd64, arm64]
+
+port: 8043
+mem_limit: 512m
+database: none
+auth: none
+
+env:
+  - name: WHOIS_PORT
+    value: "8043"
+
+notes: |
+  Stateless Go binary - Redis is an optional cache for multi-instance
+  deployments (WHOIS_REDIS_ADDR), not required for a single instance.
+  Browsing to /<domain> in a browser returns a simple lookup page in
+  addition to the JSON API, so it's usable without a proxy. Set
+  WHOIS_AUTH_KEYS if you want to require an API key.

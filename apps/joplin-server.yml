@@ -1,0 +1,41 @@
+slug: joplin-server
+name: Joplin Server
+category: documents
+description: Sync server for the Joplin note-taking apps.
+homepage: https://joplinapp.org
+source: https://github.com/laurent22/joplin
+
+image: joplin/server
+version: "3.7.1"
+arch: [amd64, arm64]
+
+port: 22300
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: APP_PORT
+    value: "22300"
+  - name: APP_BASE_URL
+    value: "https://joplin-server.${DOMAIN}/"
+  - name: DB_CLIENT
+    value: "pg"
+  - name: POSTGRES_HOST
+    value: "joplin-server-postgres"
+  - name: POSTGRES_PORT
+    value: "5432"
+  - name: POSTGRES_DATABASE
+    value: "joplin_server"
+  - name: POSTGRES_USER
+    value: "joplin_server"
+  - name: POSTGRES_PASSWORD
+    value: "${JOPLIN_SERVER_DB_PASSWORD}"
+
+notes: |
+  This is the sync server for the Joplin desktop/mobile apps, not a
+  standalone note editor - clients connect to it and point their sync
+  target at this URL. No OIDC of its own; the first registered account
+  becomes admin via the web UI at /login. Item content is stored in
+  Postgres by default (STORAGE_DRIVER unset), so no data volume is
+  needed.
