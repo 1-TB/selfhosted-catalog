@@ -1,0 +1,53 @@
+slug: listaway
+name: Listaway
+category: productivity
+description: Publish lists and wishlists with optional public, read-only share links.
+homepage: https://github.com/jeffrpowell/listaway
+source: https://github.com/jeffrpowell/listaway
+
+image: ghcr.io/jeffrpowell/listaway
+version: "v1.18.2"
+arch: [amd64]
+
+port: 8080
+mem_limit: 512m
+database: postgres
+auth: oidc
+redirect_path: /auth/oidc/callback
+
+env:
+  - name: PORT
+    value: "8080"
+  - name: APP_URL
+    value: https://listaway.${DOMAIN}
+  - name: LISTAWAY_AUTH_KEY
+    secret: true
+  - name: POSTGRES_USER
+    value: listaway
+  - name: POSTGRES_PASSWORD
+    value: "${LISTAWAY_DB_PASSWORD}"
+  - name: POSTGRES_HOST
+    value: listaway-postgres
+  - name: POSTGRES_DATABASE
+    value: listaway
+  - name: OIDC_ENABLED
+    value: "true"
+  - name: OIDC_PROVIDER_URL
+    secret: true
+    source: oidc_issuer
+  - name: OIDC_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: OIDC_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+  - name: OIDC_REDIRECT_URL
+    value: https://listaway.${DOMAIN}/auth/oidc/callback
+
+notes: |
+  The Postgres role, database and schema must be created by hand before
+  first run (CREATE ROLE/DATABASE/SCHEMA listaway - see the project README);
+  the app does not do it for you. LISTAWAY_AUTH_KEY must be a random
+  128-character alphanumeric string. Without SMTP configured, password-reset
+  emails are logged to the console instead of sent - fine for a first pass,
+  worth wiring up SMTP_* vars for real use.

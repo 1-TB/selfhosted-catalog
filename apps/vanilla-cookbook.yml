@@ -1,0 +1,36 @@
+slug: vanilla-cookbook
+name: Vanilla Cookbook
+category: productivity
+description: Recipe manager with photo uploads and optional AI-assisted recipe parsing.
+homepage: https://github.com/jt196/vanilla-cookbook
+source: https://github.com/jt196/vanilla-cookbook
+
+image: jt196/vanilla-cookbook
+version: "v1.5.14"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: ORIGIN
+    value: https://vanilla-cookbook.${DOMAIN}
+  - name: PUID
+    value: "1000"
+  - name: PGID
+    value: "1000"
+
+volumes:
+  - path: db
+    mount: /app/prisma/db
+  - path: uploads
+    mount: /app/uploads
+
+notes: |
+  ORIGIN must exactly match the externally reachable URL or auth cookies and
+  CORS checks fail. Stores its data in SQLite under the db volume - no
+  external database. Optional GitHub/Google/generic-OIDC social login and
+  OpenAI/Anthropic/Google/Ollama API keys for recipe-parsing assistance can
+  be added later via env vars; neither is required to run it.

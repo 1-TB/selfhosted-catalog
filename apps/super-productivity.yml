@@ -1,0 +1,21 @@
+slug: super-productivity
+name: Super Productivity
+category: productivity
+description: Todo list and time tracker with timeboxing, Pomodoro and Jira/GitLab/GitHub integrations.
+homepage: https://super-productivity.com
+source: https://github.com/super-productivity/super-productivity
+
+image: johannesjo/super-productivity
+version: "v18.16.0"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 128m
+database: none
+auth: proxy
+
+notes: |
+  Stateless: a static SPA served by nginx. All data lives client-side in the
+  browser (IndexedDB) per visitor, with an optional self-hostable WebDAV sync
+  service (SuperSync) configurable from inside the app - nothing to persist
+  server-side and no database.
