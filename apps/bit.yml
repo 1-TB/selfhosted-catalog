@@ -1,0 +1,36 @@
+slug: bit
+name: Bit
+category: utilities
+description: Fast, lightweight URL shortener with minimal click tracking.
+homepage: https://sjdonado.github.io/bit/
+source: https://github.com/sjdonado/bit
+
+image: sjdonado/bit
+version: "1.6.1"
+arch: [amd64, arm64]
+
+port: 4000
+mem_limit: 192m
+auth: proxy
+
+env:
+  - name: ENV
+    value: production
+  - name: DATABASE_URL
+    value: "sqlite3://./sqlite/data.db"
+  - name: APP_URL
+    value: "https://bit.${DOMAIN}"
+  - name: ADMIN_NAME
+    value: Admin
+  - name: ADMIN_API_KEY
+    secret: true
+
+volumes:
+  - path: data
+    mount: /usr/src/app/sqlite
+
+notes: |
+  No web login of its own - access is via API key (ADMIN_API_KEY, generate
+  with `openssl rand -base64 32`); additional users are created with
+  `docker exec bit cli --create-user=<name>`. Put a proxy in front if a
+  browser login gate is wanted.

@@ -174,6 +174,15 @@ release tags should be moved into `apps/`.
 | Misago | The project's own current "official docker solution" (`rafalp/misago_docker`) is a docker-compose setup that builds the image from source rather than pulling a published tag from a registry - nothing to pin. |
 | GoToSocial | `ghcr.io/superseriousbusiness/gotosocial` returns no tags via this tool this run - only third-party Docker Hub rebuilds (metalmatze, decentral1se) turned up searching around it. Worth a retry later. |
 | Authelia | Resolves fine (`ghcr.io/authelia/authelia`, pinnable, multi-arch), but real configuration is a mounted `configuration.yml` covering access-control rules and the session/storage backend - env vars only cover a subset, same class of problem as Kestra and Group Office. |
+| Overleaf | `sharelatex/sharelatex` resolves (pinnable, amd64 only), but production deployment is the "Overleaf Toolkit" - a wrapper CLI (`bin/init`, `bin/doctor`, `bin/up`) that generates `docker-compose.yml` and env files from templates rather than a documented plain `docker run -e ...` path; the in-container data mount path isn't even spelled out outside that generated config. Same class of config-wizard problem as SiYuan/Databunker/Gathio. |
+| plumio | `ghcr.io/albertasaftei/plumio` resolves fine (pinnable, needs only SQLite), but it's one container serving two separate processes on two ports (3000 frontend, 3001 backend API) - the project's own nginx example proxies `/` to 3000 and `/api` to 3001. This schema's single `port` field can't express a path-based split to two backend ports. |
+| rs-short | No official image published to any registry - the README only points at a Dockerfile to build locally and a wiki for nginx/systemd integration. |
+| clink | `git.crueter.xyz/crueter/clink` returned HTTP 403 for this run; couldn't confirm an image reference or docs. |
+| Flink (rtraceio) | GitLab project page and README didn't return usable content for this run (empty/loading state); couldn't confirm an official image, port or env vars. |
+| Simple-URL-Shortener | Author states in the README "I don't really use this project anymore, so I will not improve this project" and points users at other tools instead; no official Docker image either. |
+| Plainpad | Docker support is dev-only (`docker compose up` against a locally-built image); no image published to a registry. |
+| Writing | Client-side only - "Just open `index.html` and that's it! There is no server code." No container, no port, doesn't fit this catalogue's model. |
+| Turtl | Upstream repo (`turtl/api`) is marked "(Deprecated)" by the project itself. |
 
 Two things that look like rejections but aren't:
 
