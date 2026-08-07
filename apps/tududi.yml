@@ -1,0 +1,37 @@
+slug: tududi
+name: tududi
+category: productivity
+description: Hierarchical task manager with projects, areas, notes and tags.
+homepage: https://docs.tududi.com
+source: https://github.com/chrisvel/tududi
+
+image: chrisvel/tududi
+version: "1.3.1"
+arch: [amd64, arm64]
+
+port: 3002
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: TUDUDI_USER_EMAIL
+    value: "admin@${DOMAIN}"
+  - name: TUDUDI_USER_PASSWORD
+    secret: true
+  - name: TUDUDI_SESSION_SECRET
+    secret: true
+  - name: TUDUDI_ALLOWED_ORIGINS
+    value: "https://tududi.${DOMAIN}"
+
+volumes:
+  - path: db
+    mount: /app/db
+  - path: uploads
+    mount: /app/uploads
+
+notes: |
+  SQLite, no separate database container. The admin account is created
+  from TUDUDI_USER_EMAIL/TUDUDI_USER_PASSWORD on first boot rather than
+  through a signup form. TUDUDI_ALLOWED_ORIGINS must match the public
+  URL or the frontend's requests get rejected as cross-origin.

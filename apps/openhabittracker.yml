@@ -1,0 +1,35 @@
+slug: openhabittracker
+name: OpenHabitTracker
+category: productivity
+description: Single-user habit, task and note tracker with a calendar view.
+homepage: https://openhabittracker.net
+source: https://github.com/Jinjinov/OpenHabitTracker
+
+image: jinjinov/openhabittracker
+version: "1.2.3"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: AppSettings__UserName
+    value: "admin"
+  - name: AppSettings__Email
+    value: "admin@${DOMAIN}"
+  - name: AppSettings__Password
+    secret: true
+  - name: AppSettings__JwtSecret
+    secret: true
+
+volumes:
+  - path: data
+    mount: /app/.OpenHabitTracker
+
+notes: |
+  Single-user by design - the Docker image runs one Blazor Server
+  account for one person, not a multi-tenant instance. The native
+  apps (Windows/Linux/Android/iOS/macOS) can point at this instance
+  to sync the same data.

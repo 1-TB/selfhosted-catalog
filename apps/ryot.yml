@@ -1,0 +1,30 @@
+slug: ryot
+name: Ryot
+category: media
+description: Track movies, shows, books, games, fitness and more in one place.
+homepage: https://ryot.io
+source: https://github.com/IgnisDa/ryot
+
+image: ignisda/ryot
+version: "v10.4.2"
+arch: [amd64, arm64]
+
+port: 8000
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: DATABASE_URL
+    value: "postgres://ryot:${RYOT_DB_PASSWORD}@ryot-postgres:5432/ryot"
+  - name: FRONTEND_URL
+    value: "https://ryot.${DOMAIN}"
+  - name: SERVER_ADMIN_ACCESS_TOKEN
+    secret: true
+
+notes: |
+  Only DATABASE_URL is truly required; FRONTEND_URL and
+  SERVER_ADMIN_ACCESS_TOKEN cover the base deployment. The other 50+
+  documented env vars are opt-in API keys for specific integrations
+  (TMDB, IGDB, Trakt, MyAnimeList, S3 file storage) and aren't needed
+  to run the app - add them later per-feature. Requires Postgres 15+.

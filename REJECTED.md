@@ -55,6 +55,10 @@ release tags should be moved into `apps/`.
 | Betula | Codeberg-hosted; a `Dockerfile` exists in the repo but no built container image is published to any registry under the project's own namespace. Nothing to pin. |
 | Azimutt | `ghcr.io/azimuttapp/azimutt` resolves, but self-hosting needs Postgres plus S3-compatible object storage as a hard dependency (not optional), past the one-database model, and the docs lean heavily on Stripe/enterprise features that don't apply to self-hosting. Left out rather than guess at a minimal config. |
 
+| HamsterBase Tasks | `hamsterbase/tasks` resolves fine, but every release tag is a calendar-style build id (`2025.10.1300`, `2026.05.2700`) that the version resolver correctly treats as a date stamp rather than a pinnable release - same class of problem as RSS-Bridge and the Jupyter Docker Stacks. |
+| Nimbus (Turbootzz) | `turboot/nimbus` publishes only `main-<commit>` tags plus `latest`. Nothing pinnable. |
+| Servas | `beromir/servas` resolves fine (pinnable tags, amd64+arm64), but the project's own deployment model mounts a host `.env` file into the container (`./.env:/app/.env`) rather than documenting plain environment variables, and a linked GitHub issue shows users still need to run `php artisan key:generate` by hand afterward. Too much guesswork to model as a clean env-var list with confidence. |
+
 Two things that look like rejections but aren't:
 
 **amd64-only images are still catalogued.** They get `arch: [amd64]` and that
