@@ -136,6 +136,10 @@ release tags should be moved into `apps/`.
 | Alf.io | `alfio/alf.io` resolves, but every tag cut since 2019 is a `2.0-M0`...`2.0-M5` milestone/pre-release (latest `2.0-M5-2606`, June 2026) - the project has been stuck pre-GA on the 2.0 line for years and never tags a plain stable release. Last real stable was `1.16.3`, itself years stale. |
 | Piwigo | `piwigo/piwigo` resolves fine (pinnable tags, amd64+arm64) and is a clean single-container-plus-mariadb shape, but the app container takes no database env vars at all - the db host/name/user/password are entered by hand through Piwigo's own web installer on first visit. Same "no env-var equivalent for wiring up the database" problem that ruled out Krayin CRM. |
 
+| Maza Ad Blocking | Its own docs are explicit that it's "just bash" - a script that edits the host's `/etc/hosts` file directly, with an optional Dnsmasq mode. No web UI, no listening port, no official Docker image; doesn't fit the one-container-behind-a-subdomain model the way Pi-hole/AdGuard Home/Technitium do. |
+| Atsumeru | `atsumerudev/atsumeru` resolves fine (pinnable tags, amd64+arm64), but the Docker Hub image is stuck at `1.1`, pushed over a year ago, while the project's GitHub releases have moved on to `2.2` - the image doesn't track current releases, so pinning it would mean shipping a stale, unmaintained build under a "latest available" label. |
+| Rybbit | `ghcr.io/rybbit-io/rybbit-backend` and `-client` resolve fine, but upstream's own docker-compose splits the app into separate backend and client containers on top of Postgres, ClickHouse *and* Redis, plus a bundled Caddy - three extra services beyond one database, well past what `needs:` is meant to model. |
+
 Two things that look like rejections but aren't:
 
 **amd64-only images are still catalogued.** They get `arch: [amd64]` and that

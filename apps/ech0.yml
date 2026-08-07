@@ -1,0 +1,29 @@
+slug: ech0
+name: Ech0
+category: communication
+description: Lightweight federated micro-publishing platform for sharing short posts.
+homepage: https://echo.soopy.cn/
+source: https://github.com/lin-snow/Ech0
+
+image: sn0wl1n/ech0
+version: "v5.5.0"
+arch: [amd64, arm64]
+
+port: 6277
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: JWT_SECRET
+    secret: true
+
+volumes:
+  - path: data
+    mount: /app/data
+
+notes: |
+  SQLite is embedded, no external database needed. The first registered
+  account becomes admin. Supports OAuth2/OIDC and Passkey login configured
+  from the admin UI, but the callback path isn't documented anywhere, so
+  this entry keeps auth as proxy rather than guessing it.

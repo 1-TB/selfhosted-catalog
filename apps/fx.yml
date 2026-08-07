@@ -1,0 +1,32 @@
+slug: fx
+name: fx
+category: communication
+description: Lightweight Twitter/Bluesky-like microblogging service you can self-host.
+homepage: https://github.com/rikhuijzer/fx
+source: https://github.com/rikhuijzer/fx
+
+image: rikhuijzer/fx
+version: "1.6.1"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: FX_DOMAIN
+    value: fx.${DOMAIN}
+  - name: FX_USERNAME
+    value: admin
+  - name: FX_PASSWORD
+    secret: true
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  Single-user microblog with its own username/password login, no OIDC.
+  Ships a `/fx check-health` binary for its Docker healthcheck rather than
+  an HTTP health path.

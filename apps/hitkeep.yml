@@ -1,0 +1,31 @@
+slug: hitkeep
+name: HitKeep
+category: monitoring
+description: Privacy-first web analytics with goals, funnels and ecommerce tracking in a single binary.
+homepage: https://hitkeep.com
+source: https://github.com/pascalebeier/hitkeep
+
+image: pascalebeier/hitkeep
+version: "2.13.5"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: HITKEEP_PUBLIC_URL
+    value: https://hitkeep.${DOMAIN}/
+  - name: HITKEEP_JWT_SECRET
+    secret: true
+
+volumes:
+  - path: data
+    mount: /var/lib/hitkeep/data
+
+notes: |
+  Embeds DuckDB and NSQ, so no external database is needed. Ships with its
+  own email/password login plus optional GitHub/Google/Microsoft social
+  sign-in (HITKEEP_SOCIAL_*_CLIENT_ID/SECRET) - not generic OIDC, so this
+  entry still routes SSO through a proxy rather than the oidc field.
