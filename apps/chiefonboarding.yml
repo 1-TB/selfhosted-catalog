@@ -1,0 +1,30 @@
+slug: chiefonboarding
+name: ChiefOnboarding
+category: productivity
+description: Employee onboarding platform with task sequences, e-signing and account provisioning.
+homepage: https://chiefonboarding.com
+source: https://github.com/chiefonboarding/ChiefOnboarding
+
+image: chiefonboarding/chiefonboarding
+version: "v2.4.1"
+arch: [amd64]
+
+port: 8000
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: SECRET_KEY
+    secret: true
+  - name: DATABASE_URL
+    value: "postgres://chiefonboarding:${CHIEFONBOARDING_DB_PASSWORD}@chiefonboarding-postgres:5432/chiefonboarding"
+  - name: ALLOWED_HOSTS
+    value: "chiefonboarding.${DOMAIN}"
+
+notes: |
+  No local file storage - document/avatar uploads need an S3-compatible
+  bucket configured separately (AWS_S3_ENDPOINT_URL, AWS_ACCESS_KEY_ID,
+  AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME). Supports OIDC login,
+  but its own docs don't state a fixed callback path (django-allauth
+  generates one per configured provider ID), so left as proxy auth.

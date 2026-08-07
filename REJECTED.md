@@ -68,6 +68,12 @@ release tags should be moved into `apps/`.
 | Your Spotify | `yooooomi/your_spotify_server` resolves fine (pinnable tags, amd64+arm64), but the web UI lives entirely in a separate `yooooomi/your_spotify_client` container - the server is API-only. Same two-container UI/backend split that ruled out Shlink. |
 | Chartbrew | Resolves (`razvanilin/chartbrew`, a personal namespace rather than an org one), but ships as separate frontend (4018) and API (4019) processes plus a hard MySQL/Postgres + Redis requirement, and the docs don't make clear whether that's one container or two. Left out rather than guess at the split. |
 | Mathesar | `mathesar/mathesar` resolves fine, but the project's own docker-compose bundles a dedicated Postgres (which stores the actual user databases Mathesar manages, not just app config) plus its own Caddy reverse proxy by default - overlaps this catalogue's reverse-proxy layer and blurs the single-database-sidecar model in a way Azimutt and AFFiNE already got left out for. |
+| Digimindmap | No Docker image, docker-compose, or container documentation anywhere in the repo - it's a plain PHP app meant for upload to a regular webserver. |
+| Digibunch | Same as Digimindmap: no Docker image or container docs, PHP app meant for regular webserver hosting. |
+| Cronmaster | `ghcr.io/fccview/cronmaster` resolves fine (pinnable tags, amd64+arm64), but its whole purpose is managing the *host's* real crontab by direct file access - its own compose requires `privileged: true`, `pid: "host"` and a docker-socket mount, well past the trust footprint this catalogue assumes, similar to why NetAlertX/UpSnap/WatchYourLAN were left out for host networking. |
+| LibreKB | Ships a `Dockerfile` and `docker-compose.yml` for building it yourself, but no image published to any registry under the project's own namespace. Nothing to pull. |
+| HomeButler | No official Docker image - the project distributes as a single Go binary (Homebrew, curl installer, npm) and explicitly favors that over containers ("zero dependencies"). |
+| d9 (Directus fork) | `ghcr.io/lawebcapsule/directus9` resolves and has a real self-host story, but it's a small community fork of Directus (created after Directus relicensed under BSL) rather than a widely-used project in its own right, and its env-var/dependency surface wasn't documented well enough to model with confidence this run. |
 
 Two things that look like rejections but aren't:
 
