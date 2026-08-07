@@ -1,0 +1,30 @@
+slug: wikidocs
+name: WikiDocs
+category: documents
+description: Databaseless, flat-file Markdown wiki engine.
+homepage: https://wikidocs.app
+source: https://github.com/Zavy86/WikiDocs
+
+image: zavy86/wikidocs
+version: "1.0.93"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: PUID
+    value: "1000"
+  - name: PGID
+    value: "1000"
+
+volumes:
+  - path: datasets
+    mount: /datasets
+
+notes: |
+  First run: visit /setup.php once to generate datasets/config.inc.php
+  (and the Apache/Nginx rewrite rules) before using the wiki. No
+  database - pages are plain Markdown files under the datasets volume.
