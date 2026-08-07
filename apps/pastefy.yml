@@ -1,0 +1,37 @@
+slug: pastefy
+name: Pastefy
+category: developer
+description: Feature-rich pastebin with forking, folders and an API.
+homepage: https://pastefy.app
+source: https://github.com/interaapps/pastefy
+
+image: interaapps/pastefy
+version: "7.2.6"
+arch: [amd64]
+
+port: 80
+mem_limit: 512m
+database: mariadb
+auth: proxy
+
+env:
+  - name: SERVER_NAME
+    value: "https://pastefy.${DOMAIN}"
+  - name: HTTP_SERVER_PORT
+    value: "80"
+  - name: DATABASE_DRIVER
+    value: "mysql"
+  - name: DATABASE_HOST
+    value: "pastefy-mariadb"
+  - name: DATABASE_NAME
+    value: "pastefy"
+  - name: DATABASE_USER
+    value: "pastefy"
+  - name: DATABASE_PASSWORD
+    value: "${PASTEFY_DB_PASSWORD}"
+
+notes: |
+  Also supports login via GitHub/Google/Discord/Twitch or a generic OIDC
+  provider (OAUTH2_CUSTOM_* vars with explicit authorize/token/userinfo
+  endpoints, no discovery URL) - left as auth: proxy here since those
+  endpoint URLs aren't something this schema's oidc fields can carry.

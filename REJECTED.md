@@ -102,6 +102,16 @@ release tags should be moved into `apps/`.
 | FitTrackee | `ghcr.io/samr1/fittrackee` resolves fine and needs only Postgres plus Redis, but it covers the same ground as Endurain (also added this run) - a self-hosted activity/fitness tracker. Left out as a redundant near-duplicate rather than cataloguing two apps for the same niche in one pass. |
 | LeafWiki | `ghcr.io/perber/leafwiki` resolves fine (pinnable tags, amd64+arm64) and is a clean single-binary Markdown wiki with real env-var config, but it covers the same ground as Wiki-Go (added this run) - a flat-file self-hosted wiki. Left out as a redundant near-duplicate. |
 | Chibisafe | `chibisafe/chibisafe` resolves fine, but the real deployment splits frontend and backend into two separate containers behind a bundled Caddy instance, not one app image with a UI baked in - same frontend/backend split that ruled out Shlink and Your Spotify. |
+| Suroi | No official Docker image, Dockerfile, or registry namespace found anywhere in the repo or wiki - self-hosting docs cover Bun + nginx on a bare host only. |
+| Digibuzzer | Ships its own `Dockerfile` and compose files but no built image published to any registry under the project's own namespace - self-build only. |
+| Kriss Feed | No Docker image, Dockerfile, or container docs found in the repo; ships as a plain Python app with no published registry namespace. |
+| reader (lemon24) | Has an optional Flask-based web UI, but no official Docker image is published anywhere - installed as a Python package, not a container. |
+| NewsBlur | No official Docker image under the project's own namespace - self-hosting is `git clone` + `make`, and the resulting stack is Postgres, MongoDB, Redis, Elasticsearch, Celery workers and Node services, well past the one-extra-service model even if an image existed. |
+| dpaste | `darrenofficial/dpaste` resolves on Docker Hub, but every tag is a bare commit-hash short SHA (e.g. `e800e503`) - nothing semver or otherwise pinnable. |
+| RecipeSage | No official image found in the project's own namespace (only Dockerfiles); the maintained selfhost stack in `recipesage-selfhost` splits proxy/static/api/search(Typesense)/pushpin/postgres/browserless/classifier across 7-8 services, well past the one-extra-service model regardless. |
+| solidtime | Compose reference from `solidtime-io/self-hosting-examples` runs the same app image three times (web, scheduler, queue-worker) plus a required Gotenberg container on top of Postgres - three extra services beyond one database, past what `needs:` is meant to model. |
+| µTask (ovh/utask) | `ovhcom/utask` resolves fine (pinnable tags, amd64) and needs only Postgres, but its entire configuration - database DSN, admin accounts, basic-auth credentials, and a mandatory storage-encryption key - is delivered as JSON blobs packed into a handful of `CFG_*` env vars rather than discrete settings, the same class of problem that ruled out Kestra. |
+| Paaster | `wardpearce/paaster` resolves fine (pinnable tags, amd64), but a real deployment needs MongoDB plus a separate S3-compatible object-storage service (bundled `garage` container or an external S3) - two extra services beyond one database, past the one-extra-service model. |
 
 Two things that look like rejections but aren't:
 
