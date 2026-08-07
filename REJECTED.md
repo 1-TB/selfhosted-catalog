@@ -90,6 +90,16 @@ release tags should be moved into `apps/`.
 | PieFed | Own repo is on Codeberg (`rimu/pyfedi`) with a `Dockerfile` and compose files but no CI step that pushes a built image anywhere - the only images on Docker Hub/GHCR (`elestio/piefed`, `dockur/piefed`) are third-party rebuilds, not an official namespace. |
 | Teampass | `teampass/teampass` on Docker Hub only publishes `sha-<commit>` tags plus one bare `teampass_3.0` branch-style tag - nothing that resolves as a pinnable release, and an open GitHub issue confirms the image lags behind tagged releases. |
 | Hi.Events | Docker Hub image (`daveearley/hi.events-all-in-one`) lives under the lead maintainer's personal namespace, not an org one, and every tag is `-alpha`/`-beta` - no stable release to pin. The all-in-one image also bundles Postgres/Redis/nginx into a single container, which doesn't map cleanly onto this catalogue's one-app-one-database model either. |
+| pyLoad | No image under the project's own namespace on Docker Hub or GHCR (`pyload/pyload` and `pyload/pyload-ng` both resolve to nothing) - the only actively published image is the third-party `linuxserver/pyload-ng` rebuild. |
+| Huginn | `ghcr.io/huginn/huginn` resolves fine but only publishes commit-hash tags plus a floating `latest`. Nothing pinnable. |
+| JARR | No image published to Docker Hub or GHCR under the project's own namespace (`jaesivsm/jarr` returns nothing on either registry). Ships as a plain Python/Flask app, not a container. |
+| Dittofeed | `dittofeed/dittofeed-api` resolves, but a real deployment needs Postgres plus ClickHouse as a hard dependency (not optional), with Kafka as a further optional piece - past the one-extra-service model. |
+| Beelzebub | `mariocandela/beelzebub` is a YAML-configured honeypot/deception framework with SSH/HTTP/TCP/MCP decoy services, but no web UI and no listening port of its own to put behind a subdomain. |
+| PlugNPiN | `ghcr.io/deepspace2/plugnpin` resolves fine, but it's a headless daemon that watches the Docker socket and writes DNS/proxy-host entries into Pi-hole and Nginx Proxy Manager - no web UI or port of its own, doesn't fit the one-container-behind-a-subdomain model. |
+| OpenSpeedTest | `openspeedtest/latest` resolves fine (pinnable tags, e.g. `v2.0.6`), but it's functionally a duplicate of LibreSpeed, already in the catalogue for the same job (self-hosted HTML5 browser speed test). Left out as redundant rather than padding the catalogue with a near-identical entry. |
+| PassIt | Deploys via a floating `latest` tag by default (per its own DigitalOcean App Platform button) and needs a separate one-shot migration job container plus Postgres; its own docs note it also has no admin interface. |
+| Evidence (evidence.dev) | Billed as self-hostable "business intelligence as code," but there's no real server image - it's a static-site build tool meant to be deployed to Netlify, Vercel, or similar static hosts, not run as a standalone served app. |
+| FitTrackee | `ghcr.io/samr1/fittrackee` resolves fine and needs only Postgres plus Redis, but it covers the same ground as Endurain (also added this run) - a self-hosted activity/fitness tracker. Left out as a redundant near-duplicate rather than cataloguing two apps for the same niche in one pass. |
 
 Two things that look like rejections but aren't:
 
