@@ -1,0 +1,30 @@
+slug: espial
+name: Espial
+category: productivity
+description: Multi-user bookmark and note manager with tagging, full-text search and optional page archiving.
+homepage: https://github.com/jonschoning/espial
+source: https://github.com/jonschoning/espial
+
+image: jonschoning/espial
+version: "0.0.42"
+arch: [amd64]
+
+port: 3000
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: SQLITE_DATABASE
+    value: /app/data/espial.sqlite3
+  - name: CLIENT_SESSION_KEY
+    secret: true
+
+volumes:
+  - path: data
+    mount: /app/data
+
+notes: |
+  No self-registration. Create the first account after starting the
+  container: `docker exec espial ./migration createuser --userName <user>
+  --userPassword <pass>`. Image is amd64-only.

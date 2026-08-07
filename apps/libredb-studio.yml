@@ -1,0 +1,30 @@
+slug: libredb-studio
+name: LibreDB Studio
+category: developer
+description: Browser-based SQL IDE for exploring and querying Postgres, MySQL, MongoDB and other engines.
+homepage: https://libredb.org
+source: https://github.com/libredb/libredb-studio
+
+image: ghcr.io/libredb/libredb-studio
+version: "0.9.66"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: ADMIN_PASSWORD
+    secret: true
+  - name: JWT_SECRET
+    secret: true
+
+volumes:
+  - path: data
+    mount: /app/data
+
+notes: |
+  Auto-generates JWT_SECRET and an admin password on first run if unset;
+  set both explicitly for a production install. Supports OIDC login, but
+  the callback path isn't documented, so left as proxy auth.
