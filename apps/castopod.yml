@@ -1,0 +1,41 @@
+slug: castopod
+name: Castopod
+category: media
+description: Open-source podcast hosting platform with audience engagement and Podcasting 2.0 support.
+homepage: https://castopod.org
+source: https://github.com/ad-aures/castopod
+
+image: castopod/castopod
+version: "1.15.5"
+arch: [amd64, arm64]
+
+port: 8080
+health_path: /health
+mem_limit: 512m
+database: mariadb
+auth: none
+
+env:
+  - name: CP_BASEURL
+    value: "https://castopod.${DOMAIN}"
+  - name: CP_ANALYTICS_SALT
+    secret: true
+  - name: CP_DATABASE_HOSTNAME
+    value: "castopod-mariadb"
+  - name: MYSQL_DATABASE
+    value: "castopod"
+  - name: MYSQL_USER
+    value: "castopod"
+  - name: MYSQL_PASSWORD
+    value: "${CASTOPOD_DB_PASSWORD}"
+
+volumes:
+  - path: media
+    mount: /app/public/media
+
+notes: |
+  Caching defaults to the filesystem (CP_CACHE_HANDLER=file); Redis is
+  optional and only worth adding under load. Admin login lives at
+  /cp-admin by default (CP_ADMIN_GATEWAY) - the public podcast pages and
+  feeds are meant to be open, hence auth: none here rather than gating
+  the whole subdomain.

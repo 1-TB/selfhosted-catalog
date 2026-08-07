@@ -1,0 +1,47 @@
+slug: librebooking
+name: LibreBooking
+category: productivity
+description: Flexible, mobile-friendly resource reservation and scheduling system.
+homepage: https://librebooking.github.io/librebooking/
+source: https://github.com/LibreBooking/librebooking
+
+image: librebooking/librebooking
+version: "5.3.0"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: mariadb
+needs: [cron]
+auth: proxy
+
+env:
+  - name: LB_DATABASE_HOSTSPEC
+    value: "librebooking-mariadb"
+  - name: LB_DATABASE_NAME
+    value: "librebooking"
+  - name: LB_DATABASE_USER
+    value: "librebooking"
+  - name: LB_DATABASE_PASSWORD
+    value: "${LIBREBOOKING_DB_PASSWORD}"
+  - name: LB_INSTALL_PASSWORD
+    secret: true
+  - name: LB_SCRIPT_URL
+    value: "https://librebooking.${DOMAIN}/Web"
+  - name: LB_DEFAULT_TIMEZONE
+    value: "UTC"
+
+volumes:
+  - path: config
+    mount: /config
+  - path: images
+    mount: /var/www/html/Web/uploads/images
+  - path: reservations
+    mount: /var/www/html/Web/uploads/reservation
+
+notes: |
+  Reminder emails and other scheduled jobs need a second container
+  running the same image with `command: supercronic /config/lb-jobs-cron`
+  (a `crontab` file mounted at that path plus `volumes_from` the main
+  container) - the main container never runs its own cron. First boot
+  needs the /install wizard, gated by LB_INSTALL_PASSWORD.
