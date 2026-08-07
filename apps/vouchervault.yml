@@ -1,0 +1,53 @@
+slug: vouchervault
+name: VoucherVault
+category: productivity
+description: Store and manage vouchers, coupons, loyalty and gift cards digitally.
+homepage: https://github.com/l4rm4nd/VoucherVault
+source: https://github.com/l4rm4nd/VoucherVault
+
+image: l4rm4nd/vouchervault
+version: "1.30.1"
+arch: [amd64, arm64]
+
+port: 8000
+database: none
+needs: [redis]
+auth: oidc
+redirect_path: /oidc/callback/
+
+env:
+  - name: DOMAIN
+    value: vouchervault.${DOMAIN}
+  - name: SECURE_COOKIES
+    value: "True"
+  - name: TZ
+    value: UTC
+  - name: SECRET_KEY
+    secret: true
+  - name: REDIS_URL
+    value: "redis://vouchervault-redis:6379/0"
+  - name: OIDC_ENABLED
+    value: "True"
+  - name: OIDC_RP_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: OIDC_RP_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+  - name: OIDC_OP_AUTHORIZATION_ENDPOINT
+  - name: OIDC_OP_TOKEN_ENDPOINT
+  - name: OIDC_OP_USER_ENDPOINT
+
+volumes:
+  - path: database
+    mount: /opt/app/database
+
+notes: |
+  Stores in SQLite by default (Postgres is optional, set DB_ENGINE=postgres
+  plus the POSTGRES_* vars to use it instead). OIDC here is Django's
+  discrete-endpoint style (mozilla-django-oidc), not a single issuer/
+  discovery URL - OIDC_OP_AUTHORIZATION_ENDPOINT, OIDC_OP_TOKEN_ENDPOINT
+  and OIDC_OP_USER_ENDPOINT must be filled in by hand from the identity
+  provider's own OIDC discovery document. SECURE_COOKIES must be true
+  when running behind an HTTPS reverse proxy or the session/CSRF cookies
+  won't be marked secure.

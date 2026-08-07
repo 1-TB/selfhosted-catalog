@@ -1,0 +1,62 @@
+slug: sure
+name: Sure
+category: productivity
+description: Local-first personal finance and net-worth tracker (formerly Maybe Finance).
+homepage: https://sure.money
+source: https://github.com/we-promise/sure
+
+image: ghcr.io/we-promise/sure
+version: "0.7.0"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 1g
+database: postgres
+needs: [redis, worker]
+auth: oidc
+redirect_path: /auth/openid_connect/callback
+
+env:
+  - name: SELF_HOSTED
+    value: "true"
+  - name: SECRET_KEY_BASE
+    secret: true
+  - name: APP_DOMAIN
+    value: sure.${DOMAIN}
+  - name: DB_HOST
+    value: "sure-postgres"
+  - name: DB_PORT
+    value: "5432"
+  - name: POSTGRES_USER
+    value: "sure"
+  - name: POSTGRES_DB
+    value: "sure"
+  - name: POSTGRES_PASSWORD
+    secret: true
+  - name: REDIS_URL
+    value: "redis://sure-redis:6379/1"
+  - name: OIDC_ISSUER
+    secret: true
+    source: oidc_issuer
+  - name: OIDC_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: OIDC_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+  - name: OIDC_REDIRECT_URI
+    value: "https://sure.${DOMAIN}/auth/openid_connect/callback"
+
+volumes:
+  - path: storage
+    mount: /rails/storage
+
+notes: |
+  Needs a second container running the same image with `command: bundle
+  exec sidekiq` to process background jobs (CSV import, recurring
+  transaction detection, AI features); the main container alone only
+  serves the UI. SECRET_KEY_BASE must be generated once (openssl rand
+  -hex 64) and never changed after first run. OIDC is one of several
+  supported SSO strategies (Google and GitHub OAuth2 also built in) and
+  is opt-in via config/auth.yml, not automatic just by setting the env
+  vars.
