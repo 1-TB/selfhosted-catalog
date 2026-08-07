@@ -58,6 +58,8 @@ release tags should be moved into `apps/`.
 | HamsterBase Tasks | `hamsterbase/tasks` resolves fine, but every release tag is a calendar-style build id (`2025.10.1300`, `2026.05.2700`) that the version resolver correctly treats as a date stamp rather than a pinnable release - same class of problem as RSS-Bridge and the Jupyter Docker Stacks. |
 | Nimbus (Turbootzz) | `turboot/nimbus` publishes only `main-<commit>` tags plus `latest`. Nothing pinnable. |
 | Servas | `beromir/servas` resolves fine (pinnable tags, amd64+arm64), but the project's own deployment model mounts a host `.env` file into the container (`./.env:/app/.env`) rather than documenting plain environment variables, and a linked GitHub issue shows users still need to run `php artisan key:generate` by hand afterward. Too much guesswork to model as a clean env-var list with confidence. |
+| Frigate | `ghcr.io/blakeblackshear/frigate` resolves and is very widely used, but the registry only returns its oldest ~1000 tags (ending around `0.13.0-beta2`) - same pagination cap that ruled out Keycloak, WordPress and Ghost. The project is several minor versions past that. Not pinnable with confidence via this tool. |
+| Datasette | `datasetteproject/datasette` resolves fine (pinnable tags, amd64 confirmed - arm64 unchecked once amd64-only-blocker was found), but its own Dockerfile sets `CMD ["datasette"]` with no arguments - the base image doesn't bind a host/port or serve any file by default, it needs a command override (e.g. `datasette serve --host 0.0.0.0 -p 8001 /data/*.db`) to do anything. Same problem as SiYuan: this schema has no field for a command override. |
 
 Two things that look like rejections but aren't:
 

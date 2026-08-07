@@ -1,0 +1,44 @@
+slug: meshcentral
+name: MeshCentral
+category: network
+description: Web-based remote monitoring and management for computers and devices.
+homepage: https://meshcentral.com
+source: https://github.com/Ylianst/MeshCentral
+
+image: ghcr.io/ylianst/meshcentral
+version: "1.2.4"
+arch: [amd64, arm64]
+
+port: 443
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: HOSTNAME
+    value: "mesh.${DOMAIN}"
+  - name: ALLOW_NEW_ACCOUNTS
+    value: "true"
+  - name: TLS_OFFLOAD
+    value: "true"
+  - name: REVERSE_PROXY
+    value: "mesh.${DOMAIN}"
+  - name: TRUSTED_PROXY
+    value: "mesh.${DOMAIN}"
+
+volumes:
+  - path: data
+    mount: /opt/meshcentral/meshcentral-data
+  - path: files
+    mount: /opt/meshcentral/meshcentral-files
+  - path: backups
+    mount: /opt/meshcentral/meshcentral-backups
+
+notes: |
+  TLS_OFFLOAD=true makes it serve plain HTTP on PORT instead of generating
+  a self-signed cert, so a TLS-terminating proxy can sit in front. Uses the
+  bundled local (NeDB) database by default - set USE_MONGODB/
+  USE_POSTGRESQL/USE_MARIADB and the matching *_HOST/*_USER/*_PASS/*_DATABASE
+  vars instead if you want an external one. ALLOW_NEW_ACCOUNTS=true is only
+  needed to create the first admin account through the web UI; set it back
+  to "false" once that account exists.
