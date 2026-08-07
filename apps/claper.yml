@@ -1,0 +1,43 @@
+slug: claper
+name: Claper
+category: productivity
+description: Interactive presentation and event platform with live polls and Q&A.
+homepage: https://claper.co
+source: https://github.com/ClaperCo/Claper
+
+image: ghcr.io/claperco/claper
+version: "3.0.0"
+arch: [amd64, arm64]
+
+port: 4000
+mem_limit: 512m
+database: postgres
+auth: oidc
+redirect_path: /users/oidc/callback
+
+env:
+  - name: BASE_URL
+    value: "https://claper.${DOMAIN}"
+  - name: SECRET_KEY_BASE
+    secret: true
+  - name: DATABASE_URL
+    value: "postgres://claper:${CLAPER_DB_PASSWORD}@claper-postgres:5432/claper"
+  - name: OIDC_ISSUER
+    secret: true
+    source: oidc_issuer
+  - name: OIDC_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: OIDC_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+
+volumes:
+  - path: uploads
+    mount: /app/uploads
+
+notes: |
+  PRESENTATION_STORAGE defaults to local disk; set it to s3 with the
+  S3_* vars instead if presentations should live in object storage.
+  ENABLE_ACCOUNT_CREATION defaults to true, so disable it after
+  creating the first account if public sign-up isn't wanted.

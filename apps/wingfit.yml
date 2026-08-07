@@ -1,0 +1,25 @@
+slug: wingfit
+name: Wingfit
+category: productivity
+description: Minimalist fitness app to plan workouts and track personal records.
+homepage: https://github.com/itskovacs/wingfit
+source: https://github.com/itskovacs/wingfit
+
+image: ghcr.io/itskovacs/wingfit
+version: "5.3.1"
+arch: [amd64, arm64]
+
+port: 8000
+mem_limit: 512m
+auth: proxy
+
+volumes:
+  - path: storage
+    mount: /app/storage
+
+notes: |
+  SQLite by default, no database sidecar needed. Registration is open
+  by default; disable it after creating the first account by setting
+  REGISTER_ENABLE to false in storage/config.yml and restarting the
+  container - that file, not environment variables, is where
+  first-run tuning (token lifetimes, OIDC) lives.
