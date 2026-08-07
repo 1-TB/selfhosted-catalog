@@ -1,0 +1,33 @@
+slug: livebook
+name: Livebook
+category: developer
+description: Interactive, collaborative notebooks for Elixir code.
+homepage: https://livebook.dev
+source: https://github.com/livebook-dev/livebook
+
+image: ghcr.io/livebook-dev/livebook
+version: "0.19.9"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: LIVEBOOK_PASSWORD
+    secret: true
+  - name: LIVEBOOK_DATA_PATH
+    value: /data/.livebook
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  LIVEBOOK_PASSWORD must be at least 12 characters, otherwise Livebook
+  falls back to a random token printed in the container logs on every
+  boot. The image's default LIVEBOOK_HOME is already /data, so notebooks
+  opened from the file picker land in the mounted volume. A second port
+  (8081) serves iframe output but only matters over plain HTTP - behind
+  an HTTPS proxy, iframes load from livebookusercontent.com instead, so
+  only 8080 needs to be exposed.

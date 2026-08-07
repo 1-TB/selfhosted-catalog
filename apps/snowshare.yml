@@ -1,0 +1,34 @@
+slug: snowshare
+name: SnowShare
+category: files
+description: Share links, code snippets and files with expiration, passwords and QR codes.
+homepage: ""
+source: https://github.com/TuroYT/snowshare
+
+image: turodev/snowshare
+version: "1.5.3"
+arch: [amd64, arm64]
+
+port: 3000
+database: postgres
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: DATABASE_URL
+    value: "postgres://snowshare:${SNOWSHARE_DB_PASSWORD}@snowshare-postgres:5432/snowshare"
+  - name: NEXTAUTH_URL
+    value: "https://snowshare.${DOMAIN}"
+  - name: NEXTAUTH_SECRET
+    secret: true
+  - name: ALLOW_SIGNUP
+    value: "false"
+
+volumes:
+  - path: uploads
+    mount: /app/uploads
+
+notes: |
+  Auth is NextAuth credentials (bcrypt) with no OIDC support. Create the
+  first admin account with ALLOW_SIGNUP=true, then flip it back to false
+  to stop open registration.
