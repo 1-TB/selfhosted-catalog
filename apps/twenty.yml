@@ -1,0 +1,39 @@
+slug: twenty
+name: Twenty
+category: productivity
+description: Modern open source CRM, an alternative to Salesforce and HubSpot.
+homepage: https://twenty.com
+source: https://github.com/twentyhq/twenty
+
+image: twentycrm/twenty
+version: "v2.28.0"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: postgres
+needs: [redis, worker]
+auth: proxy
+
+env:
+  - name: SERVER_URL
+    value: "https://twenty.${DOMAIN}"
+  - name: PG_DATABASE_URL
+    value: "postgres://twenty:${TWENTY_DB_PASSWORD}@twenty-postgres:5432/twenty"
+  - name: REDIS_URL
+    value: "redis://twenty-redis:6379"
+  - name: ENCRYPTION_KEY
+    secret: true
+
+volumes:
+  - path: storage
+    mount: /app/packages/twenty-server/.local-storage
+
+notes: |
+  Needs a second container running the same image as a worker (same
+  env, plus DISABLE_DB_MIGRATIONS=true and
+  DISABLE_CRON_JOBS_REGISTRATION=true so it doesn't race the main
+  container's migrations) to process background jobs. ENCRYPTION_KEY
+  must be generated once (openssl rand -base64 32) and never changed
+  after first run. SSO/SAML is gated behind the paid Enterprise tier;
+  community edition is local-login only.

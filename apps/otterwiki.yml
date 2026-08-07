@@ -1,0 +1,30 @@
+slug: otterwiki
+name: Otter Wiki
+category: documents
+description: Minimalistic wiki powered by Python, Markdown and git.
+homepage: https://otterwiki.com
+source: https://github.com/redimp/otterwiki
+
+image: redimp/otterwiki
+version: "2.23"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: AUTH_METHOD
+    value: "PROXY_HEADER"
+  - name: SECRET_KEY
+    secret: true
+
+volumes:
+  - path: data
+    mount: /app-data
+
+notes: |
+  AUTH_METHOD=PROXY_HEADER expects the proxy to forward x-otterwiki-name,
+  x-otterwiki-email and x-otterwiki-permissions headers; leave it unset
+  to use Otter Wiki's own local-account login instead. No SSO/OIDC
+  support either way. Content is a plain git repo under the data volume.
