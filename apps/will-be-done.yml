@@ -1,0 +1,24 @@
+slug: will-be-done
+name: Will Be Done
+category: productivity
+description: Offline-first weekly planner with day columns and project boards.
+homepage: https://will-be-done.app
+source: https://github.com/will-be-done/will-be-done
+
+image: ghcr.io/will-be-done/will-be-done
+version: "0.10.1"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: none
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /var/lib/will-be-done
+
+notes: |
+  SQLite, no separate database container and no env vars to configure -
+  the account is created through the app's own signup form on first
+  visit, so keep the instance private until you've registered it.

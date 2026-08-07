@@ -1,0 +1,24 @@
+slug: faved
+name: Faved
+category: productivity
+description: Lightweight bookmark manager with customisable nested tags.
+homepage: https://faved.to
+source: https://github.com/denho/faved
+
+image: denho/faved
+version: "2.10.0"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: none
+auth: proxy
+
+volumes:
+  - path: storage
+    mount: /var/www/html/storage
+
+notes: |
+  SQLite, no separate database container and no required env vars - on
+  first visit you're walked through database setup and admin account
+  creation in the browser.
