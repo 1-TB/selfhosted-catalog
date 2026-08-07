@@ -1,0 +1,27 @@
+slug: copyparty
+name: copyparty
+category: files
+description: Portable file server with resumable uploads, WebDAV and FTP.
+homepage: https://github.com/9001/copyparty
+source: https://github.com/9001/copyparty
+
+image: copyparty/ac
+version: "1.20.20"
+arch: [amd64, arm64]
+
+port: 3923
+mem_limit: 512m
+database: none
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /w
+  - path: config
+    mount: /cfg
+
+notes: |
+  Serves /w read-write to anyone by default - there's no auth built in
+  until a `something.conf` file is added under /cfg to define
+  accounts and per-volume permissions. Until then, rely on the
+  fronting proxy for access control.
