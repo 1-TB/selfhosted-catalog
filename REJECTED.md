@@ -100,6 +100,8 @@ release tags should be moved into `apps/`.
 | PassIt | Deploys via a floating `latest` tag by default (per its own DigitalOcean App Platform button) and needs a separate one-shot migration job container plus Postgres; its own docs note it also has no admin interface. |
 | Evidence (evidence.dev) | Billed as self-hostable "business intelligence as code," but there's no real server image - it's a static-site build tool meant to be deployed to Netlify, Vercel, or similar static hosts, not run as a standalone served app. |
 | FitTrackee | `ghcr.io/samr1/fittrackee` resolves fine and needs only Postgres plus Redis, but it covers the same ground as Endurain (also added this run) - a self-hosted activity/fitness tracker. Left out as a redundant near-duplicate rather than cataloguing two apps for the same niche in one pass. |
+| LeafWiki | `ghcr.io/perber/leafwiki` resolves fine (pinnable tags, amd64+arm64) and is a clean single-binary Markdown wiki with real env-var config, but it covers the same ground as Wiki-Go (added this run) - a flat-file self-hosted wiki. Left out as a redundant near-duplicate. |
+| Chibisafe | `chibisafe/chibisafe` resolves fine, but the real deployment splits frontend and backend into two separate containers behind a bundled Caddy instance, not one app image with a UI baked in - same frontend/backend split that ruled out Shlink and Your Spotify. |
 
 Two things that look like rejections but aren't:
 

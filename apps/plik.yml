@@ -1,0 +1,33 @@
+slug: plik
+name: Plik
+category: files
+description: Scalable temporary file upload and sharing system.
+homepage: https://root-gg.github.io/plik/
+source: https://github.com/root-gg/plik
+
+image: rootgg/plik
+version: "1.4.2"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+auth: none
+
+env:
+  - name: PLIKD_PLIK_DOMAIN
+    value: "https://plik.${DOMAIN}"
+  - name: PLIKD_MAX_FILE_SIZE_STR
+    value: "10GB"
+  - name: PLIKD_DEFAULT_TTL_STR
+    value: "30d"
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  Defaults to SQLite metadata and local file storage under /data, no
+  external database. No login by default - anyone who can reach it can
+  upload; put it behind a proxy with restricted access if that's not
+  wanted. Config can also be set via a mounted plikd.cfg instead of the
+  PLIKD_ env overrides shown here.
