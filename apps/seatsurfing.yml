@@ -1,0 +1,37 @@
+slug: seatsurfing
+name: Seatsurfing
+category: productivity
+description: Web app to book desks, rooms and seats for a hybrid office.
+homepage: https://seatsurfing.io
+source: https://github.com/seatsurfing/seatsurfing
+
+image: ghcr.io/seatsurfing/backend
+version: "1.121.0"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: POSTGRES_URL
+    value: "postgres://seatsurfing:${SEATSURFING_DB_PASSWORD}@seatsurfing-postgres/seatsurfing?sslmode=disable"
+  - name: CRYPT_KEY
+    secret: true
+  - name: PUBLIC_SCHEME
+    value: "https"
+  - name: PUBLIC_PORT
+    value: "443"
+  - name: INIT_ORG_PASS
+    secret: true
+
+notes: |
+  One image serves the backend API, the booking UI (/ui/search/) and
+  the admin UI (/ui/admin/) - no separate frontend container. CRYPT_KEY
+  must be exactly 32 bytes and never change once set, or existing
+  encrypted database fields become unreadable. INIT_ORG_PASS sets the
+  first admin's password on first run only (default is a well-known
+  value if left unset); per-organization SSO/SAML providers are added
+  afterward from the admin UI, so global env-based OIDC isn't used
+  here.

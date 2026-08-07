@@ -1,0 +1,42 @@
+slug: grist
+name: Grist
+category: productivity
+description: Modern relational spreadsheet, an open-source hybrid of a spreadsheet and a database.
+homepage: https://www.getgrist.com
+source: https://github.com/gristlabs/grist-core
+
+image: gristlabs/grist
+version: "1.7.17"
+arch: [amd64, arm64]
+
+port: 8484
+mem_limit: 512m
+database: none
+auth: oidc
+redirect_path: /oauth2/callback
+
+env:
+  - name: APP_HOME_URL
+    value: "https://grist.${DOMAIN}"
+  - name: GRIST_SESSION_SECRET
+    secret: true
+  - name: GRIST_OIDC_IDP_ISSUER
+    secret: true
+    source: oidc_issuer
+  - name: GRIST_OIDC_IDP_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: GRIST_OIDC_IDP_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+
+volumes:
+  - path: data
+    mount: /persist
+
+notes: |
+  OIDC activates automatically once GRIST_OIDC_IDP_ISSUER and
+  GRIST_OIDC_IDP_CLIENT_ID are set - there's no separate enable flag.
+  Documents are stored as SQLite files under /persist; no external
+  database is used. Without an IdP configured, Grist falls back to a
+  first-run "Quick setup" wizard exposed on the same port.
