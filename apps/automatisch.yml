@@ -1,0 +1,58 @@
+slug: automatisch
+name: Automatisch
+category: automation
+description: No-code business automation tool, an open source alternative to Zapier.
+homepage: https://automatisch.io
+source: https://github.com/automatisch/automatisch
+
+image: automatischio/automatisch
+version: "0.15.0"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: postgres
+needs: [redis, worker]
+auth: proxy
+
+env:
+  - name: APP_ENV
+    value: "production"
+  - name: HOST
+    value: "automatisch.${DOMAIN}"
+  - name: PROTOCOL
+    value: "https"
+  - name: PORT
+    value: "3000"
+  - name: ENCRYPTION_KEY
+    secret: true
+  - name: WEBHOOK_SECRET_KEY
+    secret: true
+  - name: APP_SECRET_KEY
+    secret: true
+  - name: POSTGRES_HOST
+    value: "automatisch-postgres"
+  - name: POSTGRES_PORT
+    value: "5432"
+  - name: POSTGRES_DATABASE
+    value: "automatisch"
+  - name: POSTGRES_USERNAME
+    value: "automatisch"
+  - name: POSTGRES_PASSWORD
+    secret: true
+  - name: REDIS_HOST
+    value: "automatisch-redis"
+  - name: REDIS_PORT
+    value: "6379"
+
+volumes:
+  - path: storage
+    mount: /automatisch/storage
+
+notes: |
+  Needs a second container running the same image with WORKER=true set
+  (no PORT/HOST needed on it) to actually execute flows; the main
+  container alone only serves the UI. ENCRYPTION_KEY and
+  WEBHOOK_SECRET_KEY must both be generated once (openssl rand -base64
+  36) and never changed after first run, or existing connections and
+  webhooks break. Community edition has no SSO/OIDC support.

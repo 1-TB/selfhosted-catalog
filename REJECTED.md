@@ -64,6 +64,10 @@ release tags should be moved into `apps/`.
 | Mindwendel | No official Docker image published to any registry - the project's own docs say to `docker build` from its Dockerfile yourself. Nothing to pin. |
 | Open WebUI | `ghcr.io/open-webui/open-webui` hits the same ~1000-tag pagination cap as Keycloak/WordPress/Ghost/Frigate - the registry only returns tags up to `v0.1.121`, years behind the project's actual current release line. Not pinnable with confidence via this tool. |
 | LocalAI | Neither `localai/localai` nor `ghcr.io/mudler/localai` return a usable `latest` from this tool - both also hit the ~1000-tag pagination cap. Not pinnable with confidence via this tool. |
+| Kestra | `kestra/kestra` resolves fine (pinnable tags, amd64+arm64), but production config is a single YAML blob passed via `KESTRA_CONFIGURATION` (or a mounted `application.yaml`) rather than discrete env vars, and its own quickstart mounts the host's `/var/run/docker.sock` so script/container tasks can run - neither fits this schema's env-var model or its single-container footprint. |
+| Your Spotify | `yooooomi/your_spotify_server` resolves fine (pinnable tags, amd64+arm64), but the web UI lives entirely in a separate `yooooomi/your_spotify_client` container - the server is API-only. Same two-container UI/backend split that ruled out Shlink. |
+| Chartbrew | Resolves (`razvanilin/chartbrew`, a personal namespace rather than an org one), but ships as separate frontend (4018) and API (4019) processes plus a hard MySQL/Postgres + Redis requirement, and the docs don't make clear whether that's one container or two. Left out rather than guess at the split. |
+| Mathesar | `mathesar/mathesar` resolves fine, but the project's own docker-compose bundles a dedicated Postgres (which stores the actual user databases Mathesar manages, not just app config) plus its own Caddy reverse proxy by default - overlaps this catalogue's reverse-proxy layer and blurs the single-database-sidecar model in a way Azimutt and AFFiNE already got left out for. |
 
 Two things that look like rejections but aren't:
 

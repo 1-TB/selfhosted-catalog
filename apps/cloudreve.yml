@@ -1,0 +1,27 @@
+slug: cloudreve
+name: Cloudreve
+category: files
+description: Self-hosted file management and sharing system with multi-storage support.
+homepage: https://cloudreve.org
+source: https://github.com/cloudreve/cloudreve
+
+image: cloudreve/cloudreve
+version: "4.18.0"
+arch: [amd64, arm64]
+
+port: 5212
+mem_limit: 512m
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /cloudreve/data
+
+notes: |
+  Ships with SQLite and in-memory caching by default - no database
+  env vars needed for a single-node setup, though upstream recommends
+  Postgres+Redis for concurrent use. The first account registered
+  through the web UI becomes the administrator; there's no separate
+  bootstrap credential. Also listens on 6888 tcp/udp for its built-in
+  Aria2 remote downloader, which needs its own port published and
+  won't work through an HTTP-only proxy.

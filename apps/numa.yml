@@ -1,0 +1,26 @@
+slug: numa
+name: Numa
+category: network
+description: Ad-blocking DNS resolver with DNSSEC, DoH/DoT and a live dashboard.
+homepage: https://numa.rs
+source: https://github.com/razvandimescu/numa
+
+image: ghcr.io/razvandimescu/numa
+version: "0.22.0"
+arch: [amd64, arm64]
+
+port: 5380
+mem_limit: 512m
+auth: proxy
+
+volumes:
+  - path: config
+    mount: /root/.config/numa
+
+notes: |
+  Answering DNS needs port 53 tcp/udp (and 853 for DoT) published on
+  the host, which an HTTP-only proxy cannot carry; only the dashboard
+  on 5380 goes through the proxy. Configuration is a numa.toml file in
+  the mounted config directory, not environment variables - it runs
+  with sane defaults (Hagezi Pro blocklist, caching) if left alone.
+  The dashboard has no built-in login of its own.
