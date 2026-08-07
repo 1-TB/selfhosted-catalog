@@ -1,0 +1,24 @@
+slug: flipt
+name: Flipt
+category: developer
+description: Feature flag and experimentation platform.
+homepage: https://flipt.io
+source: https://github.com/flipt-io/flipt
+
+image: ghcr.io/flipt-io/flipt
+version: "v2.11.0"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /var/opt/flipt
+
+notes: |
+  No authentication is enabled by default - the UI is fully open until
+  you configure an auth method (token, OIDC, Kubernetes), so put a proxy
+  in front. Feature-flag state is a local git repo under /var/opt/flipt;
+  no database required. Also serves a gRPC API on 9000.

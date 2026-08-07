@@ -1,0 +1,30 @@
+slug: kaneo
+name: Kaneo
+category: productivity
+description: Lightweight project management platform with kanban boards.
+homepage: https://kaneo.app
+source: https://github.com/usekaneo/kaneo
+
+image: ghcr.io/usekaneo/kaneo
+version: "2.13.0"
+arch: [amd64, arm64]
+
+port: 5173
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: KANEO_CLIENT_URL
+    value: "https://kaneo.${DOMAIN}"
+  - name: KANEO_API_URL
+    value: "https://kaneo.${DOMAIN}/api"
+  - name: DATABASE_URL
+    value: "postgresql://kaneo:${KANEO_DB_PASSWORD}@kaneo-postgres:5432/kaneo"
+  - name: AUTH_SECRET
+    secret: true
+
+notes: |
+  AUTH_SECRET must be at least 32 characters. Optional S3-compatible
+  object storage (S3_* vars) enables file uploads on tasks/comments;
+  without it the app still runs, uploads are just unavailable.

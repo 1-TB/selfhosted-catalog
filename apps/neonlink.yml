@@ -1,0 +1,24 @@
+slug: neonlink
+name: NeonLink
+category: productivity
+description: Minimal, privately-designed self-hosted bookmark manager.
+homepage: https://github.com/AlexSciFier/neonlink
+source: https://github.com/AlexSciFier/neonlink
+
+image: alexscifier/neonlink
+version: "v1.4.21"
+arch: [amd64, arm64]
+
+port: 3333
+mem_limit: 512m
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /app/data
+  - path: backgrounds
+    mount: /app/public/static/media/background
+
+notes: |
+  Uses SQLite; no database container needed. If it fails to start
+  behind slow storage, raise the FASTIFY_PLUGIN_TIMEOUT (ms) env var.
