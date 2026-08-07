@@ -1,0 +1,36 @@
+slug: pinchflat
+name: Pinchflat
+category: media
+description: Self-hosted YouTube channel/playlist downloader built on yt-dlp.
+homepage: https://github.com/kieraneglin/pinchflat
+source: https://github.com/kieraneglin/pinchflat
+
+image: ghcr.io/kieraneglin/pinchflat
+version: "v2025.6.6"
+arch: [amd64, arm64]
+
+port: 8945
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: TZ
+    value: "Etc/UTC"
+  - name: BASIC_AUTH_USERNAME
+    secret: true
+  - name: BASIC_AUTH_PASSWORD
+    secret: true
+
+volumes:
+  - path: config
+    mount: /config
+  - path: downloads
+    mount: /downloads
+
+notes: |
+  Self-contained SQLite under /config, no external database. Ships with no
+  auth by default; set BASIC_AUTH_USERNAME/PASSWORD for built-in basic auth,
+  or leave unset and rely on the reverse-proxy. Makes heavy use of
+  websockets for live progress updates, so the proxy in front must forward
+  Upgrade/Connection headers.

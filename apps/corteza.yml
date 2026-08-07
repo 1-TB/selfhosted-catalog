@@ -1,0 +1,37 @@
+slug: corteza
+name: Corteza
+category: productivity
+description: Open-source low-code platform for CRM, workflows and business apps.
+homepage: https://cortezaproject.org
+source: https://github.com/cortezaproject/corteza
+
+image: cortezaproject/corteza
+version: "2024.9.9"
+arch: [amd64]
+
+port: 80
+mem_limit: 512m
+database: postgres
+auth: oidc
+redirect_path: /auth/external/oidc/callback
+
+env:
+  - name: DOMAIN
+    value: "corteza.${DOMAIN}"
+  - name: DB_DSN
+    value: "postgres://corteza:${CORTEZA_DB_PASSWORD}@corteza-postgres:5432/corteza?sslmode=disable"
+  - name: AUTH_JWT_SECRET
+    secret: true
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  amd64-only image. /data holds uploaded files (STORAGE_PATH). External
+  OIDC providers are added from System Settings > Auth Settings in the
+  admin UI, not env vars - the callback path is
+  /auth/external/{provider}/callback where {provider} is whatever handle
+  you give the provider there; set it to "oidc" to match redirect_path
+  above. AUTH_JWT_SECRET auto-generates if left unset, but the project's
+  own docs say to set it explicitly (30+ random chars) for production.
