@@ -1,0 +1,29 @@
+slug: answer
+name: Apache Answer
+category: communication
+description: Q&A platform for building a StackOverflow-style knowledge community.
+homepage: https://answer.apache.org
+source: https://github.com/apache/answer
+
+image: apache/answer
+version: "2.0.2"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+auth: none
+
+env:
+  - name: INSTALL_PORT
+    value: "80"
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  First run: visit /install and step through the setup wizard to pick
+  a database (SQLite, needing nothing else, or MySQL/Postgres) and
+  create the admin account - there's no env-var equivalent. SQLite
+  keeps everything under the data volume with no separate database
+  service.

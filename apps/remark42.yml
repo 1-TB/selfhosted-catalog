@@ -1,0 +1,35 @@
+slug: remark42
+name: Remark42
+category: communication
+description: Self-hosted commenting engine that embeds on any site, with social login.
+homepage: https://remark42.com
+source: https://github.com/umputun/remark42
+
+image: ghcr.io/umputun/remark42
+version: "v1.16.4"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+auth: none
+
+env:
+  - name: REMARK_URL
+    value: "https://remark42.${DOMAIN}"
+  - name: SITE
+    value: "remark"
+  - name: SECRET
+    secret: true
+  - name: AUTH_ANON
+    value: "true"
+
+volumes:
+  - path: data
+    mount: /srv/var
+
+notes: |
+  Meant to be public - visitors authenticate per-comment via social
+  login (GitHub/Google/etc, each needs its own AUTH_<PROVIDER>_CID/CSEC
+  pair) or anonymously if AUTH_ANON is left on. No database; everything
+  is a BoltDB file under the data volume. The admin user is whichever
+  account ID is listed in ADMIN_SHARED_ID.

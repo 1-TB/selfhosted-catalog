@@ -1,0 +1,44 @@
+slug: part-db
+name: Part-DB
+category: productivity
+description: Inventory management for electronic components, with BOM and distributor links.
+homepage: https://part-db.eu
+source: https://github.com/Part-DB/Part-DB-server
+
+image: jbtronics/part-db1
+version: "v2.14.1"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: APP_ENV
+    value: "docker"
+  - name: APP_SECRET
+    secret: true
+  - name: DATABASE_URL
+    value: "sqlite:///%kernel.project_dir%/var/db/app.db"
+  - name: DEFAULT_LANG
+    value: "en"
+  - name: DEFAULT_TIMEZONE
+    value: "UTC"
+  - name: INSTANCE_NAME
+    value: "Part-DB"
+
+volumes:
+  - path: uploads
+    mount: /var/www/html/uploads
+  - path: media
+    mount: /var/www/html/public/media
+  - path: db
+    mount: /var/www/html/var/db
+
+notes: |
+  First run: after the container is up, run
+  `docker exec --user=www-data <container> php bin/console doctrine:migrations:migrate`
+  once to create the schema. Default login is admin, with a
+  password auto-generated and printed to the container log on first
+  init. SQLite is the default database (no separate service needed);
+  MySQL is supported instead via DATABASE_URL.

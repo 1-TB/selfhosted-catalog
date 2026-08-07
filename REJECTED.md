@@ -165,6 +165,16 @@ release tags should be moved into `apps/`.
 | Starbase 80 | `jordanroher/starbase-80` resolves fine (pinnable tags, amd64+arm64) and is a clean single-container dashboard, but it's the catalogue's seventh entry in the same personal-dashboard niche (Homarr, Homepage, Homer, Heimdall, Dashy, Mafl already cover it). Left out as a redundant near-duplicate rather than padding the category. |
 | gobookmarks | `arran4/gobookmarks` resolves a real release (`1.8.29`) but only as an amd64 image - the multi-arch tags on the same repo stop at `v1.7.14`. Also a fairly niche git-backed-bookmarks landing page next to the catalogue's existing bookmark managers. |
 
+| Roundup Issue Tracker | `rounduptracker/roundup` resolves (`2.6.0`) but only as an amd64 image, and configuration is driven by editing `template/config.ini` through an interactive three-step `docker run` sequence (install, then edit config.ini and init the db, then start) - no documented non-interactive/env-var path, same class of problem as SiYuan and Kestra. |
+| OTOBO | `rotheross/otobo` is the vendor's own namespace, but a real deployment is a web container, a daemon container, MariaDB, Redis and Elasticsearch - three extra services beyond one database, well past what `needs:` is meant to model. |
+| Request Tracker (RT) | No image published under Best Practical's own namespace - a maintainer confirmed on RT's own community forum that there's no official or recommended Docker image, only third-party rebuilds (netsandbox, jbfink, arpuplus). |
+| AdventureLog | `ghcr.io/seanmorley15/adventurelog-frontend` and `-backend` resolve, but the real deployment splits frontend and backend into two containers on top of Postgres with the PostGIS extension specifically - the same frontend/backend split that ruled out Shlink, plus the same "not plain Postgres" problem as Mobilizon and Ziit. |
+| NodeBB | `ghcr.io/nodebb/nodebb` resolves (`4.9.0`, amd64+arm64) and plain MongoDB needs no replica set here, but the official compose still mounts a `setup.json`/`config.json` pair alongside double-underscore env vars, and open community threads report the prebuilt image failing first run with "Did you run ./nodebb build?" - not enough to pin a non-interactive first-run path with confidence this run. |
+| Flarum | No image published under the Flarum project's own namespace - the widely-used `mondedie/flarum` is a third-party community rebuild, and Flarum's own docs point at a Composer install instead of a maintained image. |
+| Misago | The project's own current "official docker solution" (`rafalp/misago_docker`) is a docker-compose setup that builds the image from source rather than pulling a published tag from a registry - nothing to pin. |
+| GoToSocial | `ghcr.io/superseriousbusiness/gotosocial` returns no tags via this tool this run - only third-party Docker Hub rebuilds (metalmatze, decentral1se) turned up searching around it. Worth a retry later. |
+| Authelia | Resolves fine (`ghcr.io/authelia/authelia`, pinnable, multi-arch), but real configuration is a mounted `configuration.yml` covering access-control rules and the session/storage backend - env vars only cover a subset, same class of problem as Kestra and Group Office. |
+
 Two things that look like rejections but aren't:
 
 **amd64-only images are still catalogued.** They get `arch: [amd64]` and that
