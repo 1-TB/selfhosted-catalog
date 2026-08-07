@@ -1,0 +1,35 @@
+slug: econumo
+name: Econumo
+category: productivity
+description: Budgeting app for personal and family finances with multi-currency and joint-account support.
+homepage: https://econumo.com
+source: https://github.com/econumo/econumo
+
+image: ghcr.io/econumo/econumo
+version: "v1.3.1"
+arch: [amd64, arm64]
+
+port: 80
+database: none
+auth: proxy
+
+env:
+  - name: DATABASE_URL
+    value: "sqlite:///app/var/db/db.sqlite"
+  - name: PORT
+    value: "80"
+  - name: ECONUMO_ALLOW_REGISTRATION
+    value: "true"
+  - name: ECONUMO_URL
+    value: "https://econumo.${DOMAIN}"
+
+volumes:
+  - path: db
+    mount: /app/var/db
+
+notes: |
+  Runs on an embedded SQLite database by default (set DATABASE_URL to a
+  postgres:// DSN instead if you'd rather use Postgres). No email is sent
+  for password recovery unless MAILER_DSN is set (defaults to printing
+  the email to container logs). Set ECONUMO_ALLOW_REGISTRATION=false
+  after creating the first account to stop open signups.

@@ -1,0 +1,48 @@
+slug: receipt-wrangler
+name: Receipt Wrangler
+category: productivity
+description: Self-hosted receipt manager with AI-assisted itemization and expense splitting.
+homepage: https://receiptwrangler.io
+source: https://github.com/Receipt-Wrangler/receipt-wrangler
+
+image: noah231515/receipt-wrangler
+version: "v7.1.0"
+arch: [amd64, arm64]
+
+port: 80
+database: none
+needs: [redis]
+auth: proxy
+
+env:
+  - name: ENCRYPTION_KEY
+    secret: true
+  - name: SECRET_KEY
+    secret: true
+  - name: DB_ENGINE
+    value: sqlite
+  - name: DB_FILENAME
+    value: receipt-wrangler.db
+  - name: REDIS_HOST
+    value: "receipt-wrangler-redis"
+  - name: REDIS_PORT
+    value: "6379"
+
+volumes:
+  - path: data
+    mount: /app/receipt-wrangler-api/data
+  - path: sqlite
+    mount: /app/receipt-wrangler-api/sqlite
+  - path: logs
+    mount: /app/receipt-wrangler-api/logs
+
+notes: |
+  Single container bundles the Angular UI, nginx and the Go API together
+  (image published from the maintainer's personal Docker Hub namespace,
+  which is also where the project's own release workflow pushes it).
+  ENCRYPTION_KEY and SECRET_KEY are both required with no default - the
+  container won't start without them. DB_ENGINE also accepts postgresql
+  or mariadb/mysql with DB_USER/DB_PASSWORD/DB_HOST/DB_PORT/DB_NAME set
+  instead, if you'd rather not use the bundled SQLite file. AI-assisted
+  itemization is opt-in and requires a separate OpenAI-compatible API
+  key configured after first run, not at deploy time.
