@@ -1,0 +1,36 @@
+slug: appsmith
+name: Appsmith
+category: productivity
+description: Low-code platform for building internal tools, admin panels and dashboards.
+homepage: https://www.appsmith.com
+source: https://github.com/appsmithorg/appsmith
+
+image: appsmith/appsmith-ce
+version: "v2.2"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 4g
+auth: proxy
+
+env:
+  - name: APPSMITH_ENCRYPTION_PASSWORD
+    secret: true
+  - name: APPSMITH_ENCRYPTION_SALT
+    secret: true
+
+volumes:
+  - path: stacks
+    mount: /appsmith-stacks
+
+notes: |
+  Single container, self-contained: it runs its own MongoDB, Redis and
+  Postgres internally rather than needing external sidecars, all under
+  /appsmith-stacks. That bundling is also why it's heavy - upstream's own
+  docs recommend planning for 8GB of host RAM for this all-in-one image,
+  well past most entries in this catalogue; externalizing the databases
+  lowers it but isn't the documented default path.
+  APPSMITH_ENCRYPTION_PASSWORD/SALT encrypt saved datasource credentials
+  at rest - losing or changing them after first run locks you out of
+  anything already saved, so generate them once and keep them with the
+  rest of the app's secrets.

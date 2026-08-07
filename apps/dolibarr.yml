@@ -1,0 +1,48 @@
+slug: dolibarr
+name: Dolibarr
+category: productivity
+description: ERP and CRM suite covering invoicing, stock, projects and HR for small businesses.
+homepage: https://www.dolibarr.org
+source: https://github.com/Dolibarr/dolibarr
+
+image: dolibarr/dolibarr
+version: "23.0.3"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: mariadb
+auth: proxy
+
+env:
+  - name: DOLI_DB_HOST
+    value: "dolibarr-mariadb"
+  - name: DOLI_DB_NAME
+    value: "dolidb"
+  - name: DOLI_DB_USER
+    value: "dolibarr"
+  - name: DOLI_DB_PASSWORD
+    value: "${DOLIBARR_DB_PASSWORD}"
+  - name: DOLI_ADMIN_LOGIN
+    value: "admin"
+  - name: DOLI_ADMIN_PASSWORD
+    secret: true
+  - name: DOLI_URL_ROOT
+    value: "https://dolibarr.${DOMAIN}"
+  - name: DOLI_INSTANCE_UNIQUE_ID
+    secret: true
+  - name: DOLI_INIT_DEMO
+    value: "0"
+  - name: DOLI_CRON
+    value: "0"
+
+volumes:
+  - path: documents
+    mount: /var/www/documents
+  - path: custom
+    mount: /var/www/html/custom
+
+notes: |
+  DOLI_CRON is left off; turning it on wants a second container running
+  the same image with a cron entrypoint. Scheduled jobs (recurring
+  invoices, imports) simply won't run without it.

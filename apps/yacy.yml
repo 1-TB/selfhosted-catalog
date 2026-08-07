@@ -1,0 +1,23 @@
+slug: yacy
+name: YaCy
+category: network
+description: Decentralized, peer-to-peer search engine with its own crawler and index.
+homepage: https://yacy.net
+source: https://github.com/yacy/yacy_search_server
+
+image: yacy/yacy_search_server
+version: "1.93"
+arch: [amd64]
+
+port: 8090
+mem_limit: 1536m
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /opt/yacy_search_server/DATA
+
+notes: |
+  Ships with a default admin login of admin/yacy - change it from
+  Administration > Accounts on first visit. JVM heap defaults to 600MB
+  and is tuned from the web UI (Performance page), not an env var.

@@ -1,0 +1,50 @@
+slug: invoiceshelf
+name: InvoiceShelf
+category: productivity
+description: Invoicing, estimates and expense tracking for freelancers and small businesses.
+homepage: https://invoiceshelf.com
+source: https://github.com/InvoiceShelf/InvoiceShelf
+
+image: invoiceshelf/invoiceshelf
+version: "2.4.2"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: mariadb
+auth: proxy
+
+env:
+  - name: APP_NAME
+    value: "InvoiceShelf"
+  - name: APP_ENV
+    value: "production"
+  - name: APP_URL
+    value: "https://invoiceshelf.${DOMAIN}"
+  - name: SESSION_DOMAIN
+    value: "invoiceshelf.${DOMAIN}"
+  - name: SANCTUM_STATEFUL_DOMAINS
+    value: "invoiceshelf.${DOMAIN}"
+  - name: DB_CONNECTION
+    value: "mariadb"
+  - name: DB_HOST
+    value: "invoiceshelf-mariadb"
+  - name: DB_PORT
+    value: "3306"
+  - name: DB_DATABASE
+    value: "invoiceshelf"
+  - name: DB_USERNAME
+    value: "invoiceshelf"
+  - name: DB_PASSWORD
+    value: "${INVOICESHELF_DB_PASSWORD}"
+
+volumes:
+  - path: storage
+    mount: /var/www/html/storage
+  - path: modules
+    mount: /var/www/html/Modules
+
+notes: |
+  First visit to APP_URL runs InvoiceShelf's own web installer, which
+  creates the admin account and confirms the db connection - it isn't
+  set up non-interactively.
