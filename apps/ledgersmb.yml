@@ -1,0 +1,32 @@
+slug: ledgersmb
+name: LedgerSMB
+category: productivity
+description: Double-entry accounting and ERP system for small and midsize businesses.
+homepage: https://ledgersmb.org
+source: https://github.com/ledgersmb/LedgerSMB
+
+image: ledgersmb/ledgersmb
+version: "1.13.7"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: POSTGRES_HOST
+    value: "ledgersmb-postgres"
+  - name: POSTGRES_PORT
+    value: "5432"
+  - name: POSTGRES_PASSWORD
+    value: "${LEDGERSMB_DB_PASSWORD}"
+
+notes: |
+  All application data lives in Postgres; the container itself has no
+  persistent state to volume-mount. First run needs a visit to /setup.pl
+  (using the postgres superuser credentials) to create the company
+  database before /login.pl is usable. Port 80 runs the bundled nginx
+  reverse proxy in front of the Starman app server (image 1.13+); the
+  app server alone is also reachable on 5762 if you'd rather front it
+  yourself.
