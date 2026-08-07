@@ -1,0 +1,31 @@
+slug: webhook-tester
+name: WebHook Tester
+category: developer
+description: Capture and inspect incoming HTTP requests at a disposable unique URL, for debugging webhooks.
+homepage: https://github.com/tarampampam/webhook-tester
+source: https://github.com/tarampampam/webhook-tester
+
+image: ghcr.io/tarampampam/webhook-tester
+version: "2.3.0"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: STORAGE_DRIVER
+    value: "fs"
+  - name: FS_STORAGE_DIR
+    value: "/data"
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  Defaults to in-memory storage, which loses all captured requests on
+  restart; STORAGE_DRIVER=fs plus the volume above is what makes it
+  survive one. Auth in front protects the UI, but the whole point of the
+  tool is that its per-session capture URLs are hit unauthenticated by
+  whatever is sending the webhooks - don't put those paths behind login.

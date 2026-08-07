@@ -130,6 +130,12 @@ release tags should be moved into `apps/`.
 | Taiga | No single official image maintained by the Taiga project itself - only third-party rebuilds (`docker-taiga/taiga`, `m00re/taiga`, `benhutchins/taiga`), and a real deployment splits backend/frontend/events/gateway across several containers regardless. |
 | Plane | `makeplane/plane` resolves, but a real deployment needs Postgres, Redis, and separate frontend/admin/space/backend/worker containers - several services past the one-extra-service model. |
 
+| Komga | `gotson/komga` resolves fine (pinnable tags, amd64+arm64, no db needed - port 25600), but it covers the same ground as Kavita, already in the catalogue - both are comics/manga/ebook reading servers with a web reader. Left out as a redundant near-duplicate. |
+| gonic | `sentriz/gonic` resolves fine (pinnable tags, amd64+arm64, no db needed), but it's a Subsonic-API-compatible music server, the same niche Navidrome already covers in the catalogue. Left out as a redundant near-duplicate. |
+| Hasura (GraphQL Engine) | `hasura/graphql-engine` hits the same ~1000-tag pagination cap as Keycloak/WordPress/Ghost/Frigate/Open WebUI - the registry only returns PR-build tags (`pull1925-...`), no semver release visible. Not pinnable with confidence via this tool. |
+| Alf.io | `alfio/alf.io` resolves, but every tag cut since 2019 is a `2.0-M0`...`2.0-M5` milestone/pre-release (latest `2.0-M5-2606`, June 2026) - the project has been stuck pre-GA on the 2.0 line for years and never tags a plain stable release. Last real stable was `1.16.3`, itself years stale. |
+| Piwigo | `piwigo/piwigo` resolves fine (pinnable tags, amd64+arm64) and is a clean single-container-plus-mariadb shape, but the app container takes no database env vars at all - the db host/name/user/password are entered by hand through Piwigo's own web installer on first visit. Same "no env-var equivalent for wiring up the database" problem that ruled out Krayin CRM. |
+
 Two things that look like rejections but aren't:
 
 **amd64-only images are still catalogued.** They get `arch: [amd64]` and that
