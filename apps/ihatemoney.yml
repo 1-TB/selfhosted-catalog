@@ -1,0 +1,48 @@
+slug: ihatemoney
+name: I Hate Money
+category: productivity
+description: Shared expense tracker for splitting group bills.
+homepage: https://ihatemoney.org
+source: https://github.com/spiral-project/ihatemoney
+
+image: ihatemoney/ihatemoney
+version: "7.2.0"
+arch: [amd64, arm64]
+
+port: 8000
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: SQLALCHEMY_DATABASE_URI
+    value: "sqlite:////database/ihatemoney.db"
+  - name: SECRET_KEY
+    secret: true
+  - name: ADMIN_PASSWORD
+    secret: true
+  - name: ALLOW_PUBLIC_PROJECT_CREATION
+    value: "False"
+  - name: ACTIVATE_ADMIN_DASHBOARD
+    value: "False"
+  - name: BABEL_DEFAULT_TIMEZONE
+    value: "UTC"
+  - name: SESSION_COOKIE_SECURE
+    value: "True"
+  - name: MAIL_SERVER
+    value: "localhost"
+  - name: MAIL_DEFAULT_SENDER
+    value: "Budget manager <admin@${DOMAIN}>"
+
+volumes:
+  - path: data
+    mount: /database
+
+notes: |
+  SQLite by default via SQLALCHEMY_DATABASE_URI, pointed at the mounted
+  /database volume; swap it for a Postgres/MariaDB URI to use one of
+  those instead. ADMIN_PASSWORD takes a generated hash, not plaintext:
+  docker run -it --rm --entrypoint ihatemoney ihatemoney/ihatemoney:7.2.0
+  generate_password_hash - then double every literal $ in the result
+  before putting it in the env var. Leave ADMIN_PASSWORD unset to
+  disable the admin dashboard entirely.

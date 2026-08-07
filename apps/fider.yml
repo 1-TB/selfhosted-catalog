@@ -1,0 +1,38 @@
+slug: fider
+name: Fider
+category: productivity
+description: Feedback portal for collecting and voting on feature requests.
+homepage: https://fider.io
+source: https://github.com/getfider/fider
+
+image: getfider/fider
+version: "v0.36.0"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: BASE_URL
+    value: "https://fider.${DOMAIN}"
+  - name: DATABASE_URL
+    value: "postgres://fider:${FIDER_DB_PASSWORD}@fider-postgres:5432/fider?sslmode=disable"
+  - name: JWT_SECRET
+    secret: true
+  - name: EMAIL_NOREPLY
+    value: "noreply@${DOMAIN}"
+  - name: EMAIL_SMTP_HOST
+    value: "localhost"
+  - name: EMAIL_SMTP_PORT
+    value: "587"
+  - name: EMAIL_SMTP_USERNAME
+    secret: true
+  - name: EMAIL_SMTP_PASSWORD
+    secret: true
+
+notes: |
+  Login is email-link based by default; OAUTH_GOOGLE_CLIENTID/SECRET,
+  OAUTH_GITHUB_CLIENTID/SECRET and OAUTH_FACEBOOK_APPID/SECRET add
+  optional social sign-in, but there is no generic OIDC provider.

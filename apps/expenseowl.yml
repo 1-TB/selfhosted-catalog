@@ -1,0 +1,25 @@
+slug: expenseowl
+name: ExpenseOwl
+category: productivity
+description: Minimalist expense tracker with a monthly pie-chart view.
+homepage: https://github.com/Tanq16/expenseowl
+source: https://github.com/Tanq16/expenseowl
+
+image: tanq16/expenseowl
+version: "v4.1"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /app/data
+
+notes: |
+  No built-in authentication - the project's own docs say to put it
+  behind a proxy like Authelia. Defaults to local JSON file storage;
+  set STORAGE_TYPE=postgres plus STORAGE_URL/STORAGE_USER/STORAGE_PASS
+  to point it at Postgres instead.

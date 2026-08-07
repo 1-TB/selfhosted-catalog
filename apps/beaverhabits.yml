@@ -1,0 +1,33 @@
+slug: beaverhabits
+name: Beaver Habit Tracker
+category: productivity
+description: Simple habit tracker without goals or streak pressure.
+homepage: https://beaverhabits.com
+source: https://github.com/daya0576/beaverhabits
+
+image: daya0576/beaverhabits
+version: "0.10.0"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: HABITS_STORAGE
+    value: "USER_DISK"
+  - name: INDEX_HABIT_DATE_COLUMNS
+    value: "5"
+  - name: ENABLE_IOS_STANDALONE
+    value: "true"
+
+volumes:
+  - path: data
+    mount: /app/.user
+
+notes: |
+  HABITS_STORAGE=USER_DISK saves habits as local JSON files under the
+  mounted volume; set it to DATABASE to use a single SQLite file
+  instead. Runs as an unprivileged "nobody" user - the host directory
+  backing the volume must be writable by the container's UID/GID.

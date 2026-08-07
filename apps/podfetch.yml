@@ -1,0 +1,32 @@
+slug: podfetch
+name: Podfetch
+category: media
+description: Self-hosted podcast manager with GPodder sync.
+homepage: https://github.com/SamTV12345/PodFetch
+source: https://github.com/SamTV12345/PodFetch
+
+image: samuel19982/podfetch
+version: "v5.2.2"
+arch: [amd64, arm64]
+
+port: 8000
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: POLLING_INTERVAL
+    value: "60"
+  - name: DATABASE_URL
+    value: "sqlite:///app/db/podcast.db"
+
+volumes:
+  - path: podcasts
+    mount: /app/podcasts
+  - path: db
+    mount: /app/db
+
+notes: |
+  Ships its own Postgres-backed variant (Dockerfile_cross_postgres /
+  docker-compose-postgres.yml upstream) if SQLite isn't wanted, but
+  this image is the plain SQLite build - no separate database needed.
