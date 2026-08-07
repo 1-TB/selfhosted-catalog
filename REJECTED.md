@@ -74,6 +74,10 @@ release tags should be moved into `apps/`.
 | LibreKB | Ships a `Dockerfile` and `docker-compose.yml` for building it yourself, but no image published to any registry under the project's own namespace. Nothing to pull. |
 | HomeButler | No official Docker image - the project distributes as a single Go binary (Homebrew, curl installer, npm) and explicitly favors that over containers ("zero dependencies"). |
 | d9 (Directus fork) | `ghcr.io/lawebcapsule/directus9` resolves and has a real self-host story, but it's a small community fork of Directus (created after Directus relicensed under BSL) rather than a widely-used project in its own right, and its env-var/dependency surface wasn't documented well enough to model with confidence this run. |
+| Sonarr | No official image from the Sonarr project itself - every widely-used image (`linuxserver/sonarr`, `ghcr.io/hotio/sonarr`) is a third-party rebuild. |
+| Radarr | Same Servarr-team gap as Sonarr: no image published under the project's own namespace, only third-party rebuilds. |
+| ZincSearch | The project's image is published to `public.ecr.aws/zinclabs/zincsearch`, an AWS ECR Public registry `tools/registry.py` doesn't speak (Docker Hub/GHCR/Quay/Codeberg only). Nothing this tool can pin with confidence. |
+| Screego | `screego/server` resolves fine (pinnable tags, amd64+arm64), but its docs site is a JS SPA that can't be read as plain text, and no docker-compose/env-var reference could be found in the plain README - couldn't confirm the port, env vars, or the TURN/UDP port-range requirements WebRTC screen sharing needs. Left out rather than guess. |
 
 Two things that look like rejections but aren't:
 

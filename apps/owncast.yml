@@ -1,0 +1,26 @@
+slug: owncast
+name: Owncast
+category: media
+description: Self-hosted live video streaming and chat server.
+homepage: https://owncast.online
+source: https://github.com/owncast/owncast
+
+image: owncast/owncast
+version: "0.2.5"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: none
+
+volumes:
+  - path: data
+    mount: /app/data
+
+notes: |
+  Also listens on 1935 for RTMP stream ingest from broadcasting software
+  (OBS etc) - that port needs a direct TCP forward, it won't survive an
+  HTTP reverse proxy. Default admin login is username `admin`, password
+  `abc123` at /admin; change both the password and the stream key on
+  first login.

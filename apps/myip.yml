@@ -1,0 +1,29 @@
+slug: myip
+name: MyIP
+category: network
+description: IP toolbox showing your IP, geolocation, DNS leak, WebRTC and speed tests.
+homepage: https://ipcheck.ing
+source: https://github.com/jason5ng32/MyIP
+
+image: jason5ng32/myip
+version: "v7.2.1"
+arch: [amd64, arm64]
+
+port: 18966
+mem_limit: 512m
+database: none
+auth: none
+
+env:
+  - name: ALLOWED_DOMAINS
+    value: "myip.${DOMAIN}"
+  - name: MAXMIND_ACCOUNT_ID
+    secret: true
+  - name: MAXMIND_LICENSE_KEY
+    secret: true
+
+notes: |
+  Without ALLOWED_DOMAINS set to the deployed hostname, every request
+  from a non-localhost domain gets a 403. MaxMind credentials are
+  optional and only enable IP geolocation lookups; the free
+  GeoLite2 account works.
