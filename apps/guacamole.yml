@@ -1,0 +1,37 @@
+slug: guacamole
+name: Apache Guacamole
+category: network
+description: Clientless remote desktop gateway for VNC, RDP and SSH.
+homepage: https://guacamole.apache.org
+source: https://github.com/apache/guacamole-client
+
+image: guacamole/guacamole
+version: "1.6.0"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: postgres
+needs: [guacd]
+auth: proxy
+
+env:
+  - name: GUACD_HOSTNAME
+    value: "guacamole-guacd"
+  - name: POSTGRESQL_HOSTNAME
+    value: "guacamole-postgres"
+  - name: POSTGRESQL_DATABASE
+    value: "guacamole_db"
+  - name: POSTGRESQL_USERNAME
+    value: "guacamole"
+  - name: POSTGRESQL_PASSWORD
+    value: "${GUACAMOLE_DB_PASSWORD}"
+
+notes: |
+  Needs a guacd sidecar (image guacamole/guacd, same version tag) reachable
+  at GUACD_HOSTNAME - it does the actual VNC/RDP/SSH protocol work, this
+  container is only the web UI and API. The Postgres schema is not created
+  automatically: run the SQL the guacamole/guacamole image ships at
+  /opt/guacamole/postgresql/schema/*.sql against the database once before
+  first login. Default login after that is guacadmin/guacadmin - change it
+  immediately.

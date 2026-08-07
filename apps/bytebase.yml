@@ -1,0 +1,25 @@
+slug: bytebase
+name: Bytebase
+category: developer
+description: Database schema change management and CI/CD for teams.
+homepage: https://www.bytebase.com
+source: https://github.com/bytebase/bytebase
+
+image: bytebase/bytebase
+version: "3.21.0"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /var/opt/bytebase
+
+notes: |
+  Ships with an embedded database - everything lives under
+  /var/opt/bytebase, no separate Postgres/MySQL container needed unless you
+  point it at an external one yourself. The first account created through
+  the web UI on first visit becomes the workspace admin.

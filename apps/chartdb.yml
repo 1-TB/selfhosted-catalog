@@ -1,0 +1,27 @@
+slug: chartdb
+name: ChartDB
+category: developer
+description: Visualize and design database schemas from a live connection or DDL.
+homepage: https://chartdb.io
+source: https://github.com/chartdb/chartdb
+
+image: ghcr.io/chartdb/chartdb
+version: "1.20.1"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: OPENAI_API_KEY
+    secret: true
+  - name: DISABLE_ANALYTICS
+    value: "true"
+
+notes: |
+  Stateless - it connects to whatever database you point it at from the
+  browser rather than storing anything server-side, so there's nothing to
+  back up. OPENAI_API_KEY is optional and only powers the AI-assisted
+  schema features; omit it to run without AI.
