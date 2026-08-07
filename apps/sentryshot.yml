@@ -1,0 +1,30 @@
+slug: sentryshot
+name: SentryShot
+category: security
+description: Self-hosted NVR with live view, 24/7 recording and on-device object detection.
+homepage: https://codeberg.org/SentryShot/sentryshot
+source: https://codeberg.org/SentryShot/sentryshot
+
+image: codeberg.org/sentryshot/sentryshot
+version: "v0.3.11"
+arch: [amd64, arm64]
+
+port: 2020
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: TZ
+    value: "Etc/UTC"
+
+volumes:
+  - path: configs
+    mount: /app/configs
+  - path: storage
+    mount: /app/storage
+
+notes: |
+  No login is enforced until an authentication plugin is turned on in
+  configs/sentryshot.toml (via the in-app settings page since v0.3.4) -
+  do that before exposing the port. No database; camera config and
+  recordings both live under the two mounted volumes.
