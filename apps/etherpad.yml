@@ -1,0 +1,47 @@
+slug: etherpad
+name: Etherpad
+category: documents
+description: Real-time collaborative rich-text editor.
+homepage: https://etherpad.org
+source: https://github.com/ether/etherpad-lite
+
+image: etherpad/etherpad
+version: "3.3.3"
+arch: [amd64, arm64]
+
+port: 9001
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: NODE_ENV
+    value: production
+  - name: ADMIN_PASSWORD
+    secret: true
+  - name: DB_TYPE
+    value: postgres
+  - name: DB_HOST
+    value: "etherpad-postgres"
+  - name: DB_NAME
+    value: "etherpad"
+  - name: DB_USER
+    value: "etherpad"
+  - name: DB_PASS
+    value: "${ETHERPAD_DB_PASSWORD}"
+  - name: TRUST_PROXY
+    value: "true"
+
+volumes:
+  - path: var
+    mount: /opt/etherpad-lite/var
+  - path: plugins
+    mount: /opt/etherpad-lite/src/plugin_packages
+
+notes: |
+  The upstream image runs as uid 5001, not root - the var/plugins bind
+  mounts must be writable by that uid or the container fails to start.
+  TRUST_PROXY must stay true behind a reverse proxy or client IPs and
+  session cookies break. ADMIN_PASSWORD only gates /admin (username
+  "admin"); pad editing itself has no login of its own, by design -
+  pads are shared via their URL.

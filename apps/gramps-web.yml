@@ -1,0 +1,62 @@
+slug: gramps-web
+name: Gramps Web
+category: productivity
+description: Collaborative web app for genealogy research, built on the Gramps family-tree engine.
+homepage: https://www.grampsweb.org
+source: https://github.com/gramps-project/gramps-web
+
+image: ghcr.io/gramps-project/grampsweb
+version: "26.7.1"
+arch: [amd64, arm64]
+
+port: 5000
+mem_limit: 512m
+database: none
+needs: [redis, worker]
+auth: oidc
+redirect_path: /api/oidc/callback/custom
+
+env:
+  - name: GRAMPSWEB_TREE
+    value: "Gramps Web"
+  - name: GRAMPSWEB_CELERY_CONFIG__broker_url
+    value: "redis://gramps-web-redis:6379/0"
+  - name: GRAMPSWEB_CELERY_CONFIG__result_backend
+    value: "redis://gramps-web-redis:6379/0"
+  - name: GRAMPSWEB_RATELIMIT_STORAGE_URI
+    value: "redis://gramps-web-redis:6379/1"
+  - name: GRAMPSWEB_OIDC_ISSUER
+    secret: true
+    source: oidc_issuer
+  - name: GRAMPSWEB_OIDC_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: GRAMPSWEB_OIDC_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+
+volumes:
+  - path: users
+    mount: /app/users
+  - path: index
+    mount: /app/indexdir
+  - path: thumbnail-cache
+    mount: /app/thumbnail_cache
+  - path: cache
+    mount: /app/cache
+  - path: secret
+    mount: /app/secret
+  - path: db
+    mount: /root/.gramps/grampsdb
+  - path: media
+    mount: /app/media
+
+notes: |
+  needs: [redis, worker] because the same image also runs as a Celery
+  worker (command: celery -A gramps_webapi.celery worker) for imports,
+  exports and search indexing - both it and the main container need the
+  redis broker. GRAMPSWEB_SECRET_KEY is auto-generated and persisted
+  under the "secret" volume if left unset, so it isn't listed as a
+  required env var. First run shows a setup wizard to create the owner
+  account; OIDC providers configured via GRAMPSWEB_OIDC_* appear as an
+  additional login option alongside it, they don't replace it.
