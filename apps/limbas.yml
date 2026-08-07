@@ -1,0 +1,52 @@
+slug: limbas
+name: Limbas
+category: developer
+description: Low-code database framework for building data-driven business applications.
+homepage: https://limbas.org
+source: https://github.com/limbas/limbas
+
+image: limbas/limbas
+version: "7.1.14-php8.2-apache"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: LIMBAS_DB_HOST
+    value: limbas-postgres
+  - name: LIMBAS_DB_USER
+    value: limbasuser
+  - name: LIMBAS_DB_PASSWORD
+    value: "${LIMBAS_DB_PASSWORD}"
+  - name: LIMBAS_DB_NAME
+    value: openlimbas
+  - name: LIMBAS_HOST
+    value: "limbas.${DOMAIN}"
+  - name: LIMBAS_AUTO_INSTALL
+    value: "1"
+
+volumes:
+  - path: extensions
+    mount: /var/www/html/openlimbas/dependent/EXTENSIONS
+  - path: upload
+    mount: /var/www/html/openlimbas/dependent/UPLOAD
+  - path: user
+    mount: /var/www/html/openlimbas/dependent/USER
+  - path: temp
+    mount: /var/www/html/openlimbas/dependent/TEMP
+  - path: inc
+    mount: /var/www/html/openlimbas/dependent/inc
+  - path: backup
+    mount: /var/www/html/openlimbas/dependent/BACKUP
+  - path: localassets
+    mount: /var/www/html/openlimbas/public/localassets
+
+notes: |
+  LIMBAS_AUTO_INSTALL only runs the installer once, on the very first
+  boot before dependent/inc/include_db.lib exists; without it you have
+  to walk through the web installer by hand. LIMBAS_DB_TYPE defaults to
+  postgres in the image itself, so it's left unset here. No OIDC support
+  documented, hence auth: proxy.

@@ -1,0 +1,41 @@
+slug: termix
+name: Termix
+category: network
+description: Clientless web-based SSH, RDP/VNC and server management platform.
+homepage: https://termix.site
+source: https://github.com/Termix-SSH/Termix
+
+image: ghcr.io/lukegus/termix
+version: "release-2.6.1"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+needs: [guacd]
+auth: proxy
+
+env:
+  - name: SALT
+    secret: true
+  - name: GUACD_HOST
+    value: guacd
+  - name: GUACD_TUNNEL_HOST
+    value: termix
+  - name: GUACD_RECORDING_PATH
+    value: /termix-data/session_recordings/guacamole
+
+volumes:
+  - path: data
+    mount: /app/data
+
+notes: |
+  SALT is required - a random string up to 32 characters, used as a
+  cryptographic salt for the encrypted SQLite database; treat it like a
+  secret and never rotate it once set. Upstream's own compose always
+  pairs this with a guacamole/guacd container (needs: [guacd]) for the
+  RDP/VNC/Telnet features; the SSH terminal itself doesn't strictly
+  need it, but the image expects it to be reachable. Has its own login
+  with optional OIDC/LDAP/2FA/passkey support, but the docs describing
+  the exact OIDC callback path weren't reachable this run, so this
+  entry uses auth: proxy rather than guess at redirect_path.

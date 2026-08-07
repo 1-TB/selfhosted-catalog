@@ -1,0 +1,27 @@
+slug: razzia
+name: Razzia
+category: games
+description: Self-hosted quiz platform, open-source alternative to Kahoot.
+homepage: https://github.com/Ralex91/Razzia
+source: https://github.com/Ralex91/Razzia
+
+image: ralex91/razzia
+version: "3.1.0"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: none
+auth: none
+
+volumes:
+  - path: config
+    mount: /app/config
+
+notes: |
+  Config is file-based, not env vars: the config volume is populated
+  with an example quiz on first run. Manager access at /manager stays
+  blocked until managerPassword is changed from the default "PASSWORD"
+  in config/game.json. Participants just join with a room code, hence
+  auth: none - only the manager room has a password, and it isn't
+  managed through this schema's auth field.

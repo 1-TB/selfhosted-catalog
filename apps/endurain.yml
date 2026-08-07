@@ -1,0 +1,58 @@
+slug: endurain
+name: Endurain
+category: productivity
+description: Self-hosted fitness tracking service, an alternative to Strava.
+homepage: https://endurain.com
+source: https://codeberg.org/endurain-project/endurain
+
+image: codeberg.org/endurain-project/endurain
+version: "v0.19.0"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: postgres
+needs: [redis]
+auth: oidc
+redirect_path: /api/v1/public/idp/callback/authentik
+
+env:
+  - name: DB_PASSWORD
+    value: "${ENDURAIN_DB_PASSWORD}"
+  - name: POSTGRES_PASSWORD
+    value: "${ENDURAIN_DB_PASSWORD}"
+  - name: POSTGRES_USER
+    value: endurain
+  - name: POSTGRES_DB
+    value: endurain
+  - name: SECRET_KEY
+    secret: true
+  - name: FERNET_KEY
+    secret: true
+  - name: TZ
+    value: "Etc/UTC"
+  - name: ENDURAIN_HOST
+    value: "https://endurain.${DOMAIN}"
+  - name: BEHIND_PROXY
+    value: "true"
+  - name: RATE_LIMIT_STORAGE_URI
+    value: "redis://endurain-redis:6379/0"
+  - name: AUTH_SECURITY_STORAGE_URI
+    value: "redis://endurain-redis:6379/0"
+
+volumes:
+  - path: data
+    mount: /app/backend/data
+  - path: logs
+    mount: /app/backend/logs
+
+notes: |
+  DB_PASSWORD and POSTGRES_PASSWORD must be identical - both are
+  required by the image. Redis (needs: [redis]) backs rate limiting and
+  auth/session security, not just caching, so it isn't optional despite
+  looking like a performance sidecar. SSO/OIDC providers are added from
+  the admin UI with an admin-chosen slug that becomes part of the
+  callback path (/api/v1/public/idp/callback/<slug>); redirect_path
+  above assumes a provider named "authentik" to match this catalogue's
+  convention - rename it to match whatever slug is actually configured.
+  GitHub is a read-only mirror; issues and releases live on Codeberg.
