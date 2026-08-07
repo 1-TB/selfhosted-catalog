@@ -1,0 +1,29 @@
+slug: radicale
+name: Radicale
+category: productivity
+description: Simple CalDAV and CardDAV server with extremely low administrative overhead.
+homepage: https://radicale.org
+source: https://github.com/Kozea/Radicale
+
+image: ghcr.io/kozea/radicale
+version: "3.7.8"
+arch: [amd64, arm64]
+
+port: 5232
+mem_limit: 512m
+database: none
+auth: proxy
+
+volumes:
+  - path: config
+    mount: /etc/radicale
+  - path: data
+    mount: /var/lib/radicale
+
+notes: |
+  Entirely config-file driven, no environment variables. Mount a
+  config file at /etc/radicale/config (read-only is fine) - without one
+  it falls back to Radicale's defaults, which allow anonymous read/write
+  to everything. Set `[auth] type = htpasswd` there plus a mounted
+  htpasswd file for its own login, or leave auth to the reverse proxy
+  and set `type = http_x_remote_user` to trust the proxy's header.

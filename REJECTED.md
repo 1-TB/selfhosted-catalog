@@ -86,6 +86,11 @@ release tags should be moved into `apps/`.
 | AppFlowy (Cloud) | Has an official self-hosted docker-compose, but it's a Postgres + Redis + MinIO (S3) + GoTrue (auth) + nginx stack - several services beyond the one-extra-service model, and the exact image references live behind a separate deployment guide this run didn't chase down. |
 | Canarytokens | `thinkst/canarytokens` only publishes a floating `v3_latest` tag (and legacy `v2_latest`) - nothing pinnable. Also a four-piece stack (frontend, switchboard, Redis, nginx), past the one-extra-service model even if a tag existed. |
 
+| WriteFreely | `writeas/writefreely` resolves fine (`0.12.0` is the only real release tag, amd64 only, rest of the tag list is `latest`/git-describe junk), but the project's own docs say outright "WriteFreely doesn't yet provide an official Docker pathway to production" - first run needs an interactive `docker exec ... writefreely --config` wizard with no non-interactive/env-var equivalent, the same class of command-override problem that ruled out SiYuan and Databunker. |
+| PieFed | Own repo is on Codeberg (`rimu/pyfedi`) with a `Dockerfile` and compose files but no CI step that pushes a built image anywhere - the only images on Docker Hub/GHCR (`elestio/piefed`, `dockur/piefed`) are third-party rebuilds, not an official namespace. |
+| Teampass | `teampass/teampass` on Docker Hub only publishes `sha-<commit>` tags plus one bare `teampass_3.0` branch-style tag - nothing that resolves as a pinnable release, and an open GitHub issue confirms the image lags behind tagged releases. |
+| Hi.Events | Docker Hub image (`daveearley/hi.events-all-in-one`) lives under the lead maintainer's personal namespace, not an org one, and every tag is `-alpha`/`-beta` - no stable release to pin. The all-in-one image also bundles Postgres/Redis/nginx into a single container, which doesn't map cleanly onto this catalogue's one-app-one-database model either. |
+
 Two things that look like rejections but aren't:
 
 **amd64-only images are still catalogued.** They get `arch: [amd64]` and that
