@@ -1,0 +1,37 @@
+slug: dailytxt
+name: DailyTxT
+category: documents
+description: Encrypted diary app that saves personal memories per day.
+homepage: https://github.com/PhiTux/DailyTxT
+source: https://github.com/PhiTux/DailyTxT
+
+image: phitux/dailytxt
+version: "2.6.2"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: SECRET_TOKEN
+    secret: true
+  - name: ALLOW_REGISTRATION
+    value: "false"
+  - name: ADMIN_PASSWORD
+    secret: true
+  - name: LOGOUT_AFTER_DAYS
+    value: "40"
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  No database - entries are stored as per-user encrypted JSON files
+  under the data volume, which is the project's own portability
+  design. SECRET_TOKEN is a long random string (`openssl rand -hex
+  32`), used to encrypt entries; losing it makes existing data
+  unreadable. No OIDC support, so a forward-auth proxy is the only
+  centralized-login option.

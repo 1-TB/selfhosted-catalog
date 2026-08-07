@@ -78,6 +78,13 @@ release tags should be moved into `apps/`.
 | Radarr | Same Servarr-team gap as Sonarr: no image published under the project's own namespace, only third-party rebuilds. |
 | ZincSearch | The project's image is published to `public.ecr.aws/zinclabs/zincsearch`, an AWS ECR Public registry `tools/registry.py` doesn't speak (Docker Hub/GHCR/Quay/Codeberg only). Nothing this tool can pin with confidence. |
 | Screego | `screego/server` resolves fine (pinnable tags, amd64+arm64), but its docs site is a JS SPA that can't be read as plain text, and no docker-compose/env-var reference could be found in the plain README - couldn't confirm the port, env vars, or the TURN/UDP port-range requirements WebRTC screen sharing needs. Left out rather than guess. |
+| Kan | `ghcr.io/kanbn/kan` resolves fine (pinnable tags, amd64+arm64) and looks like a clean one-container Postgres app, but upstream's own compose splits database migrations into a separate one-shot `migrate` container/target that must complete before `web` starts - the main image never runs migrations itself. Same command-override/init-step problem that ruled out Databunker and SiYuan; this schema has no field for it. |
+| Standard Notes | `standardnotes/server` resolves, but the project's own `docker-compose.example.yml` runs five services - the app server, MySQL, Redis, and a LocalStack container standing in for AWS SNS/SQS (used for internal messaging) - well past the one-database, one-extra-service model. |
+| MySpeed | No image resolves under `gnmyt/myspeed` on Docker Hub or GHCR (empty tag list on both), despite the project documenting Docker deployment. Didn't chase down the correct namespace this run. |
+| Bubo Reader | No Docker image, Dockerfile reference, or container docs found - deployment instructions cover Netlify, Glitch and plain Node hosting only. |
+| RSS Monster | `rssmonster/rssmonster` only publishes `latest` and `sha-<commit>` tags. Nothing pinnable, same class of problem as RSS-Bridge and RSSHub. |
+| AppFlowy (Cloud) | Has an official self-hosted docker-compose, but it's a Postgres + Redis + MinIO (S3) + GoTrue (auth) + nginx stack - several services beyond the one-extra-service model, and the exact image references live behind a separate deployment guide this run didn't chase down. |
+| Canarytokens | `thinkst/canarytokens` only publishes a floating `v3_latest` tag (and legacy `v2_latest`) - nothing pinnable. Also a four-piece stack (frontend, switchboard, Redis, nginx), past the one-extra-service model even if a tag existed. |
 
 Two things that look like rejections but aren't:
 
