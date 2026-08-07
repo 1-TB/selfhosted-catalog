@@ -1,0 +1,41 @@
+slug: heyform
+name: HeyForm
+category: productivity
+description: Form and survey builder, an open source alternative to Typeform.
+homepage: https://heyform.net
+source: https://github.com/heyform/heyform
+
+image: heyform/community-edition
+version: "v3.0.0"
+arch: [amd64, arm64]
+
+port: 8000
+mem_limit: 512m
+database: mongo
+needs: [redis]
+auth: proxy
+
+env:
+  - name: APP_HOMEPAGE_URL
+    value: "https://heyform.${DOMAIN}"
+  - name: SESSION_KEY
+    secret: true
+  - name: FORM_ENCRYPTION_KEY
+    secret: true
+  - name: MONGO_URI
+    value: "mongodb://heyform-mongo:27017/heyform"
+  - name: REDIS_HOST
+    value: "heyform-redis"
+  - name: REDIS_PORT
+    value: "6379"
+
+volumes:
+  - path: assets
+    mount: /app/static/upload
+
+notes: |
+  Upstream's own compose runs Mongo and Redis with no auth of their own
+  (MONGO_URI has no credentials); tighten that if the sidecars are
+  reachable from anywhere but this app. SESSION_KEY and
+  FORM_ENCRYPTION_KEY must both be generated once and never changed
+  after first run.
