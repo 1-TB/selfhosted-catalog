@@ -1,0 +1,44 @@
+slug: wygiwyh
+name: WYGIWYH
+category: productivity
+description: Personal finance tracker with multi-currency and custom transaction rules.
+homepage: https://wygiwyh.com
+source: https://github.com/eitchtee/WYGIWYH
+
+image: eitchtee/wygiwyh
+version: "0.22.1"
+arch: [amd64, arm64]
+
+port: 8000
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: URL
+    value: "https://wygiwyh.${DOMAIN}"
+  - name: DJANGO_ALLOWED_HOSTS
+    value: "wygiwyh.${DOMAIN}"
+  - name: SECRET_KEY
+    secret: true
+  - name: SQL_DATABASE
+    value: "wygiwyh"
+  - name: SQL_USER
+    value: "wygiwyh"
+  - name: SQL_PASSWORD
+    secret: true
+  - name: SQL_HOST
+    value: "wygiwyh-postgres"
+  - name: SQL_PORT
+    value: "5432"
+
+volumes:
+  - path: media
+    mount: /usr/src/app/attachments/
+
+notes: |
+  Set ADMIN_EMAIL and ADMIN_PASSWORD to auto-create an admin account on
+  first boot (remove afterwards). Supports generic OIDC login via
+  OIDC_CLIENT_NAME/OIDC_CLIENT_ID/OIDC_CLIENT_SECRET/OIDC_SERVER_URL, but
+  the exact callback path isn't documented outside the running app's own
+  settings page, so this entry defaults to proxy auth.

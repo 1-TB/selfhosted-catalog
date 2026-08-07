@@ -1,0 +1,33 @@
+slug: ezbookkeeping
+name: ezBookkeeping
+category: productivity
+description: Lightweight self-hosted personal bookkeeping and expense tracker.
+homepage: https://ezbookkeeping.mayswind.net
+source: https://github.com/mayswind/ezbookkeeping
+
+image: mayswind/ezbookkeeping
+version: "1.6.1"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: EBK_SERVER_DOMAIN
+    value: "ezbookkeeping.${DOMAIN}"
+  - name: EBK_SECURITY_SECRET_KEY
+    secret: true
+
+volumes:
+  - path: data
+    mount: /ezbookkeeping/data
+  - path: storage
+    mount: /ezbookkeeping/storage
+
+notes: |
+  Defaults to SQLite under /ezbookkeeping/data - both data and storage
+  volumes must be persisted or all data is lost on recreate. Set
+  EBK_DATABASE_TYPE=mysql (or postgres) plus EBK_DATABASE_HOST/NAME/
+  USER/PASSWD to use an external database instead.
