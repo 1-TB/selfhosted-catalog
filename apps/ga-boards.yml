@@ -1,0 +1,37 @@
+slug: ga-boards
+name: 4ga Boards
+subdomain: 4gaboards
+category: productivity
+description: Realtime kanban board management.
+homepage: https://4gaboards.com
+source: https://github.com/RARgames/4gaBoards
+
+image: ghcr.io/rargames/4gaboards
+version: "3.2.16"
+arch: [amd64, arm64]
+
+port: 1337
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: BASE_URL
+    value: "https://4gaboards.${DOMAIN}"
+  - name: SECRET_KEY
+    secret: true
+  - name: DATABASE_URL
+    value: "postgresql://postgres:${GA_BOARDS_DB_PASSWORD}@ga-boards-postgres:5432/4gaBoards"
+
+volumes:
+  - path: avatars
+    mount: /app/public/user-avatars
+  - path: backgrounds
+    mount: /app/public/project-background-images
+  - path: attachments
+    mount: /app/private/attachments
+
+notes: |
+  Redis is optional - upstream also publishes a
+  docker-compose-no-redis.yml variant, which this entry follows. SECRET_KEY
+  should be generated with `openssl rand -hex 64`.
