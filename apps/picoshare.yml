@@ -1,0 +1,31 @@
+slug: picoshare
+name: PicoShare
+category: files
+description: Minimalist file-sharing service with expiring links, backed by SQLite.
+homepage: https://github.com/mtlynch/picoshare
+source: https://github.com/mtlynch/picoshare
+
+image: mtlynch/picoshare
+version: "v1.5.4"
+arch: [amd64, arm64]
+
+port: 4001
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: PORT
+    value: "4001"
+  - name: PS_BEHIND_PROXY
+    value: "true"
+  - name: PS_SHARED_SECRET
+    secret: true
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  SQLite only, no external database. PS_SHARED_SECRET is the single
+  admin passphrase that gates uploads and the admin UI - no OIDC or
+  multi-user accounts.
