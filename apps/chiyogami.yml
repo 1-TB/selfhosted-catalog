@@ -1,0 +1,27 @@
+slug: chiyogami
+name: Chiyogami
+category: utilities
+description: Pastebin with client-side encryption, user accounts and syntax highlighting.
+homepage: https://github.com/rhee876527/chiyogami
+source: https://github.com/rhee876527/chiyogami
+
+image: ghcr.io/rhee876527/chiyogami
+version: "1.5.6"
+arch: [amd64, arm64]
+
+port: 8000
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: SECRET_KEY
+    secret: true
+
+volumes:
+  - path: pastes
+    mount: /pastes
+
+notes: |
+  SQLite, no external database. SECRET_KEY signs sessions - generate
+  with e.g. openssl rand -base64 32. Has its own registration/login.

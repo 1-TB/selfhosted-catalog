@@ -1,0 +1,39 @@
+slug: evershop
+name: EverShop
+category: productivity
+description: Open-source, modular headless e-commerce platform.
+homepage: https://evershop.io
+source: https://github.com/evershopcommerce/evershop
+
+image: evershop/evershop
+version: "2.1.2"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: DB_HOST
+    value: "evershop-postgres"
+  - name: DB_PORT
+    value: "5432"
+  - name: DB_NAME
+    value: "evershop"
+  - name: DB_USER
+    value: "evershop"
+  - name: DB_PASSWORD
+    secret: true
+
+volumes:
+  - path: media
+    mount: /evershop/media
+  - path: public
+    mount: /evershop/public
+
+notes: |
+  No signup wizard: create the first admin with a one-off exec after
+  first boot: docker exec -it evershop npm run user:create --
+  --email "you@example.com" --password "..." --name "Admin". Storefront
+  is at /, admin panel at /admin.

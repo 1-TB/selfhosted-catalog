@@ -1,0 +1,37 @@
+slug: bookbounty
+name: BookBounty
+category: automation
+description: Finds and downloads books missing from a Readarr library via Library Genesis.
+homepage: https://github.com/TheWicklowWolf/BookBounty
+source: https://github.com/TheWicklowWolf/BookBounty
+
+image: thewicklowwolf/bookbounty
+version: "0.2.13"
+arch: [amd64, arm64]
+
+port: 5000
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: PUID
+    value: "1000"
+  - name: PGID
+    value: "1000"
+  - name: readarr_address
+    value: "http://readarr:8787"
+  - name: readarr_api_key
+    secret: true
+  - name: libgen_address
+    value: "http://libgen.is"
+
+volumes:
+  - path: config
+    mount: /bookbounty/config
+  - path: downloads
+    mount: /bookbounty/downloads
+
+notes: |
+  Needs a reachable Readarr instance to sync against (not bundled here);
+  set readarr_address to wherever that already lives. No login of its own.
