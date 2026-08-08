@@ -1,0 +1,40 @@
+slug: tubesync
+name: TubeSync
+category: media
+description: Syncs YouTube channels and playlists to a locally hosted media server library.
+homepage: https://github.com/meeb/tubesync
+source: https://github.com/meeb/tubesync
+
+image: ghcr.io/meeb/tubesync
+version: "v0.18.3"
+arch: [amd64, arm64]
+
+port: 4848
+mem_limit: 1g
+database: none
+auth: proxy
+
+env:
+  - name: TZ
+    value: "Etc/UTC"
+  - name: PUID
+    value: "1000"
+  - name: PGID
+    value: "1000"
+  - name: HTTP_USER
+    secret: true
+  - name: HTTP_PASS
+    secret: true
+
+volumes:
+  - path: config
+    mount: /config
+  - path: downloads
+    mount: /downloads
+
+notes: |
+  SQLite under /config by default; DATABASE_CONNECTION can point it at an
+  external MySQL instead but that's optional. HTTP_USER/HTTP_PASS enable
+  built-in basic auth - leave unset to rely on the reverse-proxy instead.
+  /downloads gets video/ and audio/ subdirectories for a media server (e.g.
+  Jellyfin) to pick up.
