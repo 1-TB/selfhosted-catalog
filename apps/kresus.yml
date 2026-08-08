@@ -1,0 +1,43 @@
+slug: kresus
+name: Kresus
+category: productivity
+description: Self-hosted personal finance manager with bank account aggregation.
+homepage: https://kresus.org
+source: https://codeberg.org/kresus/kresus
+
+image: bnjbvr/kresus
+version: "0.25.4"
+arch: [amd64]
+
+port: 9876
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: KRESUS_DB_TYPE
+    value: postgres
+  - name: KRESUS_DB_HOST
+    value: kresus-postgres
+  - name: KRESUS_DB_PORT
+    value: "5432"
+  - name: KRESUS_DB_USERNAME
+    value: kresus
+  - name: KRESUS_DB_PASSWORD
+    secret: true
+  - name: KRESUS_DB_NAME
+    value: kresus
+  - name: KRESUS_SALT
+    secret: true
+
+volumes:
+  - path: data
+    mount: /home/user/data
+
+notes: |
+  KRESUS_SALT should be a random string of 16+ characters, used to
+  encrypt/decrypt exports - set it once and keep it, changing it
+  invalidates existing exports. No SSO/OIDC, local accounts only (or
+  KRESUS_AUTH for HTTP basic auth). Optional email alerts and an
+  optional apprise-api sidecar for push notifications are documented
+  but not required to run.
