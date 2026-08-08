@@ -1,0 +1,32 @@
+slug: iobroker
+name: ioBroker
+category: automation
+description: Modular smart home automation platform that connects devices and services through community-built adapters.
+homepage: https://www.iobroker.net
+source: https://github.com/ioBroker/ioBroker.js-controller
+
+image: iobroker/iobroker
+version: "v11.1.0"
+arch: [amd64, arm64]
+
+port: 8081
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: TZ
+    value: "Etc/UTC"
+
+volumes:
+  - path: data
+    mount: /opt/iobroker
+
+notes: |
+  Uses jsonl file-based storage under /opt/iobroker by default, no
+  external database needed. First run walks through creating the admin
+  account in the web UI, no env-var equivalent. Some adapters (Zigbee,
+  Z-Wave, and other USB-attached hardware) need a --device passthrough
+  this schema has no field for, and a few others (mDNS/SSDP discovery,
+  Hue bridge search) work better with host networking; add those
+  per-adapter on the host as needed rather than assuming they work here.
