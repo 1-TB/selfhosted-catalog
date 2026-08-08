@@ -1,0 +1,33 @@
+slug: meilisearch
+name: Meilisearch
+category: network
+description: Fast, typo-tolerant full-text search engine with a built-in browser UI.
+homepage: https://www.meilisearch.com
+source: https://github.com/meilisearch/meilisearch
+
+image: getmeili/meilisearch
+version: "v1.51.0"
+arch: [amd64, arm64]
+
+port: 7700
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: MEILI_ENV
+    value: production
+  - name: MEILI_MASTER_KEY
+    secret: true
+  - name: MEILI_NO_ANALYTICS
+    value: "true"
+
+volumes:
+  - path: data
+    mount: /meili_data
+
+notes: |
+  MEILI_MASTER_KEY is mandatory when MEILI_ENV is production - generate
+  a random string of at least 16 bytes. The root URL serves a built-in
+  search preview UI for browsing indexes; it isn't a login screen, so
+  keep it behind the fronting proxy's auth too.

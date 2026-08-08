@@ -1,0 +1,40 @@
+slug: raneto
+name: Raneto
+category: documents
+description: Databaseless Markdown knowledgebase wiki with an optional browser editor.
+homepage: https://docs.raneto.com
+source: https://github.com/ryanlelek/Raneto
+
+image: raneto/raneto
+version: "0.18.1"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: BASE_URL
+    value: https://raneto.${DOMAIN}/
+  - name: SITE_TITLE
+    value: Raneto
+  - name: AUTHENTICATION
+    value: "true"
+  - name: ADMIN_USERNAME
+    value: admin
+  - name: ADMIN_PASSWORD
+    secret: true
+  - name: SESSION_SECRET
+    secret: true
+  - name: ALLOW_EDITING
+    value: "true"
+
+volumes:
+  - path: content
+    mount: /opt/raneto/content
+
+notes: |
+  No database - pages are Markdown files under the content volume.
+  ADMIN_USERNAME/ADMIN_PASSWORD gate the built-in browser editor when
+  AUTHENTICATION is true; SESSION_SECRET must be at least 32 characters.
