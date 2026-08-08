@@ -1,0 +1,31 @@
+slug: bichon
+name: Bichon
+category: archiving
+description: Self-hosted email archiving server that syncs IMAP accounts into a searchable embedded index.
+homepage: https://github.com/rustmailer/bichon
+source: https://github.com/rustmailer/bichon
+
+image: rustmailer/bichon
+version: "2.0.0"
+arch: [amd64, arm64]
+
+port: 15630
+auth: proxy
+
+env:
+  - name: BICHON_ROOT_DIR
+    value: /data
+  - name: BICHON_ENCRYPT_PASSWORD
+    secret: true
+  - name: BICHON_PUBLIC_URL
+    value: "https://bichon.${DOMAIN}"
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  No database - metadata, full-text index (Tantivy) and blob storage are
+  all embedded under BICHON_ROOT_DIR, which must be a local filesystem
+  (no NFS/SMB). Default login is admin/admin@bichon; change it
+  immediately via Settings -> Profile after first start.

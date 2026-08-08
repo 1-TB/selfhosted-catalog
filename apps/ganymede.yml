@@ -1,0 +1,73 @@
+slug: ganymede
+name: Ganymede
+category: archiving
+description: Twitch VOD and live-stream archiving platform with rendered chat replay.
+homepage: https://github.com/Zibbp/ganymede
+source: https://github.com/Zibbp/ganymede
+
+image: ghcr.io/zibbp/ganymede
+version: "4.19.0"
+arch: [amd64, arm64]
+
+port: 4000
+database: postgres
+auth: oidc
+redirect_path: /api/v1/auth/oauth/callback
+health_path: /health
+
+env:
+  - name: TZ
+    value: "Etc/UTC"
+  - name: VIDEOS_DIR
+    value: /data/videos
+  - name: TEMP_DIR
+    value: /data/temp
+  - name: LOGS_DIR
+    value: /data/logs
+  - name: CONFIG_DIR
+    value: /data/config
+  - name: DB_HOST
+    value: ganymede-postgres
+  - name: DB_PORT
+    value: "5432"
+  - name: DB_USER
+    value: ganymede
+  - name: DB_PASS
+    secret: true
+  - name: DB_NAME
+    value: ganymede
+  - name: DB_SSL
+    value: disable
+  - name: TWITCH_CLIENT_ID
+    secret: true
+  - name: TWITCH_CLIENT_SECRET
+    secret: true
+  - name: OAUTH_ENABLED
+    value: "true"
+  - name: OAUTH_PROVIDER_URL
+    secret: true
+    source: oidc_discovery_url
+  - name: OAUTH_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: OAUTH_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+  - name: REQUIRE_LOGIN
+    value: "true"
+
+volumes:
+  - path: videos
+    mount: /data/videos
+  - path: temp
+    mount: /data/temp
+  - path: logs
+    mount: /data/logs
+  - path: config
+    mount: /data/config
+
+notes: |
+  Requires a Twitch application (TWITCH_CLIENT_ID/SECRET) for VOD lookup
+  even when only archiving manually. Background workers (chat download,
+  video convert, thumbnail sprites) run inside the same container, so
+  no separate worker service is needed.
