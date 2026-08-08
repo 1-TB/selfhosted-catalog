@@ -1,0 +1,36 @@
+slug: hubleys
+name: Hubleys
+category: utilities
+description: Personalized dashboard giving each user or group their own curated view of self-hosted apps.
+homepage: https://github.com/knrdl/hubleys-dashboard
+source: https://github.com/knrdl/hubleys-dashboard
+
+image: ghcr.io/knrdl/hubleys-dashboard
+version: "0.5.2"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 256m
+auth: proxy
+
+env:
+  - name: ORIGIN
+    value: "https://dash.${DOMAIN}"
+  - name: ADMINS
+    value: "group:admins"
+  - name: OPENWEATHERMAP_API_KEY
+    secret: true
+  - name: UNSPLASH_API_KEY
+    secret: true
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  Has no login of its own - it reads Remote-User, Remote-Groups,
+  Remote-Name and Remote-Email headers set by the forward-auth proxy in
+  front of it, and uses ADMINS (a comma-separated list of `user:name` or
+  `group:name` entries) to decide who gets the admin panel. The weather
+  and Unsplash-background widgets are optional and simply stay blank
+  without their API keys.

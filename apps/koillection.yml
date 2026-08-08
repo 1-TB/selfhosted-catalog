@@ -1,0 +1,41 @@
+slug: koillection
+name: Koillection
+category: productivity
+description: Self-hosted service for cataloguing any kind of physical collection.
+homepage: https://koillection.github.io
+source: https://github.com/benjaminjonard/koillection
+
+image: koillection/koillection
+version: "1.8.3"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: APP_ENV
+    value: "prod"
+  - name: DB_DRIVER
+    value: "pdo_pgsql"
+  - name: DB_HOST
+    value: koillection-postgres
+  - name: DB_PORT
+    value: "5432"
+  - name: DB_NAME
+    value: koillection
+  - name: DB_USER
+    value: koillection
+  - name: DB_PASSWORD
+    value: "${KOILLECTION_DB_PASSWORD}"
+  - name: APP_SECRET
+    secret: true
+
+volumes:
+  - path: uploads
+    mount: /uploads
+
+notes: |
+  DB_DRIVER is pdo_pgsql for Postgres or pdo_mysql for MariaDB/MySQL if
+  you'd rather use one of those instead.
