@@ -1,0 +1,33 @@
+slug: coral
+name: Coral
+category: communication
+description: Commenting platform for news sites and blogs, built by Vox Media.
+homepage: https://coralproject.net
+source: https://github.com/coralproject/talk
+
+image: coralproject/talk
+version: "9.11.8"
+arch: [amd64, arm64]
+
+port: 5000
+mem_limit: 512m
+database: mongo
+needs: [redis]
+auth: proxy
+
+env:
+  - name: MONGODB_URI
+    value: "mongodb://coral-mongo:27017/coral"
+  - name: REDIS_URI
+    value: "redis://coral-redis:6379"
+  - name: SIGNING_SECRET
+    secret: true
+
+notes: |
+  Upstream's own compose runs Mongo and Redis with no auth of their own
+  (MONGODB_URI/REDIS_URI have no credentials); tighten that if the
+  sidecars are reachable from anywhere but this app. First visit walks
+  through creating the site's first admin account in the browser -
+  there's no env-var equivalent, but it's a one-time step, not ongoing
+  config. SIGNING_SECRET must be generated once and never changed after
+  first run.

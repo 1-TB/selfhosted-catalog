@@ -1,0 +1,29 @@
+slug: solr
+name: Apache Solr
+category: network
+description: Enterprise search platform with a built-in admin UI, faceting and full-text indexing.
+homepage: https://solr.apache.org
+source: https://github.com/apache/solr
+
+image: solr
+version: "10.0"
+arch: [amd64, arm64]
+
+port: 8983
+mem_limit: 1536m
+database: none
+auth: proxy
+
+env:
+  - name: SOLR_HEAP
+    value: "512m"
+
+volumes:
+  - path: data
+    mount: /var/solr
+
+notes: |
+  Admin UI has no login of its own - keep it behind the fronting
+  proxy's auth. SOLR_HEAP sets the JVM heap (default is auto-sized from
+  container memory); SOLR_OPTS and ZK_HOST (for SolrCloud mode) are
+  also available. Standalone mode needs no ZooKeeper.

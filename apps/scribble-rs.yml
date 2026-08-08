@@ -1,0 +1,26 @@
+slug: scribble-rs
+name: scribble.rs
+category: games
+description: Browser-based multiplayer drawing and guessing game, an alternative to skribbl.io.
+homepage: https://github.com/scribble-rs/scribble.rs
+source: https://github.com/scribble-rs/scribble.rs
+
+image: biosmarcel/scribble.rs
+version: "v0.9.14"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: none
+
+env:
+  - name: PORT
+    value: "8080"
+
+notes: |
+  Fully in-memory - lobbies and drawings are not persisted, so there is
+  nothing to back up and no volume to mount. Public by design (players
+  just join a lobby link), hence auth: none. NETWORK_ADDRESS,
+  ROOT_PATH and CORS_ALLOWED_ORIGINS are available if the defaults
+  don't fit the deployment.
