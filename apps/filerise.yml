@@ -1,0 +1,42 @@
+slug: filerise
+name: FileRise
+category: files
+description: Self-hosted web file manager with WebDAV, sharing links and per-folder ACLs.
+homepage: https://filerise.net
+source: https://github.com/error311/FileRise
+
+image: error311/filerise-docker
+version: "v3.26.1"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: TIMEZONE
+    value: "Etc/UTC"
+  - name: TOTAL_UPLOAD_SIZE
+    value: "10G"
+  - name: SECURE
+    value: "true"
+  - name: PERSISTENT_TOKENS_KEY
+    secret: true
+  - name: FR_PUBLISHED_URL
+    value: "https://filerise.${DOMAIN}"
+
+volumes:
+  - path: uploads
+    mount: /var/www/uploads
+  - path: users
+    mount: /var/www/users
+  - path: metadata
+    mount: /var/www/metadata
+
+notes: |
+  No database - all state lives in the users/metadata volumes. Has its own
+  local-user login (with TOTP) plus OIDC support, but OIDC provider
+  URL/client ID/secret are entered through the admin panel after first
+  boot rather than env vars, so there's no automatable wiring for it here.
+  CHOWN_ON_START (default true) normalizes ownership of the mounted
+  volumes to PUID:PGID (99:100 by default) on container start.

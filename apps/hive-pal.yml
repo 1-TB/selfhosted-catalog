@@ -1,0 +1,40 @@
+slug: hive-pal
+name: Hive Pal
+category: productivity
+description: Beekeeping management app for tracking hives, inspections, queens and equipment.
+homepage: https://github.com/martinhrvn/hive-pal
+source: https://github.com/martinhrvn/hive-pal
+
+image: ghcr.io/martinhrvn/hive-pal
+version: "0.19.0"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: DATABASE_URL
+    value: "postgres://hive-pal:${HIVE_PAL_DB_PASSWORD}@hive-pal-postgres:5432/hive-pal"
+  - name: BETTER_AUTH_SECRET
+    secret: true
+  - name: BETTER_AUTH_URL
+    value: "https://hive-pal.${DOMAIN}"
+  - name: ADMIN_EMAIL
+    secret: true
+  - name: ADMIN_PASSWORD
+    secret: true
+  - name: FRONTEND_URL
+    value: "https://hive-pal.${DOMAIN}"
+  - name: STORAGE_TYPE
+    value: "local"
+
+volumes:
+  - path: uploads
+    mount: /data/uploads
+
+notes: |
+  ADMIN_EMAIL/ADMIN_PASSWORD only seed the first admin account on initial
+  boot. STORAGE_TYPE defaults to local (the uploads volume); set the S3_*
+  vars instead if pointing it at object storage.
