@@ -1,0 +1,32 @@
+slug: emqx
+name: EMQX
+category: network
+description: Scalable MQTT broker with a web dashboard for managing clients and topics.
+homepage: https://www.emqx.io
+source: https://github.com/emqx/emqx
+
+image: emqx/emqx
+version: "6.2.2"
+arch: [amd64, arm64]
+
+port: 18083
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: EMQX_DASHBOARD__DEFAULT_PASSWORD
+    secret: true
+
+volumes:
+  - path: data
+    mount: /opt/emqx/data
+  - path: log
+    mount: /opt/emqx/log
+
+notes: |
+  The dashboard on 18083 is plain HTTP and works fine behind a proxy, but
+  MQTT itself (1883/tcp, plus 8083/8084/8883 for WebSocket and TLS
+  variants) speaks its own protocol - those ports need to reach the host
+  directly, a HTTP proxy doesn't help. Default dashboard login is
+  admin/public unless EMQX_DASHBOARD__DEFAULT_PASSWORD is set.

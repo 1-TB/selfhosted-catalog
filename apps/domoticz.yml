@@ -1,0 +1,30 @@
+slug: domoticz
+name: Domoticz
+category: automation
+description: Home automation system for monitoring and controlling lights, switches and sensors.
+homepage: https://www.domoticz.com
+source: https://github.com/domoticz/domoticz
+
+image: domoticz/domoticz
+version: "2025.2"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: TZ
+    value: "Etc/UTC"
+
+volumes:
+  - path: userdata
+    mount: /opt/domoticz/userdata
+
+notes: |
+  Uses an embedded SQLite database under the userdata volume, no
+  external database needed. Hardware controllers (Z-Wave, RFXCOM, etc.)
+  need a --device passthrough this schema has no field for; skip it for
+  a purely network/plugin-based setup. Admin account is set up via the
+  web UI on first visit, no env-var equivalent.
