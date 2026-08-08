@@ -1,0 +1,46 @@
+slug: mail-archiver
+name: Mail Archiver
+category: archiving
+description: Archives, searches and exports email from multiple IMAP/M365 accounts.
+homepage: https://mail-archiver.org
+source: https://github.com/s1t5/mail-archiver
+
+image: s1t5/mailarchiver
+version: "2607.5"
+arch: [amd64, arm64]
+
+port: 5000
+database: postgres
+auth: oidc
+redirect_path: /oidc-signin-completed
+
+env:
+  - name: ConnectionStrings__DefaultConnection
+    value: "Host=mail-archiver-postgres;Database=MailArchiver;Username=mail_archiver;Password=${MAIL_ARCHIVER_DB_PASSWORD}"
+  - name: Authentication__Username
+    value: admin
+  - name: Authentication__Password
+    secret: true
+  - name: TimeZone__DisplayTimeZoneId
+    value: "Etc/UTC"
+  - name: OAuth__Enabled
+    value: "true"
+  - name: OAuth__Authority
+    secret: true
+    source: oidc_issuer
+  - name: OAuth__ClientId
+    secret: true
+    source: oidc_client_id
+  - name: OAuth__ClientSecret
+    secret: true
+    source: oidc_client_secret
+
+volumes:
+  - path: data-protection-keys
+    mount: /app/DataProtection-Keys
+
+notes: |
+  App serves plain HTTP only - the project's own docs say a reverse
+  proxy must terminate TLS, which this catalogue's proxy model already
+  does. Local Authentication__Username/Password login stays active
+  alongside OIDC unless OAuth__DisablePasswordLogin is also set.
