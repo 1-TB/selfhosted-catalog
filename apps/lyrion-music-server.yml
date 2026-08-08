@@ -1,0 +1,34 @@
+slug: lyrion-music-server
+name: Lyrion Music Server
+category: media
+description: Music server for Squeezebox and other networked audio players, formerly Logitech Media Server.
+homepage: https://lyrion.org
+source: https://github.com/LMS-Community/slimserver
+
+image: lmscommunity/lyrionmusicserver
+version: "9.2.0"
+arch: [amd64, arm64]
+
+port: 9000
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: TZ
+    value: "${TZ}"
+
+volumes:
+  - path: config
+    mount: /config
+  - path: music
+    mount: /music
+  - path: playlist
+    mount: /playlist
+
+notes: |
+  No external database needed. Also listens on 3483/tcp+udp for player
+  discovery/streaming and 9090/tcp for the CLI - both LAN-only concerns
+  that won't survive being routed through the HTTP proxy, so only port
+  9000 (the web UI) is meant to sit behind a subdomain; expose 3483 and
+  9090 directly on the host network if hardware players need them.
