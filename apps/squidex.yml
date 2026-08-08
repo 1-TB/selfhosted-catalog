@@ -1,0 +1,38 @@
+slug: squidex
+name: Squidex
+category: documents
+description: Headless CMS and content management hub built on MongoDB and event sourcing.
+homepage: https://squidex.io
+source: https://github.com/Squidex/squidex
+
+image: squidex/squidex
+version: "7.23.0"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: mongo
+auth: proxy
+health_path: /healthz
+
+env:
+  - name: URLS__BASEURL
+    value: "https://squidex.${DOMAIN}"
+  - name: EVENTSTORE__TYPE
+    value: "MongoDB"
+  - name: EVENTSTORE__MONGODB__CONFIGURATION
+    value: "mongodb://squidex-mongo:27017/squidex"
+  - name: STORE__MONGODB__CONFIGURATION
+    value: "mongodb://squidex-mongo:27017/squidex"
+
+volumes:
+  - path: assets
+    mount: /app/Assets
+
+notes: |
+  Upstream's own compose runs Mongo with no auth of its own (the
+  MONGODB__CONFIGURATION vars have no credentials); tighten that if the
+  sidecar is reachable from anywhere but this app. The first user to
+  register through the web UI becomes the instance admin - there's no
+  env-var equivalent. Optional IDENTITY__GOOGLECLIENT/GITHUBCLIENT/
+  MICROSOFTCLIENT social-login vars exist upstream but aren't set here.
