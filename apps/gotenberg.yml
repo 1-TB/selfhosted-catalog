@@ -1,0 +1,22 @@
+slug: gotenberg
+name: Gotenberg
+category: documents
+description: Stateless API for converting HTML, Markdown and Office documents to PDF.
+homepage: https://gotenberg.dev
+source: https://github.com/gotenberg/gotenberg
+
+image: gotenberg/gotenberg
+version: "8.35.0"
+arch: [amd64, arm64]
+
+port: 3000
+health_path: /health
+auth: proxy
+
+notes: |
+  No accounts or login screen; it's a conversion API meant to be called by
+  other services (or protected by a proxy). Bundles headless Chromium and
+  LibreOffice, so idle memory is higher than a typical small API - watch it
+  under load rather than trusting the default mem_limit. Optional basic auth
+  is available via GOTENBERG_API_BASIC_AUTH_USERNAME/PASSWORD if you'd rather
+  not put a proxy in front.

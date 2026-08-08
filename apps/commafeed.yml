@@ -1,0 +1,29 @@
+slug: commafeed
+name: CommaFeed
+category: feeds
+description: Google Reader-inspired self-hosted RSS reader.
+homepage: https://www.commafeed.com
+source: https://github.com/Athou/commafeed
+
+image: athou/commafeed
+version: "7.2.1-postgresql"
+arch: [amd64, arm64]
+
+port: 8082
+database: postgres
+auth: proxy
+
+env:
+  - name: QUARKUS_DATASOURCE_JDBC_URL
+    value: "jdbc:postgresql://commafeed-postgres:5432/commafeed"
+  - name: QUARKUS_DATASOURCE_USERNAME
+    value: "commafeed"
+  - name: QUARKUS_DATASOURCE_PASSWORD
+    value: "${COMMAFEED_DB_PASSWORD}"
+  - name: QUARKUS_HTTP_AUTH_SESSION_ENCRYPTION_KEY
+    secret: true
+
+notes: |
+  QUARKUS_HTTP_AUTH_SESSION_ENCRYPTION_KEY must be at least 16 characters or
+  the app refuses to start. The image tag encodes the database backend
+  (-h2/-mysql/-mariadb/-postgresql); this entry uses the -postgresql variant.

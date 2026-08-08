@@ -1,0 +1,27 @@
+slug: upsnap
+name: UpSnap
+category: network
+description: Wake-on-LAN dashboard for waking and monitoring devices on your network.
+source: https://github.com/seriousm4x/UpSnap
+
+image: ghcr.io/seriousm4x/upsnap
+version: "5.4.4"
+arch: [amd64, arm64]
+
+port: 8090
+auth: proxy
+
+env:
+  - name: UPSNAP_HTTP_LISTEN
+    value: "0.0.0.0:8090"
+
+volumes:
+  - path: data
+    mount: /app/pb_data
+
+notes: |
+  Ships its own accounts (PocketBase-backed) and can add OAuth2 providers
+  through its admin UI, but that flow is configured by hand in the UI rather
+  than via env vars, so it doesn't map to auth: oidc here. Wake-on-LAN
+  broadcasts and the network scan feature need host networking or NET_RAW -
+  a default bridge network setup will not be able to wake devices.

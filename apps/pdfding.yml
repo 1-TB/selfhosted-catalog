@@ -1,0 +1,32 @@
+slug: pdfding
+name: PdfDing
+category: documents
+description: Self-hosted PDF manager, viewer and editor.
+homepage: https://pdfding.com
+source: https://github.com/mrmn2/PdfDing
+
+image: mrmn/pdfding
+version: "v1.12.0"
+arch: [amd64, arm64]
+
+port: 8000
+auth: proxy
+
+env:
+  - name: HOST_NAME
+    value: "pdfding.${DOMAIN}"
+  - name: SECRET_KEY
+    secret: true
+
+volumes:
+  - path: db
+    mount: /home/nonroot/pdfding/db
+  - path: media
+    mount: /home/nonroot/pdfding/media
+
+notes: |
+  Defaults to SQLite in the volumes above; a Postgres backend is also
+  documented but not required. Supports SSO via OIDC (OIDC_ENABLE,
+  OIDC_CLIENT_ID, OIDC_CLIENT_SECRET, OIDC_AUTH_URL), but the docs don't
+  publish a fixed callback path to pin down, so this entry uses a proxy
+  instead - check docs.pdfding.com before wiring up OIDC by hand.
