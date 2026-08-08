@@ -1,0 +1,50 @@
+slug: bitwarden
+name: Bitwarden
+category: security
+description: Official Bitwarden password manager, self-hosted single-container build.
+homepage: https://bitwarden.com
+source: https://github.com/bitwarden/self-host
+
+image: ghcr.io/bitwarden/lite
+version: "2026.7.2"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 3g
+database: mariadb
+auth: proxy
+
+env:
+  - name: BW_DOMAIN
+    value: "bitwarden.${DOMAIN}"
+  - name: BW_DB_PROVIDER
+    value: "mysql"
+  - name: BW_DB_SERVER
+    value: "bitwarden-mariadb"
+  - name: BW_DB_DATABASE
+    value: "bitwarden_vault"
+  - name: BW_DB_USERNAME
+    value: "bitwarden"
+  - name: BW_DB_PASSWORD
+    value: "${BITWARDEN_DB_PASSWORD}"
+  - name: BW_INSTALLATION_ID
+    secret: true
+  - name: BW_INSTALLATION_KEY
+    secret: true
+
+volumes:
+  - path: data
+    mount: /etc/bitwarden
+  - path: logs
+    mount: /var/log/bitwarden
+
+notes: |
+  BW_INSTALLATION_ID and BW_INSTALLATION_KEY are free but mandatory -
+  register at https://bitwarden.com/host/ before first start, the
+  container refuses to run without them. A forward-auth proxy in front
+  breaks the mobile and browser extension clients the same way it does
+  for Vaultwarden, since they can't complete an interactive login
+  through it; gate only /admin. This "lite" build folds the normally
+  separate Identity/API/Admin/Icons/Notifications services into one
+  container/one process each, and upstream's own docs put the minimum
+  system RAM for it at 2GB.
