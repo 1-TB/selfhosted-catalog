@@ -1,0 +1,32 @@
+slug: anythingllm
+name: AnythingLLM
+category: productivity
+description: All-in-one AI chat workspace with built-in RAG over your own documents.
+homepage: https://anythingllm.com
+source: https://github.com/Mintplex-Labs/anything-llm
+
+image: mintplexlabs/anythingllm
+version: "1.15"
+arch: [amd64, arm64]
+
+port: 3001
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: AUTH_TOKEN
+    secret: true
+  - name: JWT_SECRET
+    secret: true
+
+volumes:
+  - path: storage
+    mount: /app/server/storage
+
+notes: |
+  Ships single-user and open by default. Setting AUTH_TOKEN turns on its
+  built-in single-password lock (JWT_SECRET is required once AUTH_TOKEN is
+  set); switch to the in-app multi-user mode instead if separate accounts
+  are wanted. LLM provider connection (Ollama, OpenAI, etc.) is chosen from
+  the setup wizard on first visit, not via env vars.
