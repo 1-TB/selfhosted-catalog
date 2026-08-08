@@ -223,6 +223,33 @@ release tags should be moved into `apps/`.
 | ZenTao | `easysoft/zentao` resolves and is multi-arch, but current-series tags are all date-stamped rebuilds (`22.4-20260729`, `22.4-20260729-php7`) with no plain `22.4` yet published - confusing to pin confidently, and the open-source-vs-Biz-edition split in this image wasn't confirmed. Left out this run rather than guess. |
 | Gogs | `gogs/gogs` resolves fine (`0.14.3`, amd64+arm64) but the project has visibly slowed since Gitea forked off it, and Gitea/Forgejo (both actively maintained, both already catalogued) cover the same niche better. Skipped as redundant rather than a packaging failure. |
 
+| Wakupator | No official Docker image - the project ships pre-compiled binaries and CMake build instructions only, no Docker Hub/GHCR namespace of its own. |
+| feedmixer | `cristoper/feedmixer` has a `Dockerfile` but no image published to a registry - the README's own instructions are `docker build . -t feedmixer`, not a pull. |
+| GoModel | `enterpilot/gomodel` resolves fine (pinnable tags, amd64+arm64), but its own docker-compose depends on Postgres, Redis *and* MongoDB together (audit log, cache, and primary storage respectively) - two extra services beyond one database, past what `needs:` is meant to model. |
+| Netron | No Docker image - it's a desktop app (macOS/Linux/Windows installers) and a Python package, plus a hosted browser version at netron.app; no self-hosted server mode to containerize. |
+| EDA (Edalitics) | `jortilles/eda` only publishes a floating `latest` tag (and `manual_latest`) on Docker Hub. Nothing pinnable. |
+| Daily Stars Explorer | `ghcr.io/emanuelef/daily-stars-explorer` only publishes date-stamped build tags (e.g. `20240206-1079`) plus `latest` - same class of problem as RSS-Bridge and HamsterBase Tasks. Nothing semver to pin. |
+| d8a.tech | Has a Dockerfile and docs reference a Docker setup, but at 15 stars with its own docs flagging the web tracker component "(beta)", didn't chase down the image name/port/env vars with enough confidence this run. |
+| Redash | Official setup needs Postgres, Redis, and separate worker and scheduler processes on top of the API server - several services past the one-extra-service model. |
+| Countly | Official `docker-compose.yml` splits into four services - `mongodb`, `countly-api`, `countly-frontend` and an `nginx` reverse proxy in front of both - past the one-extra-service model, plus a frontend/backend split like Shlink. |
+| Socioboard | `Socioboard-5.0` ships build scripts (`docker-build.sh`) rather than a published image under the project's own namespace on Docker Hub or GHCR; last-maintained status unclear. |
+| Posio | No official Docker image published - the repo's own compose file is for local development only (`docker-compose run web manage.py migrate`, etc). Also needs Spatialite plus Redis for Django Channels, past a clean one-database model even if an image existed. |
+| Task Keeper (piga) | No official Docker image published - `nymanjens/piga`'s compose file builds locally (`docker-compose run web bin/server ...`). Also MariaDB setup goes through an interactive `-DdropAndCreateNewDb`/`-DcreateAdminUser` CLI step this schema has no field for. |
+| FocusFlow(Cloud) | `ghcr.io/francesco-gaglione/focusflowcloud` resolves fine (pinnable tags, amd64+arm64, needs only Postgres), but it's a sync/API backend for a native Tauri desktop and mobile app (SvelteKit compiled into the Tauri shell, not served over HTTP) - no browser web UI to put behind a subdomain. |
+| Xandikos | `ghcr.io/jelmer/xandikos` resolves fine (pinnable tags, amd64+arm64, no database - Git-backed storage), but it's a redundant near-duplicate of Radicale, already in the catalogue for the same simple/low-overhead CalDAV+CardDAV niche. |
+| Cal.diy | The project documents Docker deployment via `calcom/cal.diy`, but the Docker Hub tags API returns zero tags for that repository (`"count":0`) despite the repo page existing. Nothing this tool can pin with confidence. |
+| QloApps | `webkul/qloapps_docker` resolves and is the vendor's own namespace, but it's an all-in-one image that bundles its own MySQL server and an SSH daemon inside the single container - doesn't fit the separate-database-sidecar model, same class of problem as Hi.Events. |
+| Bitwarden (official) | Self-hosted deployment is "an array of Docker containers" (web vault, API, notifications, mail, MSSQL by default) - well past the one-extra-service model, and MSSQL isn't one of the database types this schema models. Vaultwarden, already catalogued, covers the same niche as a single lightweight container. |
+| SyncMarks | No information about an official Docker image found in the repo for this run. |
+| Mataroa | Docker support in the repo is development-only (`docker compose up` against a local Postgres, bound to a fake local subdomain) - the project's own production deployment docs describe Caddy + gunicorn + systemd, not a published container image. |
+| HTMLy | No Docker image - a databaseless PHP app meant for upload to a regular webserver, per its own README and docs site. |
+| Dotclear | No Docker image found on the project's download page or docs; traditional PHP webserver install only. |
+| Bitpoll | `ghcr.io/fsinfuhh/bitpoll` resolves fine, but configuration is a mounted `settings_local.py` file rather than documented environment variables - same class of problem as Piwigo/Group Office/farmOS. |
+| Bracket | No pre-built official image published to a registry - the repo only ships a `Dockerfile` to build locally, and the real deployment is separate frontend/backend containers plus Postgres. |
+| Django-CRM | No Docker image or container deployment info found in the project's own docs; covers Django/MySQL/Postgres compatibility only. |
+| SuiteCRM | No Docker image or container deployment info found under the project's own namespace; guessed Docker Hub namespaces resolve nothing. |
+| CookCLI | Has a `Dockerfile` and `docker-compose.yml` in-repo but no image published to a registry under the project's own namespace - build-yourself only. |
+
 Two things that look like rejections but aren't:
 
 **amd64-only images are still catalogued.** They get `arch: [amd64]` and that

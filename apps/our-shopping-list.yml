@@ -1,0 +1,30 @@
+slug: our-shopping-list
+name: Our Shopping List
+category: productivity
+description: Simple shared shopping/todo list app, no accounts required.
+homepage: https://codeberg.org/nanawel/our-shopping-list
+source: https://codeberg.org/nanawel/our-shopping-list
+
+image: ourshoppinglist/our-shopping-list
+version: "4.2.0"
+arch: [amd64]
+
+port: 8080
+mem_limit: 512m
+database: mongo
+auth: proxy
+
+env:
+  - name: MONGODB_HOST
+    value: "our-shopping-list-mongo"
+  - name: MONGODB_PORT
+    value: "27017"
+  - name: MONGODB_DB
+    value: "osl"
+
+notes: |
+  No accounts of its own - lists are shared via invite links, so put a
+  proxy in front if it shouldn't be public. Upstream's own compose
+  runs Mongo with no auth (plain `mongo:7`, no replica set needed).
+  All persistent state lives in Mongo; the app container itself has no
+  data volume.
