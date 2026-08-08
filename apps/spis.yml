@@ -1,0 +1,33 @@
+slug: spis
+name: SPIS
+category: media
+description: Simple, lightweight media server for browsing personal photos and videos with a mobile-friendly UI.
+homepage: https://github.com/gbbirkisson/spis
+source: https://github.com/gbbirkisson/spis
+
+image: ghcr.io/gbbirkisson/spis
+version: "v0.14.1"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: SPIS_PROCESSING_SCHEDULE
+    value: "0 0 2 * * *"
+  - name: SPIS_PROCESSING_RUN_ON_START
+    value: "false"
+
+volumes:
+  - path: data
+    mount: /var/lib/spis/data
+  - path: media
+    mount: /var/lib/spis/media
+
+notes: |
+  No built-in authentication at all - keep it behind the proxy's auth
+  before exposing it. media is meant to be mounted read-only against
+  wherever the library already lives; SPIS only writes generated
+  thumbnails and metadata under data.

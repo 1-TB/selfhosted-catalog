@@ -1,0 +1,36 @@
+slug: pigallery2
+name: PiGallery2
+category: media
+description: Directory-first photo gallery with map view, face recognition and RBAC, optimized for low-resource servers.
+homepage: https://bpatrik.github.io/pigallery2/
+source: https://github.com/bpatrik/pigallery2
+
+image: bpatrik/pigallery2
+version: "3.5.2"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: NODE_ENV
+    value: production
+
+volumes:
+  - path: config
+    mount: /app/data/config
+  - path: db
+    mount: /app/data/db
+  - path: images
+    mount: /app/data/images
+  - path: tmp
+    mount: /app/data/tmp
+
+notes: |
+  images is meant to be mounted read-only against wherever the photo
+  library already lives - PiGallery2 indexes it rather than owning it.
+  db holds a small file used for user credentials even with the default
+  in-memory index. Optional OIDC login exists (Users-oidc-* config
+  keys) but is wired up entirely from the web UI, not env vars.
