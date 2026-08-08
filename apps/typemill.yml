@@ -1,0 +1,37 @@
+slug: typemill
+name: Typemill
+category: documents
+description: Flat-file markdown CMS with a block editor, no database required.
+homepage: https://typemill.net
+source: https://github.com/typemill/typemill
+
+image: kixote/typemill
+version: "v2.25.0"
+arch: [amd64]
+
+port: 80
+mem_limit: 512m
+database: none
+auth: proxy
+
+volumes:
+  - path: settings
+    mount: /var/www/html/settings
+  - path: media
+    mount: /var/www/html/media
+  - path: data
+    mount: /var/www/html/data
+  - path: cache
+    mount: /var/www/html/cache
+  - path: plugins
+    mount: /var/www/html/plugins
+  - path: content
+    mount: /var/www/html/content
+  - path: themes
+    mount: /var/www/html/themes
+
+notes: |
+  First visit to the site walks through creating the initial admin
+  account in the browser - there's no env-var equivalent. The content,
+  themes and plugins volumes are seeded with defaults on first start if
+  left empty.
