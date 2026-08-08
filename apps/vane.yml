@@ -1,0 +1,28 @@
+slug: vane
+name: Vane
+category: productivity
+description: AI-powered answering/search engine with a bundled SearXNG backend.
+homepage: https://github.com/ItzCrazyKns/Vane
+source: https://github.com/ItzCrazyKns/Vane
+
+image: itzcrazykns1337/vane
+version: "v1.12.2"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: none
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /home/vane/data
+
+notes: |
+  No env vars to set at deploy time - the LLM provider (Ollama, OpenAI,
+  Claude, Gemini, Groq or any OpenAI-compatible endpoint) and its API
+  key are chosen from a setup wizard on first visit, not passed in.
+  Bundles its own SearXNG internally, so nothing extra to run alongside
+  it. Has no login of its own yet (an open upstream feature request),
+  so treat the subdomain as fully exposed by whatever auth: proxy puts
+  in front of it.

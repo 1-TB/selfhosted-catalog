@@ -1,0 +1,47 @@
+slug: discount-bandit
+name: Discount Bandit
+category: automation
+description: Multi-user price tracker for Amazon, AliExpress, eBay and custom stores.
+homepage: https://discount-bandit.cybrarist.com
+source: https://github.com/Cybrarist/Discount-Bandit
+
+image: cybrarist/discount-bandit
+version: "v4.0.4"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: APP_URL
+    value: "https://discount-bandit.${DOMAIN}"
+  - name: ASSET_URL
+    value: "https://discount-bandit.${DOMAIN}"
+  - name: APP_TIMEZONE
+    value: "Etc/UTC"
+  - name: DB_CONNECTION
+    value: "sqlite"
+  - name: CRON
+    value: "*/5 * * * *"
+  - name: APP_KEY
+    secret: true
+  - name: EXCHANGE_RATE_API_KEY
+    secret: true
+
+volumes:
+  - path: database
+    mount: /app/database/sqlite
+  - path: logs
+    mount: /logs
+
+notes: |
+  APP_KEY is a Laravel app key, not issued by the project - generate a
+  random one yourself (e.g. `base64:$(openssl rand -base64 32)`) before
+  first start, since there's no in-container command to do it and none
+  is set by default. EXCHANGE_RATE_API_KEY is only needed for
+  multi-currency conversion; the free tier at exchangerate-api.com
+  covers it. Ships with its own signup/login (it's the "multi-user"
+  in the name), so auth here follows the rest of the catalogue's
+  default rather than meaning it has none.
