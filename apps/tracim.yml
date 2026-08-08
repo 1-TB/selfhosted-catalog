@@ -1,0 +1,42 @@
+slug: tracim
+name: Tracim
+category: documents
+description: Team collaboration platform combining threads, files, notes and an agenda in one workspace.
+homepage: https://www.tracim.fr
+source: https://github.com/tracim/tracim
+
+image: algoo/tracim
+version: "4.12.0"
+arch: [amd64]
+
+port: 80
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: DATABASE_TYPE
+    value: "postgresql"
+  - name: DATABASE_HOST
+    value: "tracim-postgres"
+  - name: DATABASE_PORT
+    value: "5432"
+  - name: DATABASE_USER
+    value: "tracim"
+  - name: DATABASE_NAME
+    value: "tracim"
+  - name: DATABASE_PASSWORD
+    value: "${TRACIM_DB_PASSWORD}"
+  - name: TRACIM_WEBSITE__BASE_URL
+    value: "https://tracim.${DOMAIN}"
+
+volumes:
+  - path: config
+    mount: /etc/tracim
+  - path: data
+    mount: /var/tracim
+
+notes: |
+  First boot creates a default admin account: admin@admin.admin /
+  admin@admin.admin. There's no env var to set it up front - log in and
+  change the password immediately.

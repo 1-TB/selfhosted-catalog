@@ -1,0 +1,24 @@
+slug: automad
+name: Automad
+category: documents
+description: Flat-file content management system and template engine with no database.
+homepage: https://automad.org
+source: https://github.com/marcantondahmen/automad
+
+image: automad/automad
+version: "1.10.9"
+arch: [amd64]
+
+port: 80
+mem_limit: 512m
+database: none
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /app
+
+notes: |
+  First boot generates a dashboard admin account automatically and only
+  ever prints the credentials to the container's log output - run
+  `docker logs` right after the first start to retrieve them.
