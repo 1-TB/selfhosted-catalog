@@ -1,0 +1,33 @@
+slug: ocular
+name: Ocular
+category: productivity
+description: Budgeting app for tracking expenses across months and years.
+homepage: https://github.com/simonwep/ocular
+source: https://github.com/simonwep/ocular
+
+image: ghcr.io/simonwep/ocular
+version: "v2.4.0"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: GENESIS_JWT_SECRET
+    secret: true
+  - name: GENESIS_JWT_TOKEN_EXPIRATION
+    value: "60"
+  - name: GENESIS_CREATE_USERS
+    secret: true
+
+volumes:
+  - path: data
+    mount: /data/genesis
+
+notes: |
+  Embedded database, nothing extra to provision. GENESIS_CREATE_USERS
+  seeds the initial account(s) on first boot in "user!:password" form (the
+  trailing ! marks an admin); treat it as a one-time secret. HTTP-only
+  deployments need GENESIS_JWT_COOKIE_ALLOW_HTTP=true or the login cookie
+  won't be set - shouldn't be needed once TLS is terminated at the proxy.

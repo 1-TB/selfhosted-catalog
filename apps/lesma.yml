@@ -1,0 +1,30 @@
+slug: lesma
+name: Lesma
+category: utilities
+description: Simple paste app friendly with browser and command line.
+homepage: https://gitlab.com/ogarcia/lesma
+source: https://gitlab.com/ogarcia/lesma
+
+image: ogarcia/lesma
+version: "1.3.2"
+arch: [amd64]
+
+port: 8000
+mem_limit: 512m
+auth: none
+
+env:
+  - name: LESMA_DOMAINS
+    value: "lesma.${DOMAIN}"
+  - name: LESMA_HTTPS
+    value: "true"
+
+volumes:
+  - path: data
+    mount: /var/lib/lesma
+
+notes: |
+  amd64-only image. No user accounts of its own; access control is just
+  expiration times and download limits, not credentials. Container runs
+  as uid/gid 100, so the host data directory needs matching ownership
+  before first start.
