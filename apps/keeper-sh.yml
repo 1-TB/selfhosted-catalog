@@ -1,0 +1,38 @@
+slug: keeper-sh
+name: Keeper.sh
+category: productivity
+description: Two-way calendar sync between Google Calendar, Outlook, CalDAV and ICS feeds.
+homepage: https://keeper.sh
+source: https://github.com/ridafkih/keeper.sh
+subdomain: keeper
+
+image: ghcr.io/ridafkih/keeper-services
+version: "2.13.5"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: postgres
+needs: [redis]
+auth: proxy
+
+env:
+  - name: BETTER_AUTH_URL
+    value: "https://keeper.${DOMAIN}/"
+  - name: BETTER_AUTH_SECRET
+    secret: true
+  - name: ENCRYPTION_KEY
+    secret: true
+  - name: DATABASE_URL
+    value: "postgres://keeper:${KEEPER_SH_DB_PASSWORD}@keeper-sh-postgres:5432/keeper"
+  - name: REDIS_URL
+    value: "redis://keeper-sh-redis:6379"
+
+notes: |
+  The keeper-services image bundles the web, API, cron and worker
+  processes into one container behind port 3000, so it only needs
+  Postgres and Redis alongside it - no separate worker container.
+  No login SSO of its own: GOOGLE_CLIENT_ID/SECRET and
+  MICROSOFT_CLIENT_ID/SECRET (optional, not set here) authorize Keeper
+  to sync those calendars as destinations, they don't provide app
+  login.

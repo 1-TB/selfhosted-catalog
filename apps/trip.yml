@@ -1,0 +1,40 @@
+slug: trip
+name: TRIP
+category: productivity
+description: Minimalist POI map tracker and trip planner.
+homepage: https://itskovacs-trip.netlify.app
+source: https://github.com/itskovacs/trip
+
+image: ghcr.io/itskovacs/trip
+version: "1.47.0"
+arch: [amd64, arm64]
+
+port: 8000
+mem_limit: 512m
+database: none
+auth: oidc
+redirect_path: /auth
+
+env:
+  - name: REGISTER_ENABLE
+    value: "false"
+  - name: OIDC_DISCOVERY_URL
+    secret: true
+    source: oidc_discovery_url
+  - name: OIDC_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: OIDC_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+  - name: OIDC_REDIRECT_URI
+    value: "https://trip.${DOMAIN}/auth"
+
+volumes:
+  - path: storage
+    mount: /app/storage
+
+notes: |
+  Stores everything (SQLite database, attachments, backups) under the
+  storage volume, so no external database is needed. OIDC_DISCOVERY_URL
+  takes the full .well-known discovery URL, not just the issuer.
