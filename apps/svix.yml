@@ -1,0 +1,34 @@
+slug: svix
+name: Svix
+category: developer
+description: Webhooks-as-a-service platform for sending, retrying and managing outgoing webhooks.
+homepage: https://www.svix.com/open-source-webhook-service/
+source: https://github.com/svix/svix-webhooks
+
+image: svix/svix-server
+version: "v1.100"
+arch: [amd64, arm64]
+
+port: 8071
+mem_limit: 512m
+database: postgres
+needs: [redis]
+auth: proxy
+
+env:
+  - name: SVIX_JWT_SECRET
+    secret: true
+  - name: SVIX_DB_DSN
+    value: "postgresql://svix:${SVIX_DB_PASSWORD}@svix-postgres:5432/svix"
+  - name: SVIX_REDIS_DSN
+    value: "redis://svix-redis:6379"
+
+notes: |
+  Redis isn't optional despite looking like a cache sidecar - the
+  default queue_type is "redis" and the message worker needs it to
+  deliver webhooks. Management is over a REST API authenticated with
+  SVIX_JWT_SECRET-signed bearer tokens rather than a browser login, so
+  there's no admin web UI to gate behind OIDC. Upstream's own reference
+  compose fronts Postgres with pgbouncer for connection pooling at
+  scale; SVIX_DB_DSN can point straight at Postgres for a single
+  instance.

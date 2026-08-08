@@ -1,0 +1,32 @@
+slug: swingmusic
+name: Swing Music
+category: media
+description: Self-hosted music player and streaming server for local audio files.
+homepage: https://swingmx.com
+source: https://github.com/swingmx/swingmusic
+
+image: ghcr.io/swingmx/swingmusic
+version: "v3.0.0"
+arch: [amd64, arm64]
+
+port: 1970
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: SWINGMUSIC_PORT
+    value: "1970"
+  - name: SWINGMUSIC_DEVICE_NAME
+    value: "Swing Music"
+
+volumes:
+  - path: music
+    mount: /music
+  - path: config
+    mount: /config
+
+notes: |
+  No database sidecar - it scans and indexes the mounted music directory
+  itself and keeps its index under /config. SWINGMUSIC_PORT must match
+  whatever host port is published, since the app reports it back to
+  connected clients.

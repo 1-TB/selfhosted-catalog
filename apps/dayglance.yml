@@ -1,0 +1,21 @@
+slug: dayglance
+name: dayGLANCE
+category: productivity
+description: Privacy-first day planner with visual time-blocking on a 24-hour timeline.
+homepage: https://dayglance.app
+source: https://github.com/krelltunez/dayGLANCE
+
+image: ghcr.io/krelltunez/dayglance
+version: "4.3.0"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+auth: none
+
+notes: |
+  Single static container with no server-side database - all planner
+  data lives in the visiting browser's local storage, nothing to
+  persist or back up on the host. Optional cross-device sync (via a
+  Nextcloud/WebDAV server) and optional AI/health add-ons are configured
+  from inside the app itself, not via env vars.
