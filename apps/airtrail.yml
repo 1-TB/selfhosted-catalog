@@ -1,0 +1,38 @@
+slug: airtrail
+name: AirTrail
+category: productivity
+description: Personal flight tracker with a world map of past flights and statistics.
+homepage: https://airtrail.johan.ohly.dk
+source: https://github.com/johanohly/AirTrail
+
+image: johly/airtrail
+version: "v3.11.1"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: ORIGIN
+    value: "https://airtrail.${DOMAIN}"
+  - name: DB_URL
+    value: "postgres://airtrail:${AIRTRAIL_DB_PASSWORD}@airtrail-postgres:5432/airtrail"
+  - name: DB_PASSWORD
+    value: "${AIRTRAIL_DB_PASSWORD}"
+  - name: DB_DATABASE_NAME
+    value: "airtrail"
+  - name: DB_USERNAME
+    value: "airtrail"
+  - name: UPLOAD_LOCATION
+    value: "/app/uploads"
+
+volumes:
+  - path: uploads
+    mount: /app/uploads
+
+notes: |
+  Has its own registration/login - the first visit walks through
+  creating the owner account. The uploads volume needs to be writable
+  by UID:GID 1000:1000.
