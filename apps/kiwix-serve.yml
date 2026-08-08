@@ -1,0 +1,31 @@
+slug: kiwix-serve
+name: Kiwix Serve
+category: documents
+description: Offline content server for ZIM archives (Wikipedia, Stack Exchange, Project Gutenberg and more).
+homepage: https://www.kiwix.org
+source: https://github.com/kiwix/kiwix-tools
+
+image: ghcr.io/kiwix/kiwix-serve
+version: "3.8.2"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: DOWNLOAD
+    value: ""
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  Serves whatever ZIM archives it's given, which the schema's env/volume
+  fields can't fully express. Two ways to load content: set DOWNLOAD to a
+  ZIM URL (e.g. one from https://library.kiwix.org) and it fetches it on
+  first boot, or drop .zim files into the data volume yourself - either
+  way the container needs a restart to pick up new content, since the
+  image has no field for the "*.zim" command-line argument its own docs
+  use to serve a directory's contents without a fixed DOWNLOAD target.

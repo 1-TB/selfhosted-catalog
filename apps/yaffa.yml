@@ -1,0 +1,48 @@
+slug: yaffa
+name: YAFFA
+category: productivity
+description: Personal finance application for tracking money, budgets and investments.
+homepage: https://yaffa.cc
+source: https://github.com/kantorge/yaffa
+
+image: kantorge/yaffa
+version: "v3.5.2"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: mariadb
+auth: proxy
+
+env:
+  - name: APP_KEY
+    secret: true
+  - name: APP_URL
+    value: "https://yaffa.${DOMAIN}"
+  - name: SESSION_DOMAIN
+    value: "yaffa.${DOMAIN}"
+  - name: TRUSTED_PROXIES
+    value: "*"
+  - name: DB_CONNECTION
+    value: "mysql"
+  - name: DB_HOST
+    value: "yaffa-mariadb"
+  - name: DB_PORT
+    value: "3306"
+  - name: DB_DATABASE
+    value: "yaffa"
+  - name: DB_USERNAME
+    value: "yaffa"
+  - name: DB_PASSWORD
+    value: "${YAFFA_DB_PASSWORD}"
+
+volumes:
+  - path: storage
+    mount: /var/www/html/storage
+
+notes: |
+  Laravel app; generate APP_KEY with `openssl rand -base64 32` (prefixed
+  "base64:") before first boot. The storage volume must stay a real
+  volume, not an empty bind mount - it ships pre-populated framework
+  directories (logs, cache, sessions) that an empty host directory would
+  shadow.
