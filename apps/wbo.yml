@@ -1,0 +1,32 @@
+slug: wbo
+name: WBO
+category: documents
+description: Real-time collaborative online whiteboard for diagrams and sketches.
+homepage: https://github.com/lovasoa/whitebophir
+source: https://github.com/lovasoa/whitebophir
+
+image: lovasoa/wbo
+version: "v2.17.0"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: WBO_HISTORY_DIR
+    value: "/opt/app/server-data"
+  - name: AUTH_SECRET_KEY
+    secret: true
+
+volumes:
+  - path: boards
+    mount: /opt/app/server-data
+
+notes: |
+  Without AUTH_SECRET_KEY set, any board URL is openable by anyone who
+  knows it - there's no built-in login, so this belongs behind a proxy
+  the same way Etherpad and HedgeDoc do. Setting AUTH_SECRET_KEY switches
+  to JWT-based per-board tokens (canOpen/canEdit/canClear claims) but
+  needs the app's own configuration.mjs to issue them, not just the env
+  var alone.
