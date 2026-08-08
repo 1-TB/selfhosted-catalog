@@ -1,0 +1,38 @@
+slug: gameyfin
+name: Gameyfin
+category: games
+description: Video game library manager that scans your folders and fetches metadata and cover art.
+homepage: https://gameyfin.org
+source: https://github.com/gameyfin/gameyfin
+
+image: ghcr.io/gameyfin/gameyfin
+version: "2.4.0"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: APP_KEY
+    secret: true
+  - name: APP_URL
+    value: "https://gameyfin.${DOMAIN}"
+
+volumes:
+  - path: data
+    mount: /opt/gameyfin/data
+  - path: db
+    mount: /opt/gameyfin/db
+  - path: plugindata
+    mount: /opt/gameyfin/plugindata
+  - path: logs
+    mount: /opt/gameyfin/logs
+
+notes: |
+  APP_KEY must be a 16, 24 or 32-byte Base64-encoded string (e.g.
+  `openssl rand -base64 32`) - the app won't start without one. Game
+  library folders are mounted separately from the data/db/plugin
+  volumes above and aren't modelled here. Optional OIDC/SSO login exists
+  but isn't documented well enough to configure by env var with
+  confidence, so this entry assumes the built-in account system.

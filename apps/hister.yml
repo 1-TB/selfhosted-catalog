@@ -1,0 +1,31 @@
+slug: hister
+name: Hister
+category: archiving
+description: Private, full-text search index of the pages you visit and the files you keep.
+homepage: https://hister.org
+source: https://github.com/asciimoo/hister
+
+image: ghcr.io/asciimoo/hister
+version: "v0.12.0"
+arch: [amd64, arm64]
+
+port: 4433
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: HISTER__SERVER__ADDRESS
+    value: "0.0.0.0:4433"
+  - name: HISTER__SERVER__BASE_URL
+    value: "https://hister.${DOMAIN}"
+
+volumes:
+  - path: data
+    mount: /hister/data
+
+notes: |
+  Storage is embedded, no external database. Has no login of its own -
+  the index holds your browsing/file history, so put it behind an
+  authenticating proxy. Automatic indexing of visited pages needs the
+  optional Firefox/Chrome browser extension; the web UI, crawler and
+  manual import work without it.
