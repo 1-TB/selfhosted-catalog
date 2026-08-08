@@ -291,3 +291,4 @@ one-container install.
 | Open QuarterMaster | Docs describe a "core-depot" plus separate auth/ecosystem services rather than one deployable app image; didn't chase down the exact service count or a single-container path with confidence this run. |
 | Haven | `ghcr.io/havenweb/haven` (official namespace) only publishes commit-hash tags plus `latest`. Nothing pinnable. |
 | Serendipity, Chyrp Lite | No official Docker image under either project's own namespace - only third-party rebuilds (`volkerwiegand/serendipity`, `nicholaswilde/chyrp-lite`). |
+| Woodpecker CI | `woodpeckerci/woodpecker-server` on Docker Hub and GHCR only exposes `next-<commit>` dev builds and `latest`/`cache*` via the registry API, no numeric release tag visible. A Codeberg mirror returned `v0.15.7`, well behind the project's current release line, so it reads as the wrong path rather than the real one. Skipped rather than guess. |
