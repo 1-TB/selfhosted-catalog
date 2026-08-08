@@ -1,0 +1,32 @@
+slug: pihole
+name: Pi-hole
+category: network
+description: Network-wide DNS-based ad and tracker blocking.
+homepage: https://pi-hole.net
+source: https://github.com/pi-hole/docker-pi-hole
+
+image: pihole/pihole
+version: "2026.07.2"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: TZ
+    value: "UTC"
+  - name: FTLCONF_dns_listeningMode
+    value: "ALL"
+  - name: FTLCONF_webserver_api_password
+    secret: true
+
+volumes:
+  - path: etc-pihole
+    mount: /etc/pihole
+
+notes: |
+  Blocking DNS needs port 53/tcp and 53/udp published on the host,
+  which an HTTP-only reverse proxy cannot carry; the web UI is the
+  part on port 80. FTLCONF_dns_listeningMode=ALL is required for it to
+  answer queries when run on Docker's default bridge network.

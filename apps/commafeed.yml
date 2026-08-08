@@ -1,0 +1,28 @@
+slug: commafeed
+name: CommaFeed
+category: feeds
+description: Feed reader with a Fever/Google Reader compatible API.
+homepage: https://www.commafeed.com
+source: https://github.com/Athou/commafeed
+
+image: athou/commafeed
+version: "7.2.1-h2"
+arch: [amd64, arm64]
+
+port: 8082
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: QUARKUS_HTTP_AUTH_SESSION_ENCRYPTION_KEY
+    secret: true
+
+volumes:
+  - path: data
+    mount: /app/data
+
+notes: |
+  The -h2 tag bundles an embedded H2 database, so no separate database
+  container is needed. Default login is admin/admin -- change it from
+  the admin menu on first sign-in.

@@ -13,6 +13,7 @@ release tags should be moved into `apps/`.
 | Lychee | No version tags on Docker Hub; the tags are all `testing-<build id>`. |
 | Scribble.rs | Could not resolve a package at `ghcr.io/scribble-rs/scribble.rs`. Needs someone to confirm where the image actually lives. |
 | JSON Crack | No official image found. The reference commonly passed around does not resolve. |
+| Woodpecker CI | `woodpeckerci/woodpecker-server` on Docker Hub and GHCR publishes only `next-<commit>` dev builds and `latest`/`cache*`, no numeric release tags visible via the registry API. A Codeberg mirror returned `v0.15.7`, well behind the project's current release line, so it looks like the wrong path rather than the real one. Skipped rather than guess. |
 
 ## Not rejections
 
