@@ -1,0 +1,27 @@
+slug: bludit
+name: Bludit
+category: documents
+description: Flat-file CMS for building a site or blog with no database.
+homepage: https://www.bludit.com
+source: https://github.com/bludit/bludit
+
+image: bludit/docker
+version: "3.20.0"
+arch: [amd64]
+
+port: 80
+mem_limit: 512m
+database: none
+auth: proxy
+
+volumes:
+  - path: content
+    mount: /usr/share/nginx/html/bl-content
+  - path: themes
+    mount: /usr/share/nginx/html/bl-themes
+  - path: plugins
+    mount: /usr/share/nginx/html/bl-plugins
+
+notes: |
+  First visit to the site runs Bludit's own web installer to set the
+  admin username and password - there's no env-var equivalent.
