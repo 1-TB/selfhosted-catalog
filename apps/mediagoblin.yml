@@ -1,0 +1,33 @@
+slug: mediagoblin
+name: MediaGoblin
+category: media
+description: Federated media publishing platform for photos, video and audio.
+homepage: https://mediagoblin.org
+source: https://gitlab.com/mediagoblin/mediagoblin
+
+image: mediagoblin/mediagoblin
+version: "0.15.0"
+arch: [amd64]
+
+port: 6543
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: ADMIN_USER
+    value: admin
+  - name: ADMIN_PASSWORD
+    secret: true
+  - name: ADMIN_EMAIL
+    secret: true
+
+volumes:
+  - path: data
+    mount: /srv
+
+notes: |
+  Standalone image only - it runs the web server and the Celery media
+  processor (thumbnails, transcodes) in the same container, per the
+  project's own docker docs. Uses an embedded SQLite database by
+  default, so no separate database is needed. amd64 only.
