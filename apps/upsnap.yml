@@ -1,0 +1,25 @@
+slug: upsnap
+name: UpSnap
+category: network
+description: Wake-on-LAN dashboard with network scanning and ping monitoring.
+homepage: https://github.com/seriousm4x/UpSnap
+source: https://github.com/seriousm4x/UpSnap
+
+image: ghcr.io/seriousm4x/upsnap
+version: "5.4.4"
+arch: [amd64, arm64]
+
+port: 8090
+mem_limit: 512m
+database: none
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /app/pb_data
+
+notes: |
+  Needs network_mode: host and cap_add: [NET_RAW] to send WoL magic packets
+  and run ping/nmap scans; it cannot run in the usual bridge network + proxy
+  setup. Not meant to be exposed to the open internet (it can power off
+  devices). First run: open the UI and create the admin user.

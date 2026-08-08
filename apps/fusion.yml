@@ -1,0 +1,39 @@
+slug: fusion
+name: Fusion
+category: feeds
+description: Lightweight self-hosted RSS reader, a single Go binary with SQLite.
+homepage: https://github.com/0x2E/fusion
+source: https://github.com/0x2E/fusion
+
+image: ghcr.io/0x2e/fusion
+version: "1.2.1"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: oidc
+redirect_path: /api/oidc/callback
+
+env:
+  - name: FUSION_PASSWORD
+    secret: true
+  - name: FUSION_OIDC_ISSUER
+    secret: true
+    source: oidc_issuer
+  - name: FUSION_OIDC_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: FUSION_OIDC_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+  - name: FUSION_OIDC_REDIRECT_URI
+    value: "https://fusion.${DOMAIN}/api/oidc/callback"
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  OIDC is optional; when FUSION_OIDC_ISSUER is unset it falls back to
+  password-only login via FUSION_PASSWORD.

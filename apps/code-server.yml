@@ -1,0 +1,31 @@
+slug: code-server
+name: code-server
+category: developer
+description: VS Code running in the browser.
+homepage: https://coder.com/docs/code-server
+source: https://github.com/coder/code-server
+
+image: codercom/code-server
+version: "4.131.0"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: PASSWORD
+    secret: true
+
+volumes:
+  - path: config
+    mount: /home/coder/.config
+  - path: local
+    mount: /home/coder/.local
+  - path: project
+    mount: /home/coder/project
+
+notes: |
+  Set HASHED_PASSWORD instead of PASSWORD to avoid a plaintext password in
+  the environment; PASSWORD and HASHED_PASSWORD are mutually exclusive and
+  the image deletes both from its own environment after reading them.
