@@ -1,0 +1,38 @@
+slug: infisical
+name: Infisical
+category: security
+description: Open-source platform for managing secrets, certificates and privileged access.
+homepage: https://infisical.com
+source: https://github.com/Infisical/infisical
+
+image: infisical/infisical
+version: "v0.162.18"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: postgres
+needs: [redis]
+auth: oidc
+redirect_path: /api/v1/sso/oidc/callback
+
+env:
+  - name: SITE_URL
+    value: "https://secrets.${DOMAIN}"
+  - name: ENCRYPTION_KEY
+    secret: true
+  - name: AUTH_SECRET
+    secret: true
+  - name: DB_CONNECTION_URI
+    value: "postgresql://infisical:${INFISICAL_DB_PASSWORD}@infisical-postgres:5432/infisical"
+  - name: REDIS_URL
+    value: "redis://infisical-redis:6379"
+
+notes: |
+  ENCRYPTION_KEY (16-byte hex, `openssl rand -hex 16`) and AUTH_SECRET
+  (32-byte base64, `openssl rand -base64 32`) are both generated once and
+  must never change afterwards, or every stored secret becomes
+  unreadable. OIDC/SAML providers are added afterwards from the
+  organization's Authentication settings in the UI, not via env vars;
+  the callback path above is fixed regardless of provider. No local data
+  volume - everything lives in Postgres and Redis.

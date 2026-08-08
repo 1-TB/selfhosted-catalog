@@ -1,0 +1,39 @@
+slug: lubelogger
+name: LubeLogger
+category: productivity
+description: Vehicle maintenance, fuel mileage and ownership-cost tracker.
+homepage: https://lubelogger.com
+source: https://github.com/hargata/lubelog
+
+image: ghcr.io/hargata/lubelogger
+version: "v1.7.0"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: EnableAuth
+    value: "true"
+  - name: UserNameHash
+    secret: true
+  - name: UserPasswordHash
+    secret: true
+
+volumes:
+  - path: data
+    mount: /App/data
+  - path: keys
+    mount: /root/.aspnet/DataProtection-Keys
+
+notes: |
+  Ships with an embedded SQLite database; POSTGRES_CONNECTION is an
+  optional env var if you'd rather point it at Postgres. Login is
+  disabled by default - set EnableAuth to true and UserNameHash /
+  UserPasswordHash to the SHA256 hashes of the root username/password
+  (documented in the wiki) to turn it on. It also speaks OIDC
+  (OpenIDConfig__* env vars), but upstream now configures that mostly
+  through the in-app Server Settings UI and doesn't document one fixed
+  callback path, so this entry sticks with a proxy in front instead.
