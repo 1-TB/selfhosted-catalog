@@ -1,0 +1,32 @@
+slug: leafwiki
+name: LeafWiki
+category: documents
+description: Self-hosted wiki with tree navigation. Single Go binary, SQLite and Markdown on disk, no external database.
+homepage: https://leafwiki.com
+source: https://github.com/perber/leafwiki
+
+image: ghcr.io/perber/leafwiki
+version: v0.12.0
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: LEAFWIKI_JWT_SECRET
+    secret: true
+  - name: LEAFWIKI_ADMIN_PASSWORD
+    secret: true
+
+volumes:
+  - path: data
+    mount: /app/data
+
+notes: |
+  No external database - SQLite and page Markdown live under the data
+  volume. Own local-account login only, no OIDC; optional reverse-proxy
+  auth via a trusted header (LEAFWIKI_ENABLE_HTTP_REMOTE_USER) is
+  available instead of the built-in login. If the proxy doesn't forward
+  X-Forwarded-Proto: https, set LEAFWIKI_ALLOW_INSECURE=true or auth
+  cookies won't be set.

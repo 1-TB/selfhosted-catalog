@@ -1,0 +1,37 @@
+slug: kapowarr
+name: Kapowarr
+category: media
+description: Comic and manga library manager that finds, downloads and organizes issues, fitting in the *arr suite.
+homepage: https://kapowarr.com
+source: https://github.com/Casvt/Kapowarr
+
+image: mrcas/kapowarr
+version: v1.3.1
+arch: [amd64, arm64]
+
+port: 5656
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: PUID
+    value: "1000"
+  - name: PGID
+    value: "1000"
+  - name: TZ
+    value: "${TZ}"
+
+volumes:
+  - path: db
+    mount: /app/db
+  - path: downloads
+    mount: /app/temp_downloads
+  - path: comics
+    mount: /comics
+
+notes: |
+  SQLite, no external database. No login by default and no OIDC - a
+  local login can be turned on in Settings, but a forward-auth proxy is
+  the safer default given it can trigger downloads to the filesystem.
+  Download clients (torrent/usenet) and metadata sources are configured
+  entirely through the web UI after first run, not env vars.

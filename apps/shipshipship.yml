@@ -1,0 +1,34 @@
+slug: shipshipship
+name: ShipShipShip
+category: productivity
+description: Self-hostable changelog and roadmap page with voting and emoji reactions.
+homepage: https://shipshipship.io
+source: https://github.com/GauthierNelkinsky/ShipShipShip
+
+image: nelkinsky/shipshipship
+version: v1.3.5
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+auth: none
+
+env:
+  - name: BASE_URL
+    value: "https://shipshipship.${DOMAIN}"
+  - name: ADMIN_USERNAME
+    value: admin
+  - name: ADMIN_PASSWORD
+    secret: true
+  - name: JWT_SECRET
+    secret: true
+
+volumes:
+  - path: data
+    mount: /app/data
+
+notes: |
+  SQLite, no external database. The changelog/roadmap itself is meant to
+  be public; only /admin needs a login, which the app handles itself
+  (no OIDC support) - don't put the whole subdomain behind a forward-auth
+  proxy or visitors won't be able to view or vote.
