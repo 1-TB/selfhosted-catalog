@@ -1,0 +1,25 @@
+slug: betula
+name: Betula
+category: productivity
+description: Single-user federated bookmark manager with archival support.
+homepage: https://joinbetula.org
+source: https://codeberg.org/bouncepaw/betula
+
+image: bouncepaw/betula
+version: "v1.8.1"
+arch: [amd64]
+
+port: 1738
+mem_limit: 512m
+database: none
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  No environment variables to set at deploy time - the domain and all
+  other settings are configured from the web UI on first run (Settings),
+  which also matters for RSS feeds, the bookmarklet and federation to
+  work correctly. Image is amd64-only; no arm64 build is published.

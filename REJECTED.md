@@ -249,6 +249,10 @@ release tags should be moved into `apps/`.
 | Django-CRM | No Docker image or container deployment info found in the project's own docs; covers Django/MySQL/Postgres compatibility only. |
 | SuiteCRM | No Docker image or container deployment info found under the project's own namespace; guessed Docker Hub namespaces resolve nothing. |
 | CookCLI | Has a `Dockerfile` and `docker-compose.yml` in-repo but no image published to a registry under the project's own namespace - build-yourself only. |
+| MeTube | `ghcr.io/alexta69/metube` resolves fine but only ships `latest` and rolling date-stamped build tags (`2026.08.04`, `2025.12.30`, ...) - no semver-style release, so `tools/registry.py latest` returns nothing to pin. |
+| Bar Assistant | Real deployment is the `barassistant/server` API plus a separately-versioned frontend project (`salt-rim`, its own GitHub repo/image) plus Redis plus Meilisearch - four containers spanning two distinct upstream projects with no single image that serves a usable UI on its own. Doesn't map cleanly onto one `image:`/`needs:` entry the way this catalogue's other multi-container apps do. |
+| RecipeSage | The project's own README points self-hosters at a separate `recipesage-selfhost` repo rather than documenting a docker-compose here; that repo's compose stack is backend + ingredient-parser + Postgres + object storage, not a one or two-container install. |
+| Digibunch | No Docker image or container instructions in the project's own docs - PHP app meant for a regular webserver (`php -S` or Apache/Nginx) with SQLite/MySQL, same class of gap as HTMLy/Dotclear. |
 
 Two things that look like rejections but aren't:
 
