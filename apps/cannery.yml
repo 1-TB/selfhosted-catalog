@@ -1,0 +1,39 @@
+slug: cannery
+name: Cannery
+category: productivity
+description: Self-hosted tracker for ammunition inventory, range logs and shooting history.
+homepage: https://cannery.app
+source: https://codeberg.org/shibao/cannery
+
+image: shibaobun/cannery
+version: "0.9.20"
+arch: [amd64, arm64]
+
+port: 4000
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: HOST
+    value: "cannery.${DOMAIN}"
+  - name: SECRET_KEY_BASE
+    secret: true
+  - name: DATABASE_URL
+    value: "ecto://cannery:${CANNERY_DB_PASSWORD}@cannery-postgres:5432/cannery"
+  - name: SMTP_HOST
+    secret: true
+  - name: SMTP_USERNAME
+    secret: true
+  - name: SMTP_PASSWORD
+    secret: true
+  - name: REGISTRATION
+    value: "invite"
+
+notes: |
+  Elixir/Phoenix app from the same author as memEx and built the same way;
+  the production release refuses to boot without SMTP_HOST/SMTP_USERNAME/
+  SMTP_PASSWORD (used for invites and password resets). SECRET_KEY_BASE
+  must be generated with
+  `docker run -it shibaobun/cannery /app/priv/random.sh`. No file storage
+  volume needed - everything lives in Postgres.

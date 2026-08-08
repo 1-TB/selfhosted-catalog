@@ -1,0 +1,38 @@
+slug: memex
+name: memEx
+category: documents
+description: Structured personal knowledge base of notes, contexts and pipelines.
+source: https://codeberg.org/shibao/memEx
+
+image: shibaobun/memex
+version: "0.1.24"
+arch: [amd64, arm64]
+
+port: 4000
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: HOST
+    value: "memex.${DOMAIN}"
+  - name: SECRET_KEY_BASE
+    secret: true
+  - name: DATABASE_URL
+    value: "ecto://memex:${MEMEX_DB_PASSWORD}@memex-postgres:5432/memex"
+  - name: SMTP_HOST
+    secret: true
+  - name: SMTP_USERNAME
+    secret: true
+  - name: SMTP_PASSWORD
+    secret: true
+  - name: REGISTRATION
+    value: "invite"
+
+notes: |
+  Elixir/Phoenix app; the release refuses to boot in production without
+  SMTP_HOST/SMTP_USERNAME/SMTP_PASSWORD set (used for invites and password
+  resets), so a working mail relay is a hard requirement, not optional.
+  SECRET_KEY_BASE must be generated with
+  `docker run -it shibaobun/memex /app/priv/random.sh`. No file storage
+  volume needed - everything lives in Postgres.

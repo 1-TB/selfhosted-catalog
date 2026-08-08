@@ -1,0 +1,34 @@
+slug: ombi
+name: Ombi
+category: media
+description: Lets Plex, Emby and Jellyfin users request movies and TV shows.
+homepage: https://ombi.io
+source: https://github.com/Ombi-app/Ombi
+
+image: linuxserver/ombi
+version: "4.53.10"
+arch: [amd64, arm64]
+
+port: 3579
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: PUID
+    value: "1000"
+  - name: PGID
+    value: "1000"
+  - name: TZ
+    value: "Etc/UTC"
+  - name: BASE_URL
+    value: ""
+
+volumes:
+  - path: config
+    mount: /config
+
+notes: |
+  Uses an embedded SQLite database in /config by default; the docs also
+  show an optional MySQL backend but it's not required. BASE_URL is only
+  needed when serving Ombi from a subfolder rather than its own subdomain.
