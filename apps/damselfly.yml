@@ -1,0 +1,30 @@
+slug: damselfly
+name: Damselfly
+category: media
+description: Server-based photo management system for large collections with search and tagging.
+homepage: https://damselfly.info
+source: https://github.com/Webreaper/Damselfly
+
+image: webreaper/damselfly
+version: "4.5.3"
+arch: [amd64]
+
+port: 6363
+mem_limit: 512m
+database: none
+auth: proxy
+
+volumes:
+  - path: config
+    mount: /config
+  - path: pictures
+    mount: /pictures
+  - path: thumbs
+    mount: /thumbs
+
+notes: |
+  amd64 only - no arm64 build is published. Database is an embedded
+  SQLite file kept in /config, no external database needed.
+  Authentication is off by default; enable it from System Settings in
+  the UI, which adds a login/registration flow, before exposing this
+  beyond a trusted network.

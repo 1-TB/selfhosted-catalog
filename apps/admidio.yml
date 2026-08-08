@@ -1,0 +1,44 @@
+slug: admidio
+name: Admidio
+category: productivity
+description: Member and role management system for clubs, associations and other organizations.
+homepage: https://www.admidio.org
+source: https://github.com/Admidio/admidio
+
+image: admidio/admidio
+version: "v5.0.14"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: mariadb
+auth: proxy
+
+env:
+  - name: ADMIDIO_DB_TYPE
+    value: "mysql"
+  - name: ADMIDIO_DB_HOST
+    value: "admidio-mariadb:3306"
+  - name: ADMIDIO_DB_NAME
+    value: "admidio"
+  - name: ADMIDIO_DB_USER
+    value: "admidio"
+  - name: ADMIDIO_DB_PASSWORD
+    value: "${ADMIDIO_DB_PASSWORD}"
+  - name: ADMIDIO_ROOT_PATH
+    value: "https://admidio.${DOMAIN}"
+  - name: TZ
+    value: "Etc/UTC"
+
+volumes:
+  - path: my-files
+    mount: /opt/app-root/src/adm_my_files
+  - path: plugins
+    mount: /opt/app-root/src/adm_plugins
+  - path: themes
+    mount: /opt/app-root/src/themes
+
+notes: |
+  Database env vars only wire up the connection - the organization,
+  admin account and remaining setup are done through a web installer
+  on first visit to the site.

@@ -1,0 +1,34 @@
+slug: photoview
+name: Photoview
+category: media
+description: Simple, user-friendly photo gallery for browsing a personal photo library.
+homepage: https://photoview.github.io
+source: https://github.com/photoview/photoview
+
+image: photoview/photoview
+version: "2.4.0"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: mariadb
+auth: proxy
+
+env:
+  - name: PHOTOVIEW_DATABASE_DRIVER
+    value: "mysql"
+  - name: PHOTOVIEW_MYSQL_URL
+    value: "photoview:${PHOTOVIEW_DB_PASSWORD}@tcp(photoview-mariadb)/photoview"
+  - name: PHOTOVIEW_LISTEN_IP
+    value: "0.0.0.0"
+
+volumes:
+  - path: cache
+    mount: /home/photoview/media-cache
+  - path: photos
+    mount: /photos
+
+notes: |
+  /photos is meant to be mounted read-only against wherever the photo
+  library already lives; Photoview never writes to it. The first visit
+  walks through creating the admin account - no default credentials.
