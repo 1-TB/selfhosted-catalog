@@ -1,0 +1,45 @@
+slug: manyfold
+name: Manyfold
+category: media
+description: Library manager for 3D-printable model files with browsing, tagging and metadata.
+homepage: https://manyfold.app
+source: https://github.com/manyfold3d/manyfold
+
+image: manyfold3d/manyfold
+version: "0.147.1"
+arch: [amd64, arm64]
+
+port: 3214
+mem_limit: 512m
+database: postgres
+needs: [redis]
+auth: proxy
+
+env:
+  - name: SECRET_KEY_BASE
+    secret: true
+  - name: REDIS_URL
+    value: "redis://manyfold-redis:6379/1"
+  - name: DATABASE_ADAPTER
+    value: postgresql
+  - name: DATABASE_HOST
+    value: manyfold-postgres
+  - name: DATABASE_PORT
+    value: "5432"
+  - name: DATABASE_USER
+    value: manyfold
+  - name: DATABASE_PASSWORD
+    value: "${MANYFOLD_DB_PASSWORD}"
+  - name: DATABASE_NAME
+    value: manyfold
+
+volumes:
+  - path: library
+    mount: /models
+  - path: plugins
+    mount: /usr/src/app/plugins
+
+notes: |
+  Redis backs a Sidekiq background-job queue used for scanning and
+  metadata lookups, on top of the one Postgres database - not a
+  one-shot single-container install.

@@ -1,0 +1,31 @@
+slug: surmai
+name: Surmai
+category: productivity
+description: Collaborative travel planner for organizing trips, itineraries and documents.
+homepage: https://surmai.app
+source: https://github.com/rohitkumbhar/surmai
+
+image: ghcr.io/rohitkumbhar/surmai
+version: "v0.5.4"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: SURMAI_ADMIN_EMAIL
+    value: "admin@${DOMAIN}"
+  - name: SURMAI_ADMIN_PASSWORD
+    secret: true
+  - name: PB_DATA_DIRECTORY
+    value: /pb_data
+
+volumes:
+  - path: data
+    mount: /pb_data
+
+notes: |
+  Built on PocketBase, with SQLite embedded in the data volume - no
+  external database. Login is local email/password only; no documented
+  OIDC support.
