@@ -1,0 +1,28 @@
+slug: motioneye
+name: motionEye
+category: security
+description: Web interface for the Motion video surveillance daemon, managing multiple IP and USB cameras.
+homepage: https://github.com/motioneye-project/motioneye
+source: https://github.com/motioneye-project/motioneye
+
+image: ghcr.io/motioneye-project/motioneye
+version: "0.44.0"
+arch: [amd64, arm64]
+
+port: 8765
+mem_limit: 512m
+database: none
+auth: proxy
+
+volumes:
+  - path: config
+    mount: /etc/motioneye
+  - path: media
+    mount: /var/lib/motioneye
+
+notes: |
+  Default login is admin with an empty password - set a real one from
+  Settings > General before exposing this. Network/RTSP cameras work
+  with no extra setup; a USB camera needs its /dev/videoX device passed
+  through to the container separately. This is the community fork that
+  continues the original ccrisan/motioneye project.
