@@ -1,0 +1,32 @@
+slug: this-week-in-past
+name: This Week in Past
+category: media
+description: Slideshow of photos taken this week in previous years, for a digital photo frame or kiosk display.
+homepage: https://github.com/RouHim/this-week-in-past
+source: https://github.com/RouHim/this-week-in-past
+
+image: rouhim/this-week-in-past
+version: "1.32.49"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: SLIDESHOW_INTERVAL
+    value: "30"
+
+volumes:
+  - path: photos
+    mount: /resources
+  - path: data
+    mount: /data
+
+notes: |
+  Passive slideshow only - no accounts or login, so anyone who can reach
+  it can browse the mounted photo library; keep it behind the proxy.
+  Mount the photos volume read-only if the consumer supports that.
+  Indexes photo metadata into memory at startup, so large libraries add
+  to the startup time and idle memory, not just disk use.

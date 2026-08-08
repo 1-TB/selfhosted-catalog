@@ -1,0 +1,45 @@
+slug: eonvelope
+name: Eonvelope
+category: archiving
+description: Self-hosted email archive with continuous IMAP/POP/Exchange/JMAP fetching and full-text search.
+homepage: https://dacid99.gitlab.io/eonvelope
+source: https://gitlab.com/dacid99/eonvelope
+
+image: dacid99/eonvelope
+version: "0.7.2"
+arch: [amd64, arm64]
+
+port: 443
+mem_limit: 512m
+database: mariadb
+auth: proxy
+
+env:
+  - name: SECRET_KEY
+    secret: true
+  - name: DATABASE
+    value: "eonvelope"
+  - name: DATABASE_USER
+    value: "eonvelope"
+  - name: DATABASE_PASSWORD
+    value: "${EONVELOPE_DB_PASSWORD}"
+  - name: DJANGO_SUPERUSER_PASSWORD
+    secret: true
+  - name: ALLOWED_HOSTS
+    value: "eonvelope.${DOMAIN}"
+
+volumes:
+  - path: archive
+    mount: /mnt/archive
+  - path: logs
+    mount: /var/log/eonvelope
+
+notes: |
+  Only ever serves HTTPS on its listening port using a bundled
+  self-signed certificate - there is no plain-HTTP mode. A forward-auth
+  proxy in front must be configured to speak TLS to the backend (and
+  trust or ignore the self-signed cert) rather than the usual
+  plain-HTTP-behind-proxy setup. DATABASE/DATABASE_USER must match the
+  MariaDB sidecar's MARIADB_DATABASE/MARIADB_USER values. Bundles its
+  own Celery worker and message broker inside the one image, so no
+  extra container is needed beyond the database.
