@@ -1,0 +1,29 @@
+slug: mainsail
+name: Mainsail
+category: utilities
+description: Web interface for Klipper-based 3D printers, connecting to an existing Moonraker instance.
+homepage: https://docs.mainsail.xyz
+source: https://github.com/mainsail-crew/mainsail
+
+image: ghcr.io/mainsail-crew/mainsail
+version: "v2.18.2"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 128m
+database: none
+auth: proxy
+
+volumes:
+  - path: config.json
+    mount: /usr/share/nginx/html/config.json
+
+notes: |
+  Static nginx UI with no backend of its own - Klipper/Moonraker must
+  already be running on the printer's own host. The image's bundled
+  default config.json assumes Moonraker answers on the same origin,
+  which doesn't hold behind a reverse proxy: create config.json on the
+  host before first run, e.g. {"instancesDB": "json", "instances":
+  [{"hostname": "<moonraker-host>", "port": 7125}]}, or use
+  {"instancesDB": "browser"} to add printers from the UI instead. No
+  login of its own - access control is whatever sits in front of it.

@@ -1,0 +1,49 @@
+slug: dvinyl
+name: DVinyl
+category: productivity
+description: Self-hosted collection manager for vinyl records, books, movies, games and other physical media.
+homepage: https://github.com/Kyonew/DVinyl
+source: https://github.com/Kyonew/DVinyl
+
+image: ghcr.io/kyonew/dvinyl
+version: "3.1.0"
+arch: [amd64, arm64]
+
+port: 3099
+mem_limit: 512m
+database: mongo
+auth: oidc
+redirect_path: /login/oidc/callback
+
+env:
+  - name: MONGODB_URL
+    value: "mongodb://dvinyl-mongo:27017/dvinyl"
+  - name: PASSJWT
+    secret: true
+  - name: SESSION_SECRET
+    secret: true
+  - name: PROD
+    value: "true"
+  - name: OIDC_ISSUER_URL
+    secret: true
+    source: oidc_issuer
+  - name: OIDC_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: OIDC_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+  - name: OIDC_REDIRECT_URI
+    value: "https://dvinyl.${DOMAIN}/login/oidc/callback"
+
+volumes:
+  - path: uploads
+    mount: /app/public/uploads
+
+notes: |
+  Upstream's own compose runs Mongo with no auth of its own (MONGODB_URL
+  has no credentials); tighten that if the sidecar is reachable from
+  anywhere but this app. OIDC is optional - leave the OIDC_* vars unset
+  to fall back to built-in username/password accounts instead. Metadata
+  lookups (Discogs, Hardcover, TMDB, IGDB, Rebrickable) each need their
+  own free API key/token to enable that media type's plugin.
