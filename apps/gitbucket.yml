@@ -1,0 +1,29 @@
+slug: gitbucket
+name: GitBucket
+category: developer
+description: Git platform powered by Scala with easy installation and GitHub API compatibility.
+homepage: https://gitbucket.github.io
+source: https://github.com/gitbucket/gitbucket
+
+image: ghcr.io/gitbucket/gitbucket
+version: "4.46.1"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: GITBUCKET_BASE_URL
+    value: "https://gitbucket.${DOMAIN}"
+
+volumes:
+  - path: data
+    mount: /gitbucket
+
+notes: |
+  Defaults to an embedded H2 database under /gitbucket - set
+  GITBUCKET_DB_URL/GITBUCKET_DB_USER/GITBUCKET_DB_PASSWORD to point at
+  an external MySQL/PostgreSQL instance instead. SSH repository access
+  (port 29418) is disabled by default and not exposed here.

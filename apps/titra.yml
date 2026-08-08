@@ -1,0 +1,32 @@
+slug: titra
+name: Titra
+category: productivity
+description: Modern open source project time tracking for freelancers and small teams.
+homepage: https://titra.io
+source: https://github.com/kromitgmbh/titra
+
+image: kromit/titra
+version: "v1.0.10"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: mongo
+auth: proxy
+
+env:
+  - name: ROOT_URL
+    value: "https://titra.${DOMAIN}"
+  - name: MONGO_URL
+    value: "mongodb://titra-mongo:27017/titra?directConnection=true"
+  - name: PORT
+    value: "3000"
+
+notes: |
+  Upstream's own compose runs Mongo with no auth of its own (MONGO_URL
+  has no credentials); tighten that if the sidecar is reachable from
+  anywhere but this app. Supports OIDC login configured from the
+  Administration > Global settings page in-app (issuer, client
+  ID/secret, endpoints), not env vars - no fixed callback path is
+  documented, so it's left as proxy here. MAIL_URL enables outgoing
+  invite/notification email if set.

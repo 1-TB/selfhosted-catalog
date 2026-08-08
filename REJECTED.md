@@ -215,6 +215,13 @@ release tags should be moved into `apps/`.
 | Kresus | `bnjbvr/kresus` resolves a real tag (`0.25.4`) but only as an amd64 image, and the project's own site now points self-hosting docs at a Codeberg repo (`codeberg.org/kresus/kresus`) rather than the GitHub mirror this run checked - unclear whether `bnjbvr/kresus` is still the current official image or a stale one. Worth a second look confirming the Codeberg-side docs. |
 | Bigcapital | Couldn't resolve an image under any guessed namespace (`bigcapital/bigcapital` and similar) on Docker Hub or GHCR this run. Didn't chase down the correct namespace. |
 | What To Cook? | `ghcr.io/kassner/whattocook` resolves cleanly (`0.4.2`, amd64 only, one container + Postgres, documented env vars) but the project is tiny (67 stars) and effectively dormant - only 2 commits in the last year and no activity since November 2025. Left out as too niche/stagnant rather than an outright packaging failure. |
+| InvoicePlane | `invoiceplane/invoiceplane2` (the current v2 line) has no tagged images published at all; the legacy `invoiceplane/invoiceplane` (1.x) is likewise untagged. Nothing pinnable in either official namespace. |
+| Fossil (SCM) | No image published by the fossil-scm.org project itself - only a Dockerfile you'd build yourself, plus assorted third-party rebuilds (`keyopt/fossil-scm`, `alsemo/fossilscm`). No official namespace to point at. |
+| Leed | `hervenicol/leed` (the only image the project's own docs point to) has just a floating `latest` tag, last pushed about 9 years ago. Nothing pinnable, effectively abandoned. |
+| Stringer | The project's own `mdswanson/stringer` image only carries branch-name tags (`gp-upgrade`, `vk-bump-nokogiri`, etc.) and `latest` - no numbered releases to pin. Upstream describes itself as "work-in-progress". |
+| rss2email | No image published under the upstream project's own name; every hit (`xazziri/docker-rss2email`, `tuxmealux/rss2email`, `blalor/docker-rss2email`, etc.) is a third-party wrapper around the CLI tool. |
+| ZenTao | `easysoft/zentao` resolves and is multi-arch, but current-series tags are all date-stamped rebuilds (`22.4-20260729`, `22.4-20260729-php7`) with no plain `22.4` yet published - confusing to pin confidently, and the open-source-vs-Biz-edition split in this image wasn't confirmed. Left out this run rather than guess. |
+| Gogs | `gogs/gogs` resolves fine (`0.14.3`, amd64+arm64) but the project has visibly slowed since Gitea forked off it, and Gitea/Forgejo (both actively maintained, both already catalogued) cover the same niche better. Skipped as redundant rather than a packaging failure. |
 
 Two things that look like rejections but aren't:
 

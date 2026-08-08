@@ -1,0 +1,30 @@
+slug: openbudgeteer
+name: OpenBudgeteer
+category: productivity
+description: Budgeting app based on the Bucket Budgeting Principle, inspired by YNAB.
+homepage: https://axelander.dev
+source: https://github.com/TheAxelander/OpenBudgeteer
+
+image: axelander/openbudgeteer
+version: "1.11"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: CONNECTION_PROVIDER
+    value: "SQLITE"
+  - name: CONNECTION_DATABASE
+    value: "/srv/openbudgeteer.db"
+
+volumes:
+  - path: data
+    mount: /srv
+
+notes: |
+  Defaults to SQLite under /srv - set CONNECTION_PROVIDER=MYSQL plus
+  CONNECTION_SERVER/PORT/DATABASE/USER/PASSWORD to use an external
+  MySQL/MariaDB instance instead. No built-in OIDC/SSO documented.
