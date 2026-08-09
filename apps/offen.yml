@@ -1,0 +1,35 @@
+slug: offen
+name: Offen
+category: monitoring
+description: Privacy-first, cookie-less web analytics with full data export for users.
+homepage: https://www.offen.dev
+source: https://github.com/offen/offen
+
+image: offen/offen
+version: "v1.4.2"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: OFFEN_SECRET
+    secret: true
+  - name: OFFEN_SERVER_REVERSEPROXY
+    value: "true"
+  - name: OFFEN_DATABASE_DIALECT
+    value: "postgres"
+  - name: OFFEN_DATABASE_CONNECTIONSTRING
+    value: "postgres://offen:${OFFEN_DB_PASSWORD}@offen-postgres:5432/offen?sslmode=disable"
+
+notes: |
+  There's no web signup - create the first operator account once with
+  `docker exec <container> offen setup -email you@example.com -name "Your Name"`
+  (omit -password to be prompted instead of passing it as a plaintext
+  argument). OFFEN_SERVER_REVERSEPROXY disables the app's own caching
+  and security headers since a proxy sits in front. SMTP env vars
+  (OFFEN_SMTP_HOST/USER/PASSWORD/PORT) are optional but needed if you
+  want transactional email (password resets); the app runs fine without
+  them.
