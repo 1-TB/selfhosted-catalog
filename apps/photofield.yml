@@ -1,0 +1,35 @@
+slug: photofield
+name: Photofield
+category: media
+description: Fast, non-invasive single-binary photo gallery focused on speed and simplicity.
+homepage: https://photofield.dev
+source: https://github.com/SmilyOrg/photofield
+
+image: ghcr.io/smilyorg/photofield
+version: "v0.24.1"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: PHOTOFIELD_ADDRESS
+    value: ":8080"
+  - name: PHOTOFIELD_DATA_DIR
+    value: "/app/data"
+
+volumes:
+  - path: photos
+    mount: /app/photos
+  - path: data
+    mount: /app/data
+
+notes: |
+  photos is meant to be mounted read-only against wherever the photo
+  library already lives - Photofield indexes it rather than owning it.
+  A configuration.yaml is not required for first run: any folder under
+  photos shows up as a collection automatically. data holds the SQLite
+  cache/config database; no external database is used. No user accounts
+  of its own - access control is whatever sits in front of it.
