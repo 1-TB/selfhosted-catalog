@@ -1,0 +1,40 @@
+slug: onedev
+name: OneDev
+category: developer
+description: Self-hosted Git server with code review, CI/CD pipelines and issue tracking in one app.
+homepage: https://onedev.io
+source: https://github.com/theonedev/onedev
+
+image: 1dev/server
+version: "16.5.0"
+arch: [amd64, arm64]
+
+port: 6610
+mem_limit: 2g
+database: postgres
+auth: proxy
+
+env:
+  - name: hibernate_dialect
+    value: "io.onedev.server.persistence.PostgreSQLDialect"
+  - name: hibernate_connection_driver_class
+    value: "org.postgresql.Driver"
+  - name: hibernate_connection_url
+    value: "jdbc:postgresql://onedev-postgres:5432/onedev"
+  - name: hibernate_connection_username
+    value: "onedev"
+  - name: hibernate_connection_password
+    value: "${ONEDEV_DB_PASSWORD}"
+
+volumes:
+  - path: data
+    mount: /opt/onedev
+
+notes: |
+  Admin account and remaining setup happen through a web wizard on
+  first visit - there's no env-var equivalent. Also listens on 6611 for
+  git-over-ssh and build-agent traffic, which won't survive an HTTP
+  proxy; only 6610 needs to go through the subdomain. Mounting the
+  host's /var/run/docker.sock is only required to run OneDev's built-in
+  CI/CD build agents - omit it if you don't use that feature. Upstream's
+  own docs put the minimum system RAM at 2GB.
