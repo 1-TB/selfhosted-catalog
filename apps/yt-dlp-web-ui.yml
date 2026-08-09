@@ -1,0 +1,29 @@
+slug: yt-dlp-web-ui
+name: yt-dlp Web UI
+category: media
+description: Web UI and RPC server for running yt-dlp downloads, with live queue progress.
+homepage: https://github.com/marcopiovanello/yt-dlp-web-ui
+source: https://github.com/marcopiovanello/yt-dlp-web-ui
+
+image: ghcr.io/marcopiovanello/yt-dlp-web-ui
+version: "v3.0.0"
+arch: [amd64, arm64]
+
+port: 3033
+mem_limit: 512m
+database: none
+auth: proxy
+
+volumes:
+  - path: downloads
+    mount: /downloads
+  - path: config
+    mount: /config
+
+notes: |
+  Self-contained SQLite under /config, no external database. Ships with no
+  auth by default. Built-in basic auth and OIDC are both configured through
+  a config.yml mounted at /config rather than documented env vars, so they
+  aren't modeled here - rely on the reverse proxy instead, or hand-edit
+  config.yml for OIDC. Uses websockets for live download progress, so the
+  proxy in front must forward Upgrade/Connection headers.
