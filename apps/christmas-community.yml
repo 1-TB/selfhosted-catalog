@@ -1,0 +1,27 @@
+slug: christmas-community
+name: Christmas Community
+category: productivity
+description: Group wishlist and Secret Santa organizer.
+homepage: https://github.com/Wingysam/Christmas-Community
+source: https://github.com/Wingysam/Christmas-Community
+
+image: wingysam/christmas-community
+version: "1.42"
+arch: [amd64, arm64]
+
+port: 80
+auth: proxy
+
+env:
+  - name: SECRET
+    secret: true
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  Stores its own PouchDB database under /data by default (DB_PREFIX);
+  no external database needed. SECRET encrypts session cookies - set
+  it explicitly rather than relying on the auto-generated value, or
+  sessions break on every container recreation.
