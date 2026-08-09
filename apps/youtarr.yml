@@ -1,0 +1,50 @@
+slug: youtarr
+name: Youtarr
+category: media
+description: Automates downloading, organizing and scheduling YouTube channels and playlists for Plex, Jellyfin and Emby.
+homepage: https://github.com/DialmasterOrg/Youtarr
+source: https://github.com/DialmasterOrg/Youtarr
+
+image: dialmaster/youtarr
+version: v1.78.0
+arch: [amd64, arm64]
+
+port: 3011
+database: mariadb
+auth: proxy
+
+env:
+  - name: TZ
+    value: "Etc/UTC"
+  - name: DB_HOST
+    value: youtarr-mariadb
+  - name: DB_PORT
+    value: "3306"
+  - name: DB_USER
+    value: youtarr
+  - name: DB_PASSWORD
+    secret: true
+  - name: DB_NAME
+    value: youtarr
+  - name: AUTH_ENABLED
+    value: "true"
+  - name: TRUST_PROXY
+    value: "true"
+  - name: PLEX_URL
+    value: ""
+
+volumes:
+  - path: data
+    mount: /usr/src/app/data
+  - path: config
+    mount: /app/config
+  - path: jobs
+    mount: /app/jobs
+  - path: images
+    mount: /app/server/images
+
+notes: |
+  First run: visit the web UI, it shows a one-time setup token (also printed
+  to `docker logs youtarr` and written to `config/setup-token`) to create the
+  admin account - no preset credentials or CLI step needed. PLEX_URL is only
+  required for Plex library sync; leave blank for Jellyfin/Emby-only setups.
