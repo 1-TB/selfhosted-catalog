@@ -1,0 +1,30 @@
+slug: signaturepdf
+name: Signature PDF
+category: documents
+description: Sign PDFs individually or collaboratively, no account needed.
+homepage: https://pdf.24eme.fr
+source: https://github.com/24eme/signaturepdf
+
+image: xgaia/signaturepdf
+version: "1.10"
+arch: [amd64]
+
+port: 80
+auth: proxy
+
+env:
+  - name: SERVERNAME
+    value: "signaturepdf.${DOMAIN}"
+  - name: DEFAULT_LANGUAGE
+    value: "en_US.UTF-8"
+  - name: PDF_STORAGE_PATH
+    value: "/data"
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  No accounts or login of its own; put it behind the proxy's own auth if
+  the instance shouldn't be public. Multi-signature mode stores PDFs
+  under PDF_STORAGE_PATH until all signers finish.
