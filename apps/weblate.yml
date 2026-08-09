@@ -1,0 +1,56 @@
+slug: weblate
+name: Weblate
+category: developer
+description: Web-based continuous localization and translation management platform.
+homepage: https://weblate.org
+source: https://github.com/WeblateOrg/weblate
+
+image: weblate/weblate
+version: "2026.8.1.0"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 2g
+health_path: /healthz/
+database: postgres
+needs: [redis]
+auth: oidc
+redirect_path: /accounts/complete/oidc/
+
+env:
+  - name: WEBLATE_SITE_DOMAIN
+    value: "weblate.${DOMAIN}"
+  - name: WEBLATE_ADMIN_PASSWORD
+    secret: true
+  - name: POSTGRES_HOST
+    value: weblate-postgres
+  - name: POSTGRES_DB
+    value: weblate
+  - name: POSTGRES_USER
+    value: weblate
+  - name: POSTGRES_PASSWORD
+    value: "${WEBLATE_DB_PASSWORD}"
+  - name: REDIS_HOST
+    value: weblate-redis
+  - name: WEBLATE_SOCIAL_AUTH_OIDC_OIDC_ENDPOINT
+    secret: true
+    source: oidc_issuer
+  - name: WEBLATE_SOCIAL_AUTH_OIDC_KEY
+    secret: true
+    source: oidc_client_id
+  - name: WEBLATE_SOCIAL_AUTH_OIDC_SECRET
+    secret: true
+    source: oidc_client_secret
+
+volumes:
+  - path: data
+    mount: /app/data
+
+notes: |
+  The official image bundles uwsgi, nginx and a celery worker behind
+  supervisord in one container; only Postgres and Redis/Valkey (needs) run
+  separately. Upstream recommends at least 3 GB of RAM across the whole
+  single-host stack (app + Postgres + Redis), more for large translation
+  memories. /app/data/vcs holds cloned repositories and wants low-latency
+  storage. If WEBLATE_ADMIN_PASSWORD is left unset, a random password is
+  generated and printed to the container log on first start.
