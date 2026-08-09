@@ -1,0 +1,28 @@
+slug: filegator
+name: FileGator
+category: files
+description: Multi-user web file manager with a single-page front-end for browsing, uploading and sharing files.
+homepage: https://filegator.io
+source: https://github.com/filegator/filegator
+
+image: filegator/filegator
+version: "v7.14.4-multiarch"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: proxy
+
+volumes:
+  - path: repository
+    mount: /var/www/filegator/repository
+  - path: private
+    mount: /var/www/filegator/private
+
+notes: |
+  Ships with a fixed default login (admin/admin123) and no env var to
+  set it at first run - change the password from the Users screen
+  immediately after first login. The plain `vX.Y.Z` tags are amd64
+  only; the project also publishes a `-multiarch` variant of each
+  release which is what's pinned here.

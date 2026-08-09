@@ -1,0 +1,26 @@
+slug: thelounge
+name: The Lounge
+category: communication
+description: Self-hosted, always-online web IRC client.
+homepage: https://thelounge.chat
+source: https://github.com/thelounge/thelounge
+
+image: thelounge/thelounge
+version: "4.5.2"
+arch: [amd64, arm64]
+
+port: 9000
+mem_limit: 512m
+database: none
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /var/opt/thelounge
+
+notes: |
+  No web signup: create the first user from a shell in the container
+  with `thelounge add <name>` before anyone can log in. The registry's
+  highest tag is 4.6.0-pre.1, a prerelease that slips past the tool's
+  filter because it doesn't match rc/beta/dev-style markers - 4.5.2 is
+  the actual latest stable release.
