@@ -1,0 +1,51 @@
+slug: tiki
+name: Tiki Wiki CMS Groupware
+category: documents
+description: Wiki, CMS and groupware suite with built-in file galleries, calendars and forums.
+homepage: https://tiki.org
+source: https://gitlab.com/tikiwiki/tiki
+
+image: tikiwiki/tikiwiki
+version: "30.0"
+arch: [amd64]
+
+port: 80
+mem_limit: 1536m
+database: mariadb
+auth: proxy
+
+env:
+  - name: TIKI_DB_HOST
+    value: "tiki-mariadb"
+  - name: TIKI_DB_USER
+    value: "tiki"
+  - name: TIKI_DB_PASS
+    value: "${TIKI_DB_PASSWORD}"
+  - name: TIKI_DB_NAME
+    value: "tiki"
+
+volumes:
+  - path: files
+    mount: /var/www/html/files/
+  - path: img-trackers
+    mount: /var/www/html/img/trackers/
+  - path: img-wiki-up
+    mount: /var/www/html/img/wiki_up/
+  - path: img-wiki
+    mount: /var/www/html/img/wiki/
+  - path: modules-cache
+    mount: /var/www/html/modules/cache/
+  - path: storage
+    mount: /var/www/html/storage/
+  - path: temp
+    mount: /var/www/html/temp/
+  - path: sessions
+    mount: /var/www/sessions/
+  - path: generated
+    mount: /var/www/html/public/generated/
+
+notes: |
+  Only the DB connection is wired up via env vars - site name, admin
+  account and the rest of first-time setup happen through Tiki's own
+  web installer on first visit. Image is amd64-only; no arm64 build is
+  published.

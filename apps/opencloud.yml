@@ -1,0 +1,40 @@
+slug: opencloud
+name: OpenCloud
+category: files
+description: File sharing and collaboration platform, a community fork of ownCloud Infinite Scale.
+homepage: https://opencloud.eu
+source: https://github.com/opencloud-eu/opencloud
+
+image: opencloudeu/opencloud
+version: "7.2.3"
+arch: [amd64, arm64]
+
+port: 9200
+mem_limit: 768m
+database: none
+auth: proxy
+
+env:
+  - name: OC_URL
+    value: "https://opencloud.${DOMAIN}"
+  - name: PROXY_HTTP_ADDR
+    value: "0.0.0.0:9200"
+  - name: PROXY_TLS
+    value: "false"
+  - name: IDM_ADMIN_PASSWORD
+    secret: true
+
+volumes:
+  - path: config
+    mount: /etc/opencloud
+  - path: data
+    mount: /var/lib/opencloud
+
+notes: |
+  Stores everything on disk - no database. First boot runs `opencloud
+  init` automatically to generate config and random secrets under
+  /etc/opencloud, and creates the initial "admin" account using
+  IDM_ADMIN_PASSWORD; there's no separate init container to run.
+  PROXY_TLS=false serves plain HTTP internally so a reverse proxy can
+  terminate TLS. Ships its own built-in identity provider rather than
+  speaking OIDC out to a consumer's SSO, hence auth: proxy.
