@@ -1,0 +1,53 @@
+slug: dreeve
+name: Dreeve
+category: productivity
+description: Self-hosted dashboard for sports and fitness activity data, formerly Statistics for Strava.
+homepage: https://dreeve.app
+source: https://github.com/dreeveapp/dreeve
+
+image: robiningelbrecht/dreeve
+version: "v5.1.5"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+needs: [daemon]
+auth: proxy
+
+env:
+  - name: APP_URL
+    value: "https://dreeve.${DOMAIN}"
+  - name: IMPORT_MODE
+    value: "files"
+  - name: TZ
+    value: "Etc/UTC"
+  - name: APP_SECRET
+    secret: true
+  - name: ADMIN_USERNAME
+    value: "admin"
+  - name: ADMIN_PASSWORD_HASH
+    secret: true
+
+volumes:
+  - path: build
+    mount: /var/www/build
+  - path: database
+    mount: /var/www/storage/database
+  - path: files
+    mount: /var/www/storage/files
+  - path: watch
+    mount: /var/www/watch
+
+notes: |
+  Wants a second container running the same image with `command:
+  ['bin/console', 'app:daemon:run']` and no published port, sharing all
+  four volumes - it runs imports and stat generation in the background.
+  ADMIN_PASSWORD_HASH must be a bcrypt hash, not plain text; generate it
+  with `docker compose exec app bin/console security:hash-password`
+  after first start. IMPORT_MODE=files reads activity files dropped into
+  the watch volume; set it to stravaApi instead to pull from Strava's
+  API (needs additional STRAVA_CLIENT_ID/STRAVA_CLIENT_SECRET vars, see
+  docs.dreeve.app). Subdirectory hosting isn't supported - APP_URL must
+  be the domain root. Rebranded from "Statistics for Strava" in 2026;
+  same project, same maintainers, same SQLite storage.

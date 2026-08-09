@@ -1,0 +1,40 @@
+slug: reaparr
+name: Reaparr
+category: media
+description: Cross-platform Plex media downloader that pulls content from other Plex servers into your own library.
+homepage: https://www.reaparr.rocks
+source: https://github.com/Reaparr/Reaparr
+
+image: reaparr/reaparr
+version: "0.38.3"
+arch: [amd64, arm64]
+
+port: 7000
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: TZ
+    value: "Etc/UTC"
+  - name: PUID
+    value: "1000"
+  - name: PGID
+    value: "1000"
+
+volumes:
+  - path: config
+    mount: /Config
+  - path: downloads
+    mount: /Downloads
+  - path: movies
+    mount: /Movies
+  - path: tvshows
+    mount: /TvShows
+
+notes: |
+  First run goes through an in-app setup wizard where you connect Plex
+  accounts/servers and generate a share token. Can also act as an
+  indexer/download client for Sonarr and Radarr, feeding them without a
+  torrent or Usenet indexer. Note the capitalised volume mount paths -
+  that's how the project's own compose file documents them.
