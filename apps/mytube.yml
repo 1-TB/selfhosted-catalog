@@ -1,0 +1,37 @@
+slug: mytube
+name: MyTube
+category: media
+description: Self-hosted YouTube downloader and library manager with channel subscriptions, thumbnails and optional login.
+homepage: https://github.com/franklioxygen/MyTube
+source: https://github.com/franklioxygen/MyTube
+
+image: ghcr.io/franklioxygen/mytube
+version: v1.10.22
+arch: [amd64, arm64]
+
+port: 5551
+database: none
+mem_limit: 1g
+auth: proxy
+
+env:
+  - name: PUID
+    value: "1000"
+  - name: PGID
+    value: "1000"
+  - name: MYTUBE_AUTO_FIX_PERMISSIONS
+    value: "1"
+  - name: MYTUBE_ADMIN_TRUST_LEVEL
+    value: "container"
+
+volumes:
+  - path: uploads
+    mount: /app/uploads
+  - path: data
+    mount: /app/data
+
+notes: |
+  Ships its own headless Chromium (used for scraping/thumbnails) inside the
+  container, hence the higher mem_limit. Login is optional and configured
+  from the web UI on first run rather than an env var - front it with a
+  proxy regardless since it isn't secured by default.

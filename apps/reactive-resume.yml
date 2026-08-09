@@ -1,0 +1,32 @@
+slug: reactive-resume
+name: Reactive Resume
+category: documents
+description: Free, privacy-focused resume builder with templates and PDF export.
+homepage: https://rxresu.me
+source: https://github.com/AmruthPillai/Reactive-Resume
+
+image: ghcr.io/amruthpillai/reactive-resume
+version: v5.2.0
+arch: [amd64, arm64]
+
+port: 3000
+database: postgres
+auth: proxy
+
+env:
+  - name: APP_URL
+    value: "https://reactive-resume.${DOMAIN}"
+  - name: DATABASE_URL
+    value: "postgresql://reactive_resume:${REACTIVE_RESUME_DB_PASSWORD}@reactive-resume-postgres:5432/reactive_resume"
+  - name: AUTH_SECRET
+    secret: true
+
+volumes:
+  - path: data
+    mount: /app/data
+
+notes: |
+  Local filesystem storage is the default (no S3/SeaweedFS needed) as long as
+  the S3_* env vars are left unset. Also supports a custom OIDC provider via
+  OAUTH_CLIENT_ID/SECRET/OAUTH_DISCOVERY_URL, but the exact callback path
+  wasn't confirmed in the docs this run, so this entry sticks to proxy auth.
