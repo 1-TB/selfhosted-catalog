@@ -1,0 +1,36 @@
+slug: ejabberd
+name: ejabberd
+category: communication
+description: Scalable, feature-rich XMPP instant messaging server.
+homepage: https://www.ejabberd.im
+source: https://github.com/processone/ejabberd
+
+image: ejabberd/ecs
+version: "26.07"
+arch: [amd64]
+
+port: 5280
+mem_limit: 512m
+auth: none
+
+env:
+  - name: EJABBERD_MACRO_HOST
+    value: ejabberd.${DOMAIN}
+  - name: REGISTER_ADMIN_PASSWORD
+    secret: true
+
+volumes:
+  - path: conf
+    mount: /opt/ejabberd/conf
+  - path: database
+    mount: /opt/ejabberd/database
+  - path: upload
+    mount: /opt/ejabberd/upload
+
+notes: |
+  Actual XMPP messaging is 5222 (client) and 5269 (server-to-server),
+  neither of which an HTTP-only proxy can carry - only the admin
+  interface on 5280 goes through the proxy. REGISTER_ADMIN_PASSWORD
+  only registers the admin@<EJABBERD_MACRO_HOST> account on first
+  start, before any config exists. Database is the built-in Mnesia
+  store under the database volume, no external database needed.
