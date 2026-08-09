@@ -1,0 +1,45 @@
+slug: memtly
+name: Memtly
+category: media
+description: Event photo sharing - guests upload via QR code, no account or app needed.
+homepage: https://memtly.com
+source: https://github.com/Memtly/Memtly.Community
+
+image: memtly/memtly
+version: "1.0.5"
+arch: [amd64, arm64]
+
+port: 5000
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: TITLE
+    value: "Memtly"
+  - name: DATABASE_TYPE
+    value: "sqlite"
+  - name: ACCOUNT_ADMIN_PASSWORD
+    secret: true
+  - name: ENCRYPTION_KEY
+    secret: true
+  - name: ENCRYPTION_SALT
+    secret: true
+
+volumes:
+  - path: config
+    mount: /app/config
+  - path: thumbnails
+    mount: /app/thumbnails
+  - path: uploads
+    mount: /app/uploads
+  - path: custom_resources
+    mount: /app/custom_resources
+
+notes: |
+  Formerly WeddingShare, rebranded to Memtly. SQLite by default
+  (DATABASE_TYPE also accepts mysql/mariadb/postgres/mssql with a
+  DATABASE_CONNECTION_STRING). Ships with a default admin/admin login -
+  ACCOUNT_ADMIN_PASSWORD only sets the initial password, change it after
+  first login. ENCRYPTION_KEY/ENCRYPTION_SALT protect stored data - treat
+  as one-time secrets, losing them after data exists breaks decryption.

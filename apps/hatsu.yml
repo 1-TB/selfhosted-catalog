@@ -1,0 +1,38 @@
+slug: hatsu
+name: Hatsu
+category: communication
+description: Automated ActivityPub bridge that gives a static site followers and boosts on the fediverse.
+homepage: https://hatsu.cli.rs
+source: https://github.com/importantimport/hatsu
+
+image: ghcr.io/importantimport/hatsu
+version: "0.3.4"
+arch: [amd64, arm64]
+
+port: 3939
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: HATSU_DATABASE_URL
+    value: "sqlite://hatsu.sqlite3"
+  - name: HATSU_DOMAIN
+    value: "hatsu.${DOMAIN}"
+  - name: HATSU_LISTEN_HOST
+    value: "0.0.0.0"
+  - name: HATSU_PRIMARY_ACCOUNT
+  - name: HATSU_ACCESS_TOKEN
+    secret: true
+
+volumes:
+  - path: hatsu.sqlite3
+    mount: /app/hatsu.sqlite3
+
+notes: |
+  No web UI - it's a background bridge fronted only by a small admin API,
+  which stays disabled unless HATSU_ACCESS_TOKEN is set (recommend a
+  UUIDv4). HATSU_PRIMARY_ACCOUNT has no sane default - it's the URL of
+  the static site being bridged onto the fediverse, set per install.
+  Embedded SQLite by default; HATSU_DATABASE_URL also accepts a Postgres
+  DSN if preferred.
