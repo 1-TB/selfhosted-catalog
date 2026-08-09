@@ -1,0 +1,33 @@
+slug: centrifugo
+name: Centrifugo
+category: developer
+description: Scalable real-time messaging server (WebSocket/SockJS) for adding live features to apps.
+homepage: https://centrifugal.dev
+source: https://github.com/centrifugal/centrifugo
+
+image: centrifugo/centrifugo
+version: "v6.9.1"
+arch: [amd64, arm64]
+
+port: 8000
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: CENTRIFUGO_CLIENT_TOKEN_HMAC_SECRET_KEY
+    secret: true
+  - name: CENTRIFUGO_HTTP_API_KEY
+    secret: true
+  - name: CENTRIFUGO_ADMIN_ENABLED
+    value: "true"
+  - name: CENTRIFUGO_ADMIN_PASSWORD
+    secret: true
+  - name: CENTRIFUGO_ADMIN_SECRET
+    secret: true
+
+notes: |
+  Infrastructure, not an end-user app: your own backend issues
+  client tokens signed with CLIENT_TOKEN_HMAC_SECRET_KEY and talks to
+  the HTTP API with HTTP_API_KEY. The bundled admin web UI is disabled
+  by default (ADMIN_ENABLED=false); the vars above turn it on.

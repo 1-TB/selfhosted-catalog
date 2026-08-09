@@ -1,0 +1,29 @@
+slug: directory-lister
+name: Directory Lister
+category: files
+description: Simple PHP app that lists a directory and its sub-directories for browsing and download.
+homepage: https://www.directorylister.com
+source: https://github.com/DirectoryLister/DirectoryLister
+
+image: directorylister/directorylister
+version: "5.6.1"
+arch: [amd64]
+
+port: 80
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: FILES_PATH
+    value: "/data"
+  - name: SITE_TITLE
+    value: "Directory Lister"
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  Ships with no authentication of its own by design - the project's
+  own docs point at web-server basic auth or a forward-auth proxy.
