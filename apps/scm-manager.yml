@@ -1,0 +1,26 @@
+slug: scm-manager
+name: SCM-Manager
+category: developer
+description: Web UI for hosting and managing Git, Mercurial and Subversion repositories.
+homepage: https://scm-manager.org
+source: https://github.com/scm-manager/scm-manager
+
+image: scmmanager/scm-manager
+version: "3.11.10"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /var/lib/scm
+
+notes: |
+  Ships with an embedded database, no external database needed. Runs
+  as uid 1000, so a bind-mounted data directory needs to be owned by
+  that uid. SSH access (for git push/pull) is an optional plugin on
+  port 2222, not enabled by default. No native OIDC; auth is local
+  accounts, LDAP or an OIDC plugin, hence proxy auth here.

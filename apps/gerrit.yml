@@ -1,0 +1,38 @@
+slug: gerrit
+name: Gerrit Code Review
+category: developer
+description: Web-based patch-set code review tool used by Android, Chromium and Wikimedia.
+homepage: https://www.gerritcodereview.com
+source: https://gerrit.googlesource.com/gerrit
+
+image: gerritcodereview/gerrit
+version: "3.14.2"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: CANONICAL_WEB_URL
+    value: https://gerrit.${DOMAIN}/
+
+volumes:
+  - path: git
+    mount: /var/gerrit/git
+  - path: index
+    mount: /var/gerrit/index
+  - path: cache
+    mount: /var/gerrit/cache
+  - path: etc
+    mount: /var/gerrit/etc
+  - path: db
+    mount: /var/gerrit/db
+
+notes: |
+  Ships with an embedded H2 database, no external database needed. Also
+  listens on 29418 for SSH-based git push/pull and review commands -
+  that port doesn't go through an HTTP proxy, so forward it directly if
+  SSH access is wanted. No native OIDC; auth is local accounts, LDAP or
+  an OAuth plugin, hence proxy auth here.
