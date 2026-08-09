@@ -1,0 +1,26 @@
+slug: evcc
+name: evcc
+category: automation
+description: Smart EV charging controller that optimizes charging using solar surplus and dynamic tariffs.
+homepage: https://evcc.io
+source: https://github.com/evcc-io/evcc
+
+image: evcc/evcc
+version: "0.313.2"
+arch: [amd64, arm64]
+
+port: 7070
+mem_limit: 256m
+auth: proxy
+
+volumes:
+  - path: data
+    mount: /root/.evcc
+
+notes: |
+  No database and no required env vars - chargers, meters and tariffs
+  are configured through the web UI on first visit, which is also
+  where the admin password for the config/log views gets set. The old
+  /api/health endpoint was removed upstream in 0.300.6, so health_path
+  is left empty; the image's own HEALTHCHECK runs `evcc health`
+  in-container instead.

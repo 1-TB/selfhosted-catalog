@@ -1,0 +1,37 @@
+slug: vod2pod-rss
+name: Vod2Pod-RSS
+category: feeds
+description: Converts a YouTube or Twitch channel into a podcast RSS feed, transcoding VODs to MP3 on the fly with no server-side storage.
+homepage: https://github.com/madiele/vod2pod-rss
+source: https://github.com/madiele/vod2pod-rss
+
+image: madiele/vod2pod-rss
+version: "1.2.4"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+needs: [redis]
+auth: none
+
+env:
+  - name: REDIS_ADDRESS
+    value: redis
+  - name: REDIS_PORT
+    value: "6379"
+  - name: TRANSCODE
+    value: "true"
+  - name: MP3_BITRATE
+    value: "192"
+  - name: YT_API_KEY
+    secret: true
+  - name: TWITCH_CLIENT_ID
+    secret: true
+  - name: TWITCH_SECRET
+    secret: true
+
+notes: |
+  YT_API_KEY and the Twitch credentials are optional - without them the
+  YouTube feed is capped at 15 items and has no channel avatar, and
+  Twitch channels aren't supported at all. No persistent volume: audio
+  is transcoded in memory and never written to disk.
