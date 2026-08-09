@@ -1,0 +1,41 @@
+slug: gotosocial
+name: GoToSocial
+category: communication
+description: Lightweight, fast ActivityPub federated social network server, an alternative to Mastodon.
+homepage: https://gotosocial.org
+source: https://codeberg.org/superseriousbusiness/gotosocial
+
+image: superseriousbusiness/gotosocial
+version: "0.22.1"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 1024m
+database: none
+auth: none
+
+env:
+  - name: GTS_HOST
+    value: "gotosocial.${DOMAIN}"
+  - name: GTS_DB_TYPE
+    value: "sqlite"
+  - name: GTS_DB_ADDRESS
+    value: "/gotosocial/storage/sqlite.db"
+  - name: GTS_LETSENCRYPT_ENABLED
+    value: "false"
+  - name: GTS_TRUSTED_PROXIES
+
+volumes:
+  - path: data
+    mount: /gotosocial/storage
+
+notes: |
+  Ships its own federated profiles and login (Mastodon-style), and the
+  first account has to be created by hand after the container is up:
+  `docker exec -it gotosocial /gotosocial/gotosocial admin account
+  create --username ... --email ... --password ...` then `admin account
+  promote --username ...`. auth: none because the whole subdomain -
+  public profiles plus the self-managed login form - is meant to be
+  reachable directly, same as Castopod. GTS_TRUSTED_PROXIES needs the
+  reverse proxy's address/subnet or it won't trust forwarded headers.
+  Embedded SQLite by default; GTS_DB_TYPE also accepts postgres.
