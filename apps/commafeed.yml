@@ -1,0 +1,28 @@
+slug: commafeed
+name: CommaFeed
+category: feeds
+description: Google Reader-inspired feed reader with a keyboard-driven UI.
+homepage: https://www.commafeed.com
+source: https://github.com/Athou/commafeed
+
+image: athou/commafeed
+version: "7.2.1-postgresql"
+arch: [amd64, arm64]
+
+port: 8082
+mem_limit: 512m
+database: postgres
+auth: proxy
+
+env:
+  - name: QUARKUS_DATASOURCE_JDBC_URL
+    value: "jdbc:postgresql://commafeed-postgres:5432/commafeed"
+  - name: QUARKUS_DATASOURCE_USERNAME
+    value: "commafeed"
+  - name: QUARKUS_DATASOURCE_PASSWORD
+    value: "${COMMAFEED_DB_PASSWORD}"
+
+notes: |
+  Image tag carries the database driver (-postgresql, -mariadb, -mysql,
+  -h2); this entry pins the postgresql variant. Switching database means
+  switching the tag, not just the env vars.

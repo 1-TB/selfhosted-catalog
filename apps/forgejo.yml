@@ -1,0 +1,34 @@
+slug: forgejo
+name: Forgejo
+category: developer
+description: Self-hosted git forge, a community-governed fork of Gitea.
+homepage: https://forgejo.org
+source: https://codeberg.org/forgejo/forgejo
+
+image: codeberg.org/forgejo/forgejo
+version: "16.0.2"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 1g
+database: postgres
+auth: oidc
+redirect_path: /user/oauth2/authentik/callback
+
+env:
+  - name: FORGEJO__database__DB_TYPE
+    value: "postgres"
+  - name: FORGEJO__database__HOST
+    value: "forgejo-postgres:5432"
+  - name: FORGEJO__database__NAME
+    value: "forgejo"
+  - name: FORGEJO__database__USER
+    value: "forgejo"
+  - name: FORGEJO__database__PASSWD
+    value: "${FORGEJO_DB_PASSWORD}"
+  - name: FORGEJO__server__ROOT_URL
+    value: "https://forgejo.${DOMAIN}/"
+
+volumes:
+  - path: data
+    mount: /data

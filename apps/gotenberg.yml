@@ -1,0 +1,20 @@
+slug: gotenberg
+name: Gotenberg
+category: utilities
+description: API for converting HTML, Markdown and Office files to PDF.
+homepage: https://gotenberg.dev
+source: https://github.com/gotenberg/gotenberg
+
+image: gotenberg/gotenberg
+version: "8.35"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 1g
+health_path: /health
+auth: proxy
+
+notes: |
+  Stateless conversion API, no UI and no persistent data. Has no
+  authentication of its own beyond an optional basic-auth flag, so keep
+  it off the public internet.

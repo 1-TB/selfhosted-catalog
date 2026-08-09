@@ -1,0 +1,35 @@
+slug: pdfding
+name: PdfDing
+category: documents
+description: Self-hosted PDF manager and viewer with highlighting and tagging.
+homepage: https://pdfding.com
+source: https://github.com/mrmn2/PdfDing
+
+image: mrmn/pdfding
+version: "v1.12.0"
+arch: [amd64, arm64]
+
+port: 8000
+mem_limit: 512m
+auth: proxy
+
+env:
+  - name: HOST_NAME
+    value: "pdfding.${DOMAIN}"
+  - name: SECRET_KEY
+    secret: true
+  - name: CSRF_COOKIE_SECURE
+    value: "True"
+  - name: SESSION_COOKIE_SECURE
+    value: "True"
+
+volumes:
+  - path: db
+    mount: /home/nonroot/pdfding/db
+  - path: media
+    mount: /home/nonroot/pdfding/media
+
+notes: |
+  Uses an embedded SQLite database by default; the db/ volume holds it.
+  Supports OIDC login (django-allauth) but the default callback path
+  could not be confirmed from the docs, so this entry uses proxy auth.

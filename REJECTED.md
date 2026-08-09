@@ -13,6 +13,11 @@ release tags should be moved into `apps/`.
 | Lychee | No version tags on Docker Hub; the tags are all `testing-<build id>`. |
 | Scribble.rs | Could not resolve a package at `ghcr.io/scribble-rs/scribble.rs`. Needs someone to confirm where the image actually lives. |
 | JSON Crack | No official image found. The reference commonly passed around does not resolve. |
+| RSS-Bridge | Only publishes dated tags (`2025-08-05` etc.), no semver releases; `registry.py latest` returns nothing. |
+| Tiny Tiny RSS | Official images (`ghcr.io/tt-rss/tt-rss`) only ship `latest` and `sha-<commit>` tags, no pinnable release. |
+| Selfoss | No image published by the project itself; every image on Docker Hub/GHCR is a third-party build. |
+| Documenso | Self-hosting requires a signing certificate plus NextAuth/encryption secrets and SMTP on top of Postgres; couldn't confirm the compose topology (redis? separate services?) from the docs closely enough to catalogue with confidence. |
+| Papermerge | Needs Postgres, Redis and a separate worker container (and often a search service); more than `needs:` can honestly represent without guessing at the worker setup. |
 
 ## Not rejections
 
