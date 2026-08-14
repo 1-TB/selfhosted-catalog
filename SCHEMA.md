@@ -81,15 +81,30 @@ env:
     value: https://miniflux.${DOMAIN}/
   - name: ADMIN_PASSWORD
     secret: true
+  - name: SESSION_SECRET
+    secret: true
+    source: generated
   - name: OAUTH2_CLIENT_ID
     secret: true
     source: oidc_client_id
 ```
 
 `${DOMAIN}` is left for the consumer to substitute. `secret: true` means the
-value must not be written into a compose file in cleartext. `source` marks a
-value that only exists after an OAuth client has been created: `oidc_client_id`,
-`oidc_client_secret`, `oidc_issuer`, `oidc_discovery_url`.
+value must not be written into a compose file in cleartext. `source` says where
+the value comes from, and a secret with no source is one the operator has to go
+and get — an API token, a licence key, a password the app was given elsewhere:
+
+- `generated` — any random string will do. A session key, a signing secret, an
+  internal service password. This is the one that decides whether an install
+  can run unattended, so it is worth setting: without it a consumer has to stop
+  and ask a human for a value nobody will ever type again.
+- `oidc_client_id`, `oidc_client_secret`, `oidc_issuer`, `oidc_discovery_url` —
+  the value does not exist until an OAuth client has been created, so it cannot
+  be filled in before the app is registered with the provider.
+
+Where an app documents a length or an encoding (`openssl rand -hex 64`, an
+exactly-32-character key), say so in `notes` — `generated` says a random value
+is acceptable, not what shape it has to be.
 
 Database connection strings reference the password by variable name, e.g.
 `${MINIFLUX_DB_PASSWORD}`, using the convention `<SLUG>_DB_PASSWORD` with

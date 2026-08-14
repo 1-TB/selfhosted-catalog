@@ -26,7 +26,13 @@ MEM_RE = re.compile(r"^\d+(\.\d+)?[kmgKMG]$")
 ARCHES = {"amd64", "arm64"}
 DATABASES = {"none", "postgres", "mariadb", "mongo"}
 AUTH = {"oidc", "proxy", "none"}
-SECRET_SOURCES = {"oidc_client_id", "oidc_client_secret", "oidc_issuer", "oidc_discovery_url"}
+SECRET_SOURCES = {
+    "generated",
+    "oidc_client_id",
+    "oidc_client_secret",
+    "oidc_issuer",
+    "oidc_discovery_url",
+}
 CATEGORIES = {
     "archiving", "automation", "communication", "developer", "documents",
     "feeds", "files", "games", "media", "monitoring", "network",
