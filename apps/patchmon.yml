@@ -37,12 +37,16 @@ env:
     value: "0"
   - name: REDIS_PASSWORD
     secret: true
+    source: generated
   - name: JWT_SECRET
     secret: true
+    source: generated
   - name: SESSION_SECRET
     secret: true
+    source: generated
   - name: AI_ENCRYPTION_KEY
     secret: true
+    source: generated
   - name: GUACD_ADDRESS
     value: "patchmon-guacd:4822"
   - name: OIDC_ENABLED
@@ -81,5 +85,14 @@ notes: |
 
   Upstream pins postgres:17-alpine. There is no documented health endpoint.
 
-  JWT_SECRET, SESSION_SECRET and AI_ENCRYPTION_KEY are 64 random bytes each
-  (`openssl rand -hex 64`); REDIS_PASSWORD is 32.
+  OIDC_ENABLED=true makes the issuer, client id, secret and redirect URI
+  REQUIRED: config.Validate() returns an error and the server exits if any is
+  missing, so it crash-loops until the credentials land rather than starting
+  with SSO disabled. That is the normal order for an OIDC install here — the
+  client does not exist until the app has been registered — but it means the
+  first boot is expected to fail, not a sign the deploy went wrong.
+
+  None of the secrets have a length rule, checked against the source rather
+  than assumed: JWT_SECRET need only be non-empty, and AI_ENCRYPTION_KEY is
+  used as a raw AES-256 key when it is exactly 64 hex characters and SHA-256
+  hashed otherwise, so a shorter generated value is fine.
