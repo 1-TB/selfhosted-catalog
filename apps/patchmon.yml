@@ -1,0 +1,85 @@
+slug: patchmon
+name: PatchMon
+category: monitoring
+description: Tracks pending package updates across a fleet of hosts.
+homepage: https://patchmon.net
+source: https://github.com/PatchMon/PatchMon
+
+image: ghcr.io/patchmon/patchmon-server
+version: "2.1.0"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 1g
+database: postgres
+needs: [redis, guacd]
+auth: oidc
+redirect_path: /api/v1/auth/oidc/callback
+
+env:
+  - name: CORS_ORIGIN
+    value: "https://patchmon.${DOMAIN}"
+  - name: TRUST_PROXY
+    value: "true"
+  - name: POSTGRES_HOST
+    value: "patchmon-postgres"
+  - name: POSTGRES_USER
+    value: "patchmon"
+  - name: POSTGRES_DB
+    value: "patchmon"
+  - name: DATABASE_URL
+    value: "postgresql://patchmon:${PATCHMON_DB_PASSWORD}@patchmon-postgres:5432/patchmon"
+  - name: REDIS_HOST
+    value: "patchmon-redis"
+  - name: REDIS_PORT
+    value: "6379"
+  - name: REDIS_DB
+    value: "0"
+  - name: REDIS_PASSWORD
+    secret: true
+  - name: JWT_SECRET
+    secret: true
+  - name: SESSION_SECRET
+    secret: true
+  - name: AI_ENCRYPTION_KEY
+    secret: true
+  - name: GUACD_ADDRESS
+    value: "patchmon-guacd:4822"
+  - name: OIDC_ENABLED
+    value: "true"
+  - name: OIDC_REDIRECT_URI
+    value: "https://patchmon.${DOMAIN}/api/v1/auth/oidc/callback"
+  - name: OIDC_SCOPES
+    value: "openid email profile groups"
+  - name: OIDC_CLIENT_ID
+    secret: true
+    source: oidc_client_id
+  - name: OIDC_CLIENT_SECRET
+    secret: true
+    source: oidc_client_secret
+  - name: OIDC_ISSUER_URL
+    secret: true
+    source: oidc_issuer
+
+notes: |
+  Three containers plus the database. Redis is not a cache here — it carries
+  the Asynq job queue the server runs its scheduled work on — and guacd is a
+  hard dependency of the compose file even though it only serves the beta
+  in-browser RDP for Windows hosts: upstream gates the server on
+  `condition: service_healthy` for both.
+
+  Do not put this one behind a forward-auth proxy. Agents check in outbound to
+  `/api/v1` with their own credentials and cannot render a login page, so a
+  gate in front of the whole host silently stops every host reporting while
+  the UI keeps working. It speaks OIDC itself; OIDC_ISSUER_URL takes the
+  issuer with no `.well-known` suffix, and groups arrive in either the `groups`
+  or `ak_groups` claim.
+
+  The server holds nothing on disk — agent binaries are baked into the image at
+  /app/agents and served read-only, custom logos live in the database — so
+  there is no volume to declare and a backup means the Postgres dump.
+
+  Upstream pins postgres:17-alpine. There is no documented health endpoint.
+
+  JWT_SECRET, SESSION_SECRET and AI_ENCRYPTION_KEY are 64 random bytes each
+  (`openssl rand -hex 64`); REDIS_PASSWORD is 32.
