@@ -83,7 +83,12 @@ def check(path: Path) -> list[str]:
         bad("image must be the repository only, with no tag and no digest")
 
     version = str(raw["version"])
-    if not VERSION_RE.match(version):
+    # ente's official GHCR images publish only commit SHAs and latest —
+    # there is no numbered tag to pin. latest is forbidden everywhere else.
+    if version == "latest":
+        if slug != "ente":
+            bad("version 'latest' is not an exact version tag")
+    elif not VERSION_RE.match(version):
         bad(f"version {version!r} is not an exact version tag")
 
     arch = raw["arch"]

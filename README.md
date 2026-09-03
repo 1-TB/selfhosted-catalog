@@ -85,7 +85,8 @@ Add a file to `apps/`, named after the slug, and run `tools/validate.py`.
 Things that will get an entry rejected:
 
 - A floating tag. `latest`, `stable`, `dev` and bare major versions are not
-  pinnable, and an entry that can't be pinned isn't much use.
+  pinnable, and an entry that can't be pinned isn't much use. The one
+  exception is `ente`: its official images publish no numbered tags.
 - A missing or guessed `arch`. Check it: `tools/registry.py arch <image> <tag>`.
 - A secret with a value in it.
 - A volume path that escapes the app's own data directory.
