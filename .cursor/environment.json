@@ -1,0 +1,4 @@
+{
+  "name": "selfhosted-catalog",
+  "install": "python3 -m pip install --user pyyaml 2>/dev/null || python3 -m pip install --user --break-system-packages pyyaml"
+}
