@@ -1,0 +1,70 @@
+slug: jellystat
+name: Jellystat
+category: media
+description: Playback statistics and watch history for Jellyfin.
+homepage: https://github.com/CyferShepard/Jellystat
+source: https://github.com/CyferShepard/Jellystat
+
+image: cyfershepard/jellystat
+version: "1.1.12"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: postgres
+auth: proxy
+health_path: /auth/isConfigured
+
+env:
+  - name: POSTGRES_IP
+    value: "jellystat-postgres"
+  - name: POSTGRES_PORT
+    value: "5432"
+  - name: POSTGRES_USER
+    value: "jellystat"
+  - name: POSTGRES_PASSWORD
+    value: "${JELLYSTAT_DB_PASSWORD}"
+  - name: POSTGRES_DB
+    value: "jellystat"
+  - name: JWT_SECRET
+    secret: true
+    source: generated
+  - name: TZ
+    value: "Etc/UTC"
+
+volumes:
+  - path: backup-data
+    mount: /app/backend/backup-data
+
+notes: |
+  The Postgres variables are separate host/port/user/password/database
+  settings, not a connection URL, and the host variable is POSTGRES_IP
+  even though a hostname works. On startup the server runs CREATE
+  DATABASE for POSTGRES_DB (default `jfstat`), ignores "already exists",
+  and then runs its own knex migrations. That CREATE connects without
+  naming a database, so node-postgres falls back to one named after the
+  user. The postgres image creates that database by default. Upstream's
+  compose uses plain postgres:18.1.
+
+  JWT_SECRET has no length rule. The server exits at startup if it is
+  unset. TZ is listed as required in the upstream README.
+
+  First run is all in the web UI. Create the admin user, then enter the
+  Jellyfin URL (http://jellyfin:8096 for the Jellyfin entry here) and a
+  Jellyfin API key, which are stored in the database. Until both are set,
+  /auth/createuser accepts an unauthenticated request that creates or
+  overwrites the admin account, so finish setup before the proxy gate
+  comes off, if it ever does. Set IS_EMBY_API=true to point it at Emby
+  instead.
+
+  The backup volume holds the backups made from the UI and the scheduled
+  backup task. Everything else lives in Postgres. Jellystat can issue its
+  own API keys for dashboard widgets, which send them in an X-API-Token
+  header or `?apiKey=` to /stats, /api and so on. Those callers get
+  stopped by a forward-auth gate unless the proxy lets them through.
+
+  The health path is the one upstream's Dockerfile HEALTHCHECK uses. The
+  HTTP server only starts listening after the database create and the
+  migrations have run. After that the endpoint answers 200 even if a
+  later database query fails, so it is a liveness check, not a database
+  check.
