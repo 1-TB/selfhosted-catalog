@@ -1,0 +1,64 @@
+slug: portainer-ce
+name: Portainer CE
+category: developer
+description: Web UI for managing Docker containers, images, volumes, networks and compose stacks.
+homepage: https://www.portainer.io
+source: https://github.com/portainer/portainer
+
+image: portainer/portainer-ce
+version: "2.45.1"
+arch: [amd64, arm64]
+
+port: 9000
+mem_limit: 512m
+database: none
+auth: proxy
+health_path: /api/system/status
+
+env:
+  - name: PORTAINER_SETUP_TOKEN
+    secret: true
+    source: generated
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  Needs the docker socket (/var/run/docker.sock) mounted to manage the
+  local Docker host, which is a privileged mount: it gives Portainer, and
+  anyone who logs into it, full control of the daemon. A read-only socket
+  proxy would defeat the point here, since the whole job is changing
+  things.
+
+  Port 9000 is plain HTTP and is still served by default in 2.45.1: a
+  fresh /data store is created with HTTP enabled (api/datastore/init.go)
+  and --http-disabled defaults to false. Upstream's install docs now only
+  publish 9443 (HTTPS with a self-signed certificate) and 8000 (the Edge
+  agent tunnel, only needed for Edge agents), and mention 9000 as "for
+  legacy reasons" - but the proxy talks to it inside the container
+  network, so nothing needs publishing. Turning on "Force HTTPS only" in
+  the SSL settings, or starting with --http-disabled, stops 9000 and
+  breaks this route; point the proxy at 9443 over HTTPS in that case.
+
+  First run: create the admin account within 5 minutes of the container
+  starting, or the instance disables itself ("timed out for security
+  purposes") until it is restarted. The setup screen also asks for a
+  setup token - the value of PORTAINER_SETUP_TOKEN (any string; without
+  it Portainer prints a random one in the startup log). It is ignored once
+  an admin exists.
+
+  It has its own login, and OAuth can be configured in its settings UI
+  (there are no environment variables for it), so this entry uses a
+  forward-auth proxy rather than declaring oidc. A gate in front will
+  block the non-browser endpoints: API-key calls, and the public stack and
+  service webhooks under /api/stacks/webhooks/ and /api/webhooks/ - leave
+  those paths ungated if CI redeploys through them. Only set
+  TRUSTED_ORIGINS (e.g. https://portainer-ce.${DOMAIN}) if the proxy
+  rewrites the Host header and writes start failing the CSRF check.
+
+  Docker Hub's `latest`, `lts` and `sts` tags all point at 2.45.1, the
+  current LTS. The repository has more tags than tools/registry.py reads
+  (it returns the first 1000, sorted as strings); 2.45.1 happens to fall
+  inside that window, but the next release is likely to fall outside it,
+  so check Docker Hub's tag API when refreshing this entry.
