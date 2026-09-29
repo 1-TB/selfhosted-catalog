@@ -1,0 +1,70 @@
+slug: immich-kiosk
+name: Immich Kiosk
+category: media
+description: Configurable full-screen slideshow of Immich photos for browsers, tablets and picture frames.
+homepage: https://docs.immichkiosk.app
+source: https://github.com/damongolding/immich-kiosk
+
+image: ghcr.io/damongolding/immich-kiosk
+version: "0.44.1"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: none
+auth: proxy
+health_path: /health
+
+env:
+  - name: KIOSK_IMMICH_URL
+    value: "http://immich:2283"
+  - name: KIOSK_IMMICH_API_KEY
+    secret: true
+  - name: KIOSK_IMMICH_EXTERNAL_URL
+    value: "https://immich.${DOMAIN}"
+  - name: KIOSK_BEHIND_PROXY
+    value: "true"
+  - name: TZ
+    value: "Etc/UTC"
+
+notes: |
+  Needs a running Immich, v3.2.0 or newer. At startup 0.44.1 asks Immich
+  for its version and exits with status 1 if it is older. The check is
+  skipped rather than failed if Immich can't be reached. As currently
+  pinned, this entry and apps/immich.yml do not work together.
+  apps/immich.yml is at v1.128.0 because tools/registry.py only reads the
+  first page of GHCR tags and never sees Immich's current 3.x releases.
+  Pair them only once that entry is updated. KIOSK_IMMICH_URL
+  is the address Kiosk uses server-side and must include the port.
+  KIOSK_IMMICH_EXTERNAL_URL is only used for the asset links and QR codes
+  in the info overlay.
+
+  KIOSK_IMMICH_API_KEY is created in Immich under the account whose photos
+  should show. The server exits if the URL or key is missing. Upstream
+  documents the fine-grained permissions to grant. For a display-only
+  kiosk without the like, hide or tag buttons, the read-side set is:
+  asset.read/view/download, album.read/statistics, archive.read,
+  face.read, memory.read, person.read/statistics, server.about, tag.read
+  and user.read.
+
+  Configuration is env-only here. Every setting can also come from a
+  /config/config.yaml, and env overrides the file. Per-device choices
+  (albums, people, transitions and so on) are normally made with URL
+  query parameters on the device's kiosk URL. A few options are
+  structured lists that are easiest in config.yaml: weather locations,
+  per-user API keys and webhooks. There is deliberately no volume. Kiosk
+  keeps its asset cache in memory and videos in a temp dir that it
+  deletes on exit. The optional offline mode writes to /offline-assets.
+  If you do mount /config for a config.yaml, beware a quirk. When the
+  /config directory exists but holds no config.yaml, startup fails
+  unless the directory's mode is exactly 755. The image runs as
+  distroless nonroot.
+
+  Kept behind the proxy. Upstream says its own KIOSK_PASSWORD (sent as
+  ?password=, X-Api-Key or a Bearer header) "offers very little in terms
+  of protection" and should not be relied on beyond a LAN. Without a
+  gate, anyone who reaches the host sees whatever the API key can see.
+  The catch is that kiosk displays are unattended browsers. They need a
+  forward-auth session that lasts, or a proxy rule that lets the known
+  device through, otherwise the screen drops to a login page when the
+  session expires. Kiosk's own password check skips /health.
