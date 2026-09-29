@@ -24,11 +24,11 @@ volumes:
     mount: /downloads
 
 notes: |
-  The official image from the qBittorrent project. Tags are
-  `<qBittorrent version>-<image revision>`; the `-lt2-` tags are the same
-  release built against libtorrent 2.0, which upstream says has reported
-  memory and performance problems. This entry uses the default libtorrent
-  1.2 build.
+  The official image from the qBittorrent project. Tags are the
+  qBittorrent version plus a `-N` build suffix. The `-lt2-` tags are the
+  same release built against libtorrent 2.0, which upstream flags for
+  user-reported memory and performance problems; this entry uses the
+  default libtorrent 1.2 build.
 
   Port 8080 is only the web UI. Peer traffic uses a separate torrenting
   port, 6881 by default (QBT_TORRENTING_PORT), on both TCP and UDP, and
@@ -37,10 +37,11 @@ notes: |
 
   First login: the username is `admin` and, until a password is set,
   qbittorrent-nox prints a temporary one to the container log on every
-  start. Set a real one under Tools -> Options -> WebUI. All other settings
-  are made in the web UI, which writes /config/qBittorrent/config/qBittorrent.conf
-  itself; the entrypoint seeds that file on first start with /downloads as
-  the save path and /downloads/temp for incomplete files.
+  start. Set a real one under Tools -> Options -> WebUI. All other
+  settings are made in the web UI, which writes
+  /config/qBittorrent/config/qBittorrent.conf itself; the entrypoint seeds
+  that file on first start with /downloads as the save path and
+  /downloads/temp for incomplete files.
 
   QBT_LEGAL_NOTICE=confirm acknowledges the notice that you are responsible
   for what you share and suppresses it; upstream asks that it only be set
@@ -50,11 +51,11 @@ notes: |
 
   The web UI bans an IP for an hour after 5 failed logins. Behind a proxy
   every client shares the proxy's address until "Enable reverse proxy
-  support" and the trusted proxy list are set under Options -> WebUI, so
-  one bad password locks everyone out. Sonarr, Radarr and similar tools
-  talk to the same web API with their own credentials; point them at the
-  container on the internal network (port 8080), not at the gated
-  subdomain.
+  support" and "Trusted proxies list" are set under Options -> WebUI, so
+  five bad passwords from anyone lock everyone out. Sonarr, Radarr and
+  similar tools talk to the same web API with their own credentials; point
+  them at the container on the internal network (port 8080), not at the
+  gated subdomain.
 
   Upstream warns that Docker's default 10 second stop timeout can cut
   shutdown short and corrupt files, and sets `stop_grace_period: 30m`.
