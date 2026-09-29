@@ -61,10 +61,12 @@ notes: |
 
   APP_DEBUG defaults to true in the entrypoint, which turns on PHP
   display_errors, so it is set to false here. The SMTP_*, APP_WORKSPACE and
-  APP_LANG variables are only copied into the database when the settings row
-  is first created. After that, mail and workspace settings are managed in
-  the admin dashboard, and changing those env vars later has no effect.
-  Upstream's README asks for MariaDB 11.4 or newer.
+  APP_LANG variables only seed the settings row when it is first created.
+  After that, mail and workspace settings are managed in the admin
+  dashboard. At runtime the app overwrites the SMTP env values with the
+  database ones, so changing SMTP_* later has no effect. Mail is needed for
+  password resets and reminder e-mails. Upstream's README asks for MariaDB
+  11.4 or newer.
 
   All six volumes match upstream's compose file. On every start the entrypoint
   copies the migration files from the image into the migrations volume, and

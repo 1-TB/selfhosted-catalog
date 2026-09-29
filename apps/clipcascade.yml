@@ -34,8 +34,9 @@ notes: |
   in with a username and password against /login and then hold a WebSocket
   open at /clipsocket (or /p2psignaling when CC_P2P_ENABLED=true). They cannot
   get through a login page, so a gate in front stops every device syncing.
-  The app has its own login with per-IP and per-account lockout (the
-  CC_MAX_*_ATTEMPTS / CC_LOCK_TIMEOUT_* vars). There is no OIDC; it is on
+  The app has its own login with per-IP and per-account lockout
+  (CC_MAX_ATTEMPTS_PER_IP, CC_MAX_UNIQUE_IP_ATTEMPTS, CC_LOCK_TIMEOUT_SECONDS,
+  CC_LOCK_TIMEOUT_SCALING_FACTOR). There is no OIDC; it is on
   upstream's TODO list. If you do put SSO in front anyway, upstream's README
   lists the paths to exempt: /login, /logout, /signup, /captcha, /help,
   /donate, /health, /ping, /assets/**, /clipsocket and /p2psignaling. The
@@ -55,11 +56,13 @@ notes: |
   protects nothing unless you replace it. It is deliberately not a generated
   secret here: H2 needs it as two space-separated values
   ("<file password> <user password>"), so a single random string will not
-  open the database. It also has to be set before the first start and never
-  changed afterwards.
+  open the database. It also has to be set before the first start and kept
+  the same from then on (upstream: "Once set, you must use the same password
+  whenever you migrate the database").
 
-  Sessions are held in memory, so restarting the container logs every client
-  out. Logs go to /logs inside the container; mount it if you want them kept.
+  Upstream's compose notes that a restart logs every session out, so clients
+  have to sign in again after the container restarts. Logs go to /logs
+  inside the container; mount it if you want them kept.
   Server image versions (0.x) are numbered separately from the client
   releases (v3.x) on the GitHub releases page. Upstream's compose pins
   0.7.0, and the v3.2.0 client release shipped no server changes. It runs

@@ -51,8 +51,9 @@ notes: |
   BACKREST_DATA to /data, BACKREST_CONFIG to /config/config.json,
   XDG_CACHE_HOME to /cache and TMPDIR to /tmp, so none of them need
   setting. /data holds the operation log, task logs and a generated JWT
-  signing secret; /cache is restic's cache. Upstream's compose also bind-mounts /tmp; that is scratch
-  space, not state, so it is not declared here. The /root/.config/rclone
+  signing secret; /cache is restic's cache. Upstream's compose also
+  bind-mounts /tmp; that is scratch space, not state, so it is not
+  declared here. The /root/.config/rclone
   mount holds rclone.conf and is only needed for rclone remotes (run
   `rclone config` inside the container, or drop the file in). restic and
   rclone are both baked into the image.
