@@ -1,0 +1,89 @@
+slug: tuwunel
+name: Tuwunel
+category: communication
+description: Matrix homeserver in Rust, the official successor to conduwuit, with an embedded RocksDB database.
+homepage: https://matrix-construct.github.io/tuwunel/
+source: https://github.com/matrix-construct/tuwunel
+
+image: ghcr.io/matrix-construct/tuwunel
+version: "v1.9.3"
+arch: [amd64, arm64]
+
+port: 8008
+mem_limit: 2g
+database: none
+auth: none
+health_path: /_tuwunel/server_version
+
+env:
+  - name: TUWUNEL_SERVER_NAME
+    value: "tuwunel.${DOMAIN}"
+  - name: TUWUNEL_ADDRESS
+    value: "0.0.0.0"
+  - name: TUWUNEL_DATABASE_PATH
+    value: "/var/lib/tuwunel"
+  - name: TUWUNEL_WELL_KNOWN__CLIENT
+    value: "https://tuwunel.${DOMAIN}"
+  - name: TUWUNEL_WELL_KNOWN__SERVER
+    value: "tuwunel.${DOMAIN}:443"
+  - name: TUWUNEL_ALLOW_REGISTRATION
+    value: "true"
+  - name: TUWUNEL_REGISTRATION_TOKEN
+    secret: true
+    source: generated
+
+volumes:
+  - path: data
+    mount: /var/lib/tuwunel
+
+notes: |
+  auth: none is required, not a preference. Matrix clients (Element,
+  FluffyChat, mobile apps) call the /_matrix/client API directly with
+  access tokens, and other homeservers call /_matrix/federation and
+  /_matrix/key with signed X-Matrix requests; neither can follow a
+  forward-auth redirect, so a login gate in front breaks every client and
+  all federation. Accounts are protected by the homeserver's own login.
+
+  The server name is permanent - upstream says it cannot be changed without
+  wiping the database - and it becomes the suffix of every user ID
+  (@alice:tuwunel.example.com). This entry makes the subdomain the server
+  name and has Tuwunel serve its own /.well-known/matrix/client and
+  /.well-known/matrix/server (the WELL_KNOWN__ variables), with the server
+  file pointing federation at port 443, so everything goes through the one
+  HTTPS proxy and port 8448 never has to be opened. To get
+  @alice:example.com instead, set TUWUNEL_SERVER_NAME to the bare domain
+  before the first start and serve those two .well-known files from the
+  apex domain, pointing at this subdomain. The proxy must pass the X-Matrix
+  Authorization header through untouched or federation fails (upstream
+  names Lighttpd, and Apache without `nocanon`, as breaking it).
+
+  First run: allow_registration is off by default, and turning it on
+  without a token makes the server refuse to start, so this entry turns it
+  on with TUWUNEL_REGISTRATION_TOKEN. The first account registered (from
+  any Matrix client, using that token) is made admin and joined to the
+  admin room. Set TUWUNEL_ALLOW_REGISTRATION=false afterwards for a closed
+  server. The Matrix spec limits registration tokens to 64 characters from
+  [A-Za-z0-9._~-], so generate hex or base64url, not arbitrary bytes.
+
+  Set a long stop timeout where the container is defined (upstream's
+  compose uses `stop_grace_period: 30m`). The first start after an upgrade
+  can run a database migration before the listener opens, and the default
+  10-second stop kills it half-way, which upstream says no admin command
+  can repair. The image's own HEALTHCHECK has a 30-minute start period for
+  the same reason; /_tuwunel/server_version is the path it probes.
+
+  Upstream's troubleshooting page warns that Docker's embedded DNS
+  resolver struggles with federation's DNS volume (very slow room joins);
+  TUWUNEL_QUERY_OVER_TCP_ONLY=true or the host's resolv.conf are its
+  suggested workarounds. The image is FROM scratch - no shell for
+  `docker exec`; admin commands go through the admin room.
+
+  mem_limit follows the maintainer's guidance of at least 1 GiB for a
+  minimal server and 2-4 GiB for a federating personal one; caches scale
+  with core count (TUWUNEL_CACHE_CAPACITY_MODIFIER shrinks them). The same
+  image is published as jevolk/tuwunel on Docker Hub. SSO against an
+  upstream OIDC provider is optional and env-configurable
+  (TUWUNEL_IDENTITY_PROVIDER__0__BRAND/CLIENT_ID/CLIENT_SECRET/ISSUER_URL/
+  CALLBACK_URL), but the callback path ends in the client id
+  (/_matrix/client/unstable/login/sso/callback/<client_id>), so it can't
+  be expressed as a fixed redirect_path and isn't wired up here.
