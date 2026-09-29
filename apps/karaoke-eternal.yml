@@ -1,0 +1,56 @@
+slug: karaoke-eternal
+name: Karaoke Eternal
+category: media
+description: Karaoke party server where singers queue songs from their phone's browser and a browser-based player plays MP3+G and MP4.
+homepage: https://www.karaoke-eternal.com
+source: https://github.com/bhj/KaraokeEternal
+
+image: radrootllc/karaoke-eternal
+version: "2.0.2"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: none
+
+volumes:
+  - path: config
+    mount: /config
+  - path: media
+    mount: /mnt/karaoke
+
+notes: |
+  There is no login gate in front of this one, on purpose. Singers join from
+  their phones by scanning the player's QR code or opening a room link, often
+  as guests with no account anywhere, and a forward-auth proxy would stop
+  every one of them at the first page. The app has its own accounts instead:
+  one admin, standard users and guests, and a room can have a password.
+  There is no OIDC.
+
+  On the first visit the app asks you to create the admin account. The
+  setup endpoint (/api/setup) accepts anyone until an admin exists, so do
+  this straight after the first deploy. Setup also creates "Room 1", and
+  that room accepts neither new standard accounts nor guests until the
+  admin turns them on in the room's options. The source enforces this:
+  Rooms.validate checks a per-role allowNew flag, and a new room has none
+  set.
+
+  /config holds the SQLite database (database.sqlite3), which includes the
+  session signing key. The server generates that key itself, so there is
+  no secret to supply. The media volume is mounted at /mnt/karaoke,
+  following upstream's compose file. After signing in as admin, add that
+  path (or folders under it) under Account > Preferences > Media Folders
+  so the scanner indexes it.
+
+  The image's default command already passes `-p 8080 --data /config` and
+  turns off log files; console output still goes to stdout. The server
+  plays no audio itself. The player at /player runs fullscreen in a browser
+  on whatever machine drives the TV and speakers.
+
+  Live queue and player updates go over socket.io at /socket.io on the same
+  port, with the client's default transports, so pass WebSocket upgrades
+  through the proxy. The image runs as root. The server honours PUID/PGID
+  by calling setgid/setuid at startup, but it does not chown /config, so if
+  you set them the volume must already be writable by that user. No health
+  endpoint is documented.
