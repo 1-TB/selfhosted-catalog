@@ -1,0 +1,84 @@
+slug: tileserver-gl
+name: TileServer GL
+category: developer
+description: Vector and raster map tile server for MapLibre GL styles, with a built-in map viewer.
+homepage: https://tileserver.readthedocs.io
+source: https://github.com/maptiler/tileserver-gl
+
+image: maptiler/tileserver-gl
+version: "v5.6.0"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 1g
+database: none
+auth: none
+health_path: /health
+
+env:
+  - name: TILESERVER_GL_ALLOWED_HOSTS
+    value: "tileserver-gl.${DOMAIN}"
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  Serves map data the operator supplies; it ships none of its own. /data
+  is the image's working directory, and with no arguments the server
+  reads /data/config.json if there is one. Without it, it builds a config
+  in memory from the first .mbtiles or .pmtiles file it finds in /data.
+  That file has to use the OpenMapTiles schema to get styled output (the
+  bundled basic-preview style, rendered raster tiles and the viewer).
+  Anything else is served as raw data only. Upstream's README points to
+  data.maptiler.com/downloads for OpenMapTiles extracts. For several
+  tilesets, or your own styles, fonts and sprites, put a config.json in
+  the same volume. Its paths resolve relative to /data. The schema has
+  no field for the `--file` argument upstream's README uses to pick one
+  file.
+
+  If /data holds neither a config nor a tile file, the server downloads
+  a Zurich sample (zurich_switzerland.mbtiles, from the project's v1.3.0
+  GitHub release) into /data and serves that. A fresh install therefore
+  needs outbound network access, and if /data is not writable by the
+  container user the error is logged and the server never starts.
+  Delete the sample when you add real data: auto-detection takes the
+  first matching file readdir returns, not the newest.
+
+  auth: none because a tile server's clients are other maps, not people
+  at a login page. MapLibre GL JS, Leaflet or OpenLayers pages on other
+  hosts, mobile map SDKs and GIS tools (over WMTS) fetch the style JSON,
+  TileJSON, fonts and tiles directly, which is why CORS headers are on by
+  default. A forward-auth redirect breaks all of them. Nothing a client
+  sends is stored (the only POST routes are static-map renders and batch
+  elevation lookups), so the exposure is the data itself: load only
+  tiles you are happy to publish. Raster rendering is CPU-heavy, and
+  upstream's deployment docs recommend a caching proxy in front. If the
+  built-in viewer is the only consumer, a gate does no harm.
+
+  TILESERVER_GL_ALLOWED_HOSTS is upstream's Host-header-poisoning guard.
+  TileJSON, style and WMTS URLs are built from Host/X-Forwarded-Host and
+  X-Forwarded-Proto (Express `trust proxy` is on). A request whose host
+  is not in the list gets path-only URLs, which is also what other
+  containers calling it by container name will see. The proxy must
+  forward X-Forwarded-Proto or the URLs come back as http. The stricter
+  `--public_url` option is a command-line flag with no env equivalent.
+
+  The image's own HEALTHCHECK probes localhost:8080/health, which returns
+  503 until every style and data source has loaded, so leave the port at
+  8080 (upstream warns that --port makes the container look unhealthy).
+  The process runs as `node`, a system account created at build time
+  with `useradd -r`. The Dockerfile does not fix its uid, so check it
+  (`id` in the container) before chowning a bind-mounted data directory.
+  A SIGHUP (`docker kill -s HUP`) reloads config.json without a restart.
+
+  Upstream publishes no memory figure. Raster rendering keeps pools of
+  native MapLibre renderers per style (minimum 8/4/2 for 1x/2x/3x scale
+  by default, tunable in config.json), and an open upstream issue (#1565)
+  reports memory climbing under raster load. Treat 1g as a starting
+  point, not a measurement. maptiler/tileserver-gl-light is the
+  pure-JavaScript variant without server-side raster rendering.
+
+  tools/registry.py `latest` returns v5.7.0-pre.0, a prerelease. v5.6.0
+  is the current stable release and has the same digest as Docker Hub's
+  `latest`.
