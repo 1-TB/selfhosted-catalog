@@ -1,0 +1,84 @@
+slug: keila
+name: Keila
+category: communication
+description: Newsletter and email campaign tool with signup forms, segments and campaign stats.
+homepage: https://www.keila.io
+source: https://github.com/pentacent/keila
+
+image: pentacent/keila
+version: "0.30.3"
+arch: [amd64]
+
+port: 4000
+mem_limit: 512m
+database: postgres
+auth: none
+
+env:
+  - name: DB_URL
+    value: "postgres://keila:${KEILA_DB_PASSWORD}@keila-postgres:5432/keila"
+  - name: SECRET_KEY_BASE
+    secret: true
+    source: generated
+  - name: URL_HOST
+    value: "keila.${DOMAIN}"
+  - name: URL_SCHEMA
+    value: "https"
+  - name: KEILA_USER
+    value: "admin@${DOMAIN}"
+  - name: KEILA_PASSWORD
+    secret: true
+  - name: DISABLE_REGISTRATION
+    value: "true"
+  - name: USER_CONTENT_DIR
+    value: "/opt/app/uploads"
+  - name: MAILER_SMTP_HOST
+    secret: true
+  - name: MAILER_SMTP_USER
+    secret: true
+  - name: MAILER_SMTP_PASSWORD
+    secret: true
+  - name: MAILER_SMTP_FROM_EMAIL
+    value: "noreply@${DOMAIN}"
+
+volumes:
+  - path: uploads
+    mount: /opt/app/uploads
+
+notes: |
+  Unlike Listmonk, no command override is needed: the image's default
+  `bin/keila start` runs the Ecto migrations and the seed script from
+  Keila.Application on every boot (skipped only if :skip_migrations is
+  configured), and the seed creates the root user from KEILA_USER /
+  KEILA_PASSWORD on an empty database.
+
+  auth: none because the app serves its newsletter recipients, not just
+  the operator: signup forms (/forms/:id), unsubscribe and double-opt-in
+  links, open and click tracking (/r/..., /c/...), the public campaign
+  archive (/archive/:id) and uploaded images in sent mail (/uploads/...)
+  are all opened by people who will never have a login, and the /api/v1
+  API uses its own keys. A forward-auth gate breaks every sent campaign.
+  The admin UI has its own login; DISABLE_REGISTRATION=true stops strangers
+  creating accounts on the open /auth/register page (the root user can
+  still add users under /admin/users).
+
+  KEILA_PASSWORD must be at least 10 characters. If it fails validation
+  the seed rolls every migration back and halts, so the first boot dies
+  instead of starting with no admin; if it's left unset a random password
+  is printed to the log instead. SECRET_KEY_BASE must be at least 64
+  characters (upstream suggests `head -c 48 /dev/urandom | base64`). The
+  hashid salt used in public IDs is derived from it unless HASHID_SALT is
+  set, so don't rotate it casually.
+
+  The release refuses to boot without MAILER_SMTP_HOST,
+  MAILER_SMTP_FROM_EMAIL and MAILER_SMTP_PASSWORD (unless
+  MAILER_SMTP_AUTH_METHOD=none); MAILER_SMTP_USER defaults to the from
+  address and MAILER_SMTP_PORT to 587. That mailer is only for system mail
+  (password resets, sender verification) - the senders that actually send
+  campaigns (SMTP, SES, Sendgrid, Mailgun, Postmark) are set up per project
+  in the UI and stored in Postgres.
+
+  The web UI is Phoenix LiveView, so the reverse proxy must forward
+  WebSockets. The image is published for amd64 only. Upstream's compose
+  uses an unpinned `postgres:alpine` and is labelled not production-ready;
+  no Postgres version is documented. No documented health endpoint.
