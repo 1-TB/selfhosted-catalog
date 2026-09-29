@@ -1,0 +1,66 @@
+slug: clipcascade
+name: ClipCascade
+category: utilities
+description: Syncs the clipboard (text, images, files) across desktop and Android devices through a self-hosted server.
+homepage: https://github.com/Sathvik-Rao/ClipCascade
+source: https://github.com/Sathvik-Rao/ClipCascade
+
+image: sathvikrao/clipcascade
+version: "0.7.0"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 512m
+database: none
+auth: none
+health_path: /health
+
+env:
+  - name: CC_ALLOWED_ORIGINS
+    value: "https://clipcascade.${DOMAIN}"
+
+volumes:
+  - path: database
+    mount: /database
+
+notes: |
+  On first start, with an empty user table, it creates the account admin /
+  admin123. That is hardcoded, and there is no env var to seed a different
+  password. Log in and change it straight away: with auth: none the instance
+  is reachable with that password until you do. Public signup is off by
+  default (CC_SIGNUP_ENABLED=false).
+
+  Not behind forward-auth. The Windows, macOS, Linux and Android clients log
+  in with a username and password against /login and then hold a WebSocket
+  open at /clipsocket (or /p2psignaling when CC_P2P_ENABLED=true). They cannot
+  get through a login page, so a gate in front stops every device syncing.
+  The app has its own login with per-IP and per-account lockout (the
+  CC_MAX_*_ATTEMPTS / CC_LOCK_TIMEOUT_* vars). There is no OIDC; it is on
+  upstream's TODO list. If you do put SSO in front anyway, upstream's README
+  lists the paths to exempt: /login, /logout, /signup, /captcha, /help,
+  /donate, /health, /ping, /assets/**, /clipsocket and /p2psignaling. The
+  proxy must pass WebSocket upgrades.
+
+  CC_ALLOWED_ORIGINS is the allowed origin for both WebSocket endpoints. It
+  is passed to Spring as a single string, so it takes one origin, not a
+  comma list. Upstream's compose recommends setting it to the public URL.
+  Unset, it allows all origins.
+
+  Storage is an embedded H2 file under /database, holding user accounts only.
+  Clipboard contents are relayed, not stored. Postgres is optional
+  (CC_SERVER_DB_URL / _DRIVER / _HIBERNATE_DIALECT / _USERNAME / _PASSWORD)
+  and not modelled here. The H2 file is AES-encrypted with
+  CC_SERVER_DB_PASSWORD, whose default is a fixed string published in
+  upstream's compose file and application.properties, so the encryption
+  protects nothing unless you replace it. It is deliberately not a generated
+  secret here: H2 needs it as two space-separated values
+  ("<file password> <user password>"), so a single random string will not
+  open the database. It also has to be set before the first start and never
+  changed afterwards.
+
+  Sessions are held in memory, so restarting the container logs every client
+  out. Logs go to /logs inside the container; mount it if you want them kept.
+  Server image versions (0.x) are numbered separately from the client
+  releases (v3.x) on the GitHub releases page. Upstream's compose pins
+  0.7.0, and the v3.2.0 client release shipped no server changes. It runs
+  on Java 21 with no -Xmx set. Idle memory was not measured here.
