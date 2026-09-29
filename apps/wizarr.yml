@@ -1,0 +1,54 @@
+slug: wizarr
+name: Wizarr
+category: media
+description: Invitation links and onboarding for Plex, Jellyfin, Emby and other media servers.
+homepage: https://docs.wizarr.dev
+source: https://github.com/wizarrrr/wizarr
+
+image: ghcr.io/wizarrrr/wizarr
+version: "v2026.9.1"
+arch: [amd64, arm64]
+
+port: 5690
+mem_limit: 512m
+database: none
+auth: none
+health_path: /health
+
+env:
+  - name: TZ
+    value: "Etc/UTC"
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  Left without a login gate on purpose. The people it exists for are
+  invitees with no account anywhere yet. They open /j/<code>, create
+  their media-server account and then walk through the post-invite
+  wizard pages, and a forward-auth proxy in front of the host would stop
+  them at the first step. The admin side has its own login: local
+  username/password, with optional passkeys and LDAP. There is no OIDC.
+  Do not set DISABLE_BUILTIN_AUTH=true on this install. In the source,
+  that makes /login sign in whoever requests it, which is only safe when
+  a proxy gates the admin pages.
+
+  The first visit redirects to /setup to create the admin account, and
+  that page is open to anyone until an admin exists, so do it straight
+  after the first deploy. Media servers (Plex, Jellyfin, Emby,
+  Audiobookshelf, Komga, Kavita, RomM) are added afterwards in the UI
+  with their URL and API key or token. Those are stored in the database,
+  not in env.
+
+  Everything lives under /data/database: the SQLite database, the Flask
+  session files, and a secrets.json holding the Flask SECRET_KEY, which
+  it generates on first boot. There is no secret to supply. The
+  entrypoint starts as root, chowns /data/database to PUID/PGID (default
+  1000) and drops to that user. Gunicorn runs a single worker on purpose,
+  because of SQLite and the in-process scheduler.
+
+  /health returns a static {"status": "ok"}, the endpoint upstream's own
+  HEALTHCHECK probes. It does not touch the database. The registry also
+  carries 1.x-4.x tags from before the switch to calendar versions. The
+  vYYYY.M.N tags are the current release line.
