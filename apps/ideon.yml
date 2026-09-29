@@ -1,0 +1,78 @@
+slug: ideon
+name: Ideon
+category: productivity
+description: Visual workspace that lays out repositories, notes, links and files on a shared infinite canvas.
+homepage: https://www.theideon.com
+source: https://github.com/3xpyth0n/ideon
+
+image: ghcr.io/3xpyth0n/ideon
+version: "0.9.7"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: postgres
+auth: oidc
+redirect_path: /api/auth/callback/oidc
+health_path: /api/health
+
+env:
+  - name: APP_URL
+    value: "https://ideon.${DOMAIN}"
+  - name: DB_HOST
+    value: "ideon-postgres"
+  - name: DB_NAME
+    value: "ideon"
+  - name: DB_USER
+    value: "ideon"
+  - name: DB_PASS
+    value: "${IDEON_DB_PASSWORD}"
+  - name: SECRET_KEY
+    secret: true
+    source: generated
+  - name: SHELL_MAX_SESSIONS
+    value: "0"
+
+volumes:
+  - path: storage
+    mount: /app/storage
+
+notes: |
+  /setup creates the superadmin account for whoever submits it first, so
+  finish it before anyone else can reach the instance. Setup leaves public
+  registration off; other users join by invitation or through SSO.
+
+  OIDC is set up in the admin panel and stored in the database. There are
+  no env vars for it. The generic provider's id is fixed as `oidc`, so the
+  callback is /api/auth/callback/oidc, and it asks for `openid email
+  profile`. Setup turns SSO sign-up on. An SSO login is linked to any
+  existing account with the same email. Google, Discord, Slack, GitLab,
+  Entra ID and SAML (through an embedded SAML Jackson) are configured in
+  the same place.
+
+  SHELL_MAX_SESSIONS is 0 here, which turns off the Shell block. Upstream's
+  default is 2. The Shell block is a terminal on the canvas that starts a
+  shell inside the Ideon container, as the app user, for the project's
+  owner or a collaborator with the owner or admin role. The shell inherits
+  the server's whole environment, SECRET_KEY and DB_PASS included, and
+  SECRET_KEY signs every session. Only remove the variable if you trust
+  everyone who can own a project with that.
+
+  SECRET_KEY: upstream asks for 32+ characters and generates it with
+  `openssl rand -hex 32`. The code only refuses an empty value. The session
+  secret and the at-rest encryption keys are derived from it with HKDF, so
+  changing it later logs everyone out and makes encrypted data unreadable.
+
+  APP_URL must match the browser's Origin exactly, with no trailing slash.
+  If it doesn't, WebSocket upgrades for live collaboration are refused with
+  a 403. Those upgrades arrive on the same port, so the reverse proxy has
+  to pass them through.
+
+  /app/storage holds uploads, avatars and the Yjs document state (LevelDB),
+  so a backup is that volume plus the Postgres dump. Migrations run on
+  every start. The server tries Postgres three times, two seconds apart,
+  and then exits, so it relies on a restart if the database is slow to
+  come up. Upstream gates it on a pg_isready healthcheck and pins
+  postgres:18-alpine. /api/health runs `SELECT 1` against the database.
+  Upstream gives no memory figure, so 512m is the catalogue default, not a
+  measurement.

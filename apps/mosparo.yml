@@ -1,0 +1,56 @@
+slug: mosparo
+name: mosparo
+category: security
+description: Rule-based spam protection for web forms, a self-hosted alternative to captchas.
+homepage: https://mosparo.io
+source: https://github.com/mosparo/mosparo
+
+image: mosparo/mosparo
+version: "v1.5.9"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: none
+auth: none
+
+volumes:
+  - path: data
+    mount: /mosparo-data
+
+notes: |
+  Configuration lives in env.mosparo.php. mosparo's own web installer
+  writes it into the data volume on the first visit, covering the database
+  choice, the admin account and a generated encryption key. Upstream's
+  Docker docs say plainly that none of it can be set through env vars.
+  This entry picks SQLite in the installer: mosparo supports it and the
+  installer offers it, and the file lands at
+  /mosparo-data/var/data/data.sqlite, so there is no database container to
+  wire up. Upstream's Docker examples use MariaDB instead. Picking
+  MySQL/MariaDB or PostgreSQL means typing the connection details into the
+  installer by hand.
+
+  The installer is open to whoever reaches it first, so finish it right
+  after the first start.
+
+  There is deliberately no login gate in front. Browsers of visitors to the
+  protected websites load /build/mosparo-frontend.js and
+  /resources/<uuid>.css and call /api/v1/frontend. Those sites' backends
+  call /api/v1/verification/verify, signed with the project's public and
+  private keys. A forward-auth proxy in front of the host breaks both. The
+  admin interface has its own login with optional TOTP two-factor, and
+  Administration > Security can limit backend and API access to IP allow
+  lists.
+
+  By default the image runs nginx, PHP-FPM and cron in one container
+  (MOSPARO_ENABLE_WEBSERVER=1, MOSPARO_ENABLE_CRON=1). Cron runs the
+  nightly database cleanup and rule-package refresh. Upstream's compose
+  moves cron into a second container of the same image, but that isn't
+  required. The image sets TRUSTED_PROXIES=127.0.0.1,REMOTE_ADDR, which
+  trusts X-Forwarded-For from anything that connects. That's fine behind
+  the reverse proxy, and upstream says not to publish the port directly.
+
+  /api/v1/health/check exists but only answers requests from 127.0.0.1
+  and ::1 (MOSPARO_HEALTH_ALLOW_LIST); anything else gets a 404. That's
+  why it isn't set as health_path. The image's own HEALTHCHECK calls it
+  from inside the container.
