@@ -1,0 +1,69 @@
+slug: pingvin-share-x
+name: Pingvin Share X
+category: files
+description: Self-hosted file sharing with expiring links and reverse shares; the maintained fork of Pingvin Share.
+homepage: https://smp46.github.io/pingvin-share-x/
+source: https://github.com/smp46/pingvin-share-x
+
+image: ghcr.io/smp46/pingvin-share-x
+version: "v1.22.3"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: none
+auth: none
+health_path: /api/health
+
+env:
+  - name: TRUST_PROXY
+    value: "true"
+
+volumes:
+  - path: data
+    mount: /opt/app/backend/data
+  - path: images
+    mount: /opt/app/frontend/public/img
+
+notes: |
+  First run: the first account created at /auth/signUp is made admin (the
+  backend checks for an empty user table). Registration stays open after
+  that - share.allowRegistration defaults to true - so turn it off under
+  /admin/config once the admin exists. Set the App URL there too, to
+  https://pingvin-share-x.${DOMAIN}: share links and emails are built from
+  it and it defaults to http://localhost:3000. Nearly every setting (app
+  URL, SMTP, S3, OIDC/LDAP, size and expiry limits) is stored in the SQLite
+  database and edited on that page. Upstream's only alternative is a
+  config.yaml mounted at /opt/app/config.yaml, which locks the settings UI,
+  so it isn't used here.
+
+  auth: none because the people a share is for don't have accounts: share
+  links (/s/<id>), their downloads and reverse-share upload links
+  (/upload/<token>) are opened by recipients, and a forward-auth gate in
+  front would lock them out. The app has its own login with TOTP, LDAP and
+  OAuth. OIDC is configured in the admin UI, not through env vars, with the
+  redirect URI https://pingvin-share-x.${DOMAIN}/api/oauth/callback/oidc.
+  A consumer can't pre-wire it, which is why this entry isn't auth: oidc.
+
+  One port serves everything. The image runs Next.js on 3333 and the
+  NestJS API on 8080 behind a bundled Caddy on 3000. TRUST_PROXY=true
+  switches that Caddy to its trust-proxy config and makes the API trust
+  X-Forwarded-For. Uploads go up in chunks (10 MB by default,
+  share.chunkSize), so the fronting proxy's request-body limit must be
+  above the chunk size. The JWT secret is generated into the database on
+  first start, so there is no secret to supply.
+
+  The data volume holds the SQLite database (pingvin-share.db) and the
+  uploaded files. The images volume holds the logo and favicon; the start
+  script copies the defaults in when they're missing. The entrypoint runs
+  as root only long enough to chown both to PUID/PGID (default 1000), then
+  drops to that user. ClamAV scanning is optional: CLAMAV_HOST defaults to
+  `clamav`, and when nothing answers there the backend logs "ClamAV is not
+  active" and carries on.
+
+  Same env vars, mount paths and SQLite file as the archived
+  stonith404/pingvin-share. All 25 of the original's Prisma migrations are
+  in the fork, which adds five of its own and applies them at startup.
+  v2.0.0-beta.* and `beta` tags are published alongside; v1.22.3 is the
+  latest stable release. The same image is on Docker Hub as
+  smp46/pingvin-share-x.
