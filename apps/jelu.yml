@@ -1,0 +1,54 @@
+slug: jelu
+name: Jelu
+category: media
+description: Personal reading tracker, a self-hosted Goodreads with to-read lists, reviews, stats and Goodreads import.
+homepage: https://bayang.github.io/jelu-web/
+source: https://github.com/bayang/jelu
+
+image: wabayang/jelu
+version: "0.87.3"
+arch: [amd64, arm64]
+
+port: 11111
+mem_limit: 1g
+database: none
+auth: proxy
+
+volumes:
+  - path: database
+    mount: /database
+  - path: images
+    mount: /files/images
+  - path: imports
+    mount: /files/imports
+
+notes: |
+  SQLite, no external database. The image already points JELU_DATABASE_PATH,
+  JELU_FILES_IMAGES and JELU_FILES_IMPORTS at the three volumes above, and
+  jelu.log lands next to jelu.db in /database. No env vars are needed to run
+  it. The first visitor is asked to create the first user, who becomes admin,
+  so finish that before the instance is reachable without the proxy.
+
+  Speaks OAuth2/OIDC natively (Spring Security), but upstream only documents
+  it as spring.security.oauth2.client.* keys in an application.yml mounted
+  at /config, with callback {baseUrl}/login/oauth2/code/{registrationId}.
+  The env-var form of those keys and its behaviour behind a TLS-terminating
+  proxy weren't confirmed. Jelu sets no forward-headers strategy, and an
+  upstream issue (#239) reports OIDC through a reverse proxy looping back to
+  the login page. So it isn't modelled as auth: oidc here. Jelu also has
+  documented header-based proxy auth that suits a forward-auth setup:
+  JELU_AUTH_PROXY_ENABLED=true, JELU_AUTH_PROXY_HEADER set to the username
+  header your proxy sends (default X-Authenticated-User), and
+  JELU_AUTH_PROXY_ADMINNAME for the user who should be admin. Unknown users
+  are created automatically.
+
+  A gate in front also blocks what Jelu serves without login: review and
+  book embed snippets (GET /api/v1/reviews, /api/v1/books/**) and API-token
+  scripts against /api. Exempt those paths if you use them.
+
+  Online metadata search shells out to calibre's fetch-ebook-metadata, which
+  the image bundles for amd64 and arm64. That Qt/Python process is what
+  pushes memory above a plain Spring Boot app's, hence 1g. There is no
+  upstream sizing guidance, and idle memory was not measured here. CORS
+  allows every origin by default (jelu.cors.allowed-origins). There is no
+  documented health endpoint.

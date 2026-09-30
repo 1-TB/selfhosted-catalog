@@ -1,0 +1,47 @@
+slug: pairdrop
+name: PairDrop
+category: files
+description: AirDrop-style file and text sharing between devices, in the browser.
+homepage: https://pairdrop.net
+source: https://github.com/schlagmichdoch/PairDrop
+
+image: ghcr.io/schlagmichdoch/pairdrop
+version: "v1.11.2"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 256m
+auth: proxy
+
+notes: |
+  Nothing is stored server-side: the Node server hands out the client files
+  and runs the WebSocket signalling on the same port, and files go
+  peer-to-peer over WebRTC. Paired devices and display names live in each
+  browser, so there is no volume to declare. The project publishes this
+  image itself on GHCR; the one its docker-compose.yml example uses,
+  lscr.io/linuxserver/pairdrop, is the linuxserver rebuild.
+
+  Discovery is by client IP. The server takes the first address in
+  CF-Connecting-IP, then X-Forwarded-For, then the socket address, and
+  every private address is collapsed into one shared room. Without a proxy
+  setting X-Forwarded-For, every client arrives from the proxy's address and
+  all of them see each other. The proxy should overwrite a client-supplied
+  X-Forwarded-For rather than append to it, since the first entry is the
+  one used.
+
+  There is no login of its own. With a forward-auth gate in front, every
+  device that should show up has to sign in first, which suits your own
+  devices but not a guest's phone.
+
+  Out of the box clients get only a public Google STUN server, which is
+  enough on one LAN but often not between networks. For internet transfers,
+  either set WS_FALLBACK=true, which relays files through this server and
+  lets it read them, or point RTC_CONFIG at a JSON file listing a TURN
+  server. RTC_CONFIG is a file path, not the JSON itself, so that needs a
+  file mounted into the container. RATE_LIMIT takes the number of proxy
+  hops to trust (true means 5); with DEBUG_MODE=true and RATE_LIMIT set,
+  a /ip route shows which address the limiter sees. DEBUG_MODE logs client
+  IPs and is not for production.
+
+  The image's own HEALTHCHECK just fetches `/`; there is no dedicated
+  health endpoint.

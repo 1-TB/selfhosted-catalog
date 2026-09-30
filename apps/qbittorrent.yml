@@ -1,0 +1,67 @@
+slug: qbittorrent
+name: qBittorrent
+category: files
+description: BitTorrent client, run headless with its web UI.
+homepage: https://www.qbittorrent.org
+source: https://github.com/qbittorrent/docker-qbittorrent-nox
+
+image: qbittorrentofficial/qbittorrent-nox
+version: "5.2.4-1"
+arch: [amd64, arm64]
+
+port: 8080
+mem_limit: 1g
+auth: proxy
+
+env:
+  - name: QBT_LEGAL_NOTICE
+    value: "confirm"
+
+volumes:
+  - path: config
+    mount: /config
+  - path: downloads
+    mount: /downloads
+
+notes: |
+  The official image from the qBittorrent project. Tags are the
+  qBittorrent version plus a `-N` build suffix. The `-lt2-` tags are the
+  same release built against libtorrent 2.0, which upstream flags for
+  user-reported memory and performance problems; this entry uses the
+  default libtorrent 1.2 build.
+
+  Port 8080 is only the web UI. Peer traffic uses a separate torrenting
+  port, 6881 by default (QBT_TORRENTING_PORT), on both TCP and UDP, and
+  that has to be published directly on the host - a HTTP proxy cannot
+  carry it. Without it downloads still work, but no peer can connect in.
+
+  First login: the username is `admin` and, until a password is set,
+  qbittorrent-nox prints a temporary one to the container log on every
+  start. Set a real one under Tools -> Options -> WebUI. All other
+  settings are made in the web UI, which writes
+  /config/qBittorrent/config/qBittorrent.conf itself; the entrypoint seeds
+  that file on first start with /downloads as the save path and
+  /downloads/temp for incomplete files.
+
+  QBT_LEGAL_NOTICE=confirm acknowledges the notice that you are responsible
+  for what you share and suppresses it; upstream asks that it only be set
+  once the notice has been read. Without a TTY the app just prints the
+  notice and carries on. Upstream's compose sets `tty: true`, and when stdin
+  and stdout are terminals an unconfirmed notice waits for Enter.
+
+  The web UI bans an IP for an hour after 5 failed logins. Behind a proxy
+  every client shares the proxy's address until "Enable reverse proxy
+  support" and "Trusted proxies list" are set under Options -> WebUI, so
+  five bad passwords from anyone lock everyone out. Sonarr, Radarr and
+  similar tools talk to the same web API with their own credentials; point
+  them at the container on the internal network (port 8080), not at the
+  gated subdomain.
+
+  Upstream warns that Docker's default 10 second stop timeout can cut
+  shutdown short and corrupt files, and sets `stop_grace_period: 30m`.
+  The container starts as root, drops to UID/GID 1000 (PUID/PGID to
+  change), and chowns /config recursively but only the top of /downloads.
+
+  mem_limit is headroom, not a measured figure: upstream gives no memory
+  guidance, and use grows with the number of active torrents and the disk
+  cache setting. No health endpoint; the API's version route needs a login.

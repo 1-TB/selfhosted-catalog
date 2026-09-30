@@ -1,0 +1,67 @@
+slug: multi-scrobbler
+name: multi-scrobbler
+category: media
+description: Scrobbles plays from many music sources to Last.fm, ListenBrainz, Maloja, Koito and other clients.
+homepage: https://docs.multi-scrobbler.app
+source: https://github.com/FoxxMD/multi-scrobbler
+
+image: foxxmd/multi-scrobbler
+version: "0.19.1"
+arch: [amd64, arm64]
+
+port: 9078
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: BASE_URL
+    value: "https://multi-scrobbler.${DOMAIN}"
+  - name: TZ
+    value: "Etc/UTC"
+  - name: PUID
+    value: "1000"
+  - name: PGID
+    value: "1000"
+
+volumes:
+  - path: config
+    mount: /config
+
+notes: |
+  Sources and clients are what you configure, and which ones depends
+  entirely on the install, so none are listed above. Upstream supports
+  three ways to configure them, and all three can be mixed. Plain env
+  vars are an officially supported way to run it with no config files,
+  e.g. JELLYFIN_URL, JELLYFIN_APIKEY and JELLYFIN_USER for a Jellyfin
+  source, or MALOJA_URL and MALOJA_API_KEY for a Maloja client. Env
+  covers one instance of each source or client type with basic options.
+  More than one of a type (two Last.fm accounts, say), routing specific
+  sources to specific clients, transformers and notification webhooks
+  need JSON files in /config: per-type files like jellyfin.json, or an
+  all-in-one config.json.
+
+  BASE_URL is what it builds OAuth redirect URLs from, for Spotify,
+  Last.fm, Deezer and so on (e.g. `/lastfm/callback`). With an https URL
+  and no port, it uses 443 rather than its own 9078. The server itself
+  always listens on 9078.
+
+  /config holds the config files, the SQLite database (ms.db), cached
+  auth tokens (ms-auth.cache) and logs. The image is built on the
+  linuxserver.io s6 base but published by the project itself. It starts
+  as root, chowns /config to PUID/PGID and runs the app as that user.
+  Valkey (CACHE_VALKEY) is an optional secondary cache and not needed.
+
+  No login of its own, so it stays behind the proxy. Pull-style sources
+  (Jellyfin, Plex, Subsonic, Spotify and so on) are unaffected by that.
+  The OAuth callbacks are browser redirects, so they pass through a
+  logged-in session. Ingress sources that other software pushes plays
+  to cannot log in, though: the WebScrobbler extension
+  (/api/webscrobbler), the ListenBrainz endpoint (/api/listenbrainz and
+  /1/...) and the Last.fm endpoint (/api/lastfm and /2.0/). If you use
+  them, those paths need to bypass forward auth.
+
+  No health_path is set on purpose. Upstream documents /api/health, but
+  it returns 500 whenever any source or client is unauthenticated or not
+  polling, including a fresh Spotify or Last.fm source still waiting on
+  its OAuth login. It is a status check, not a liveness probe.

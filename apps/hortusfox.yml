@@ -1,0 +1,90 @@
+slug: hortusfox
+name: HortusFox
+category: productivity
+description: Collaborative plant management with locations, tasks, inventory, calendar and a group chat.
+homepage: https://www.hortusfox.com
+source: https://github.com/danielbrendel/hortusfox-web
+
+image: ghcr.io/danielbrendel/hortusfox-web
+version: "v6.1"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: mariadb
+auth: proxy
+
+env:
+  - name: APP_ADMIN_EMAIL
+    value: "admin@${DOMAIN}"
+  - name: APP_ADMIN_PASSWORD
+    secret: true
+  - name: APP_DEBUG
+    value: "false"
+  - name: DB_HOST
+    value: "hortusfox-mariadb"
+  - name: DB_PORT
+    value: "3306"
+  - name: DB_DATABASE
+    value: "hortusfox"
+  - name: DB_USERNAME
+    value: "hortusfox"
+  - name: DB_PASSWORD
+    value: "${HORTUSFOX_DB_PASSWORD}"
+  - name: DB_CHARSET
+    value: "utf8mb4"
+
+volumes:
+  - path: img
+    mount: /var/www/html/public/img
+  - path: attachments
+    mount: /var/www/html/public/attachments
+  - path: backup
+    mount: /var/www/html/public/backup
+  - path: themes
+    mount: /var/www/html/public/themes
+  - path: logs
+    mount: /var/www/html/app/logs
+  - path: migrations
+    mount: /var/www/html/app/migrations
+
+notes: |
+  The image's entrypoint does the whole install: it waits for MariaDB, writes
+  the app's .env from the environment, runs the migrations, and seeds the
+  workspace settings and first admin account. APP_ADMIN_EMAIL /
+  APP_ADMIN_PASSWORD only apply while no admin user exists. Set the password
+  explicitly: if it is left unset the entrypoint generates a random one and
+  logs it as **HIDDEN**, so nobody can log in with it. The entrypoint also
+  pastes the admin password into a single-quoted PHP string and the
+  credentials into SQL and a double-quoted .env line without escaping them.
+  Keep APP_ADMIN_PASSWORD and the DB password free of quotes and backslashes.
+
+  APP_DEBUG defaults to true in the entrypoint, which turns on PHP
+  display_errors, so it is set to false here. The SMTP_*, APP_WORKSPACE and
+  APP_LANG variables only seed the settings row when it is first created.
+  After that, mail and workspace settings are managed in the admin
+  dashboard. At runtime the app overwrites the SMTP env values with the
+  database ones, so changing SMTP_* later has no effect. Mail is needed for
+  password resets and reminder e-mails. Upstream's README asks for MariaDB
+  11.4 or newer.
+
+  All six volumes match upstream's compose file. On every start the entrypoint
+  copies the migration files from the image into the migrations volume, and
+  the default images and themes into theirs.
+
+  Reminders, overdue/due-tomorrow notices, recurring-task resets and
+  automatic backups have no scheduler inside the container. Something outside
+  has to call /cronjob/tasks/overdue, /cronjob/tasks/tomorrow,
+  /cronjob/tasks/recurring, /cronjob/calendar/reminder and
+  /cronjob/backup/auto with the `cronpw` token, which is shown and can be
+  regenerated in the admin dashboard. Those calls, and the REST API under
+  /api (authenticated by a `?token=` query parameter), have to bypass a
+  forward-auth gate or be made against the container directly.
+
+  No OIDC. It can trust identity headers from the proxy instead: set
+  PROXY_ENABLE, PROXY_HEADER_EMAIL, PROXY_HEADER_USERNAME (the header names
+  your forward-auth sends), optionally PROXY_AUTO_SIGNUP / PROXY_WHITELIST /
+  PROXY_HIDE_LOGOUT, and PROXY_OVERWRITE_VALUES=true so the entrypoint writes
+  them into the database on start. Without that last one they are ignored.
+  The whitelist is an exact match on REMOTE_ADDR. There is no documented
+  health endpoint.

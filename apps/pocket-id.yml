@@ -1,0 +1,65 @@
+slug: pocket-id
+name: Pocket ID
+category: security
+description: Simple OIDC provider that signs users in with passkeys only.
+homepage: https://pocket-id.org
+source: https://github.com/pocket-id/pocket-id
+
+image: pocketid/pocket-id
+version: "v2.16.0"
+arch: [amd64, arm64]
+
+port: 1411
+mem_limit: 512m
+database: none
+auth: none
+health_path: /healthz
+
+env:
+  - name: APP_URL
+    value: "https://pocket-id.${DOMAIN}"
+  - name: TRUST_PROXY
+    value: "true"
+  - name: ENCRYPTION_KEY
+    secret: true
+    source: generated
+
+volumes:
+  - path: data
+    mount: /app/data
+
+notes: |
+  Create the first admin account at https://pocket-id.${DOMAIN}/setup
+  straight after the first start. Passkeys use the WebAuthn API, which
+  only works in a secure context, so it has to be served over HTTPS and
+  APP_URL must be the real public URL, with no path (the server refuses
+  to start if APP_URL has one).
+
+  auth: none because this is the identity provider itself: apps redirect
+  browsers to its login page and call its token and userinfo endpoints
+  server-to-server, and a forward-auth gate in front would break both.
+
+  ENCRYPTION_KEY is required and must be at least 16 bytes; the server
+  exits at startup otherwise. It is used as raw bytes through an HMAC key
+  derivation, not base64-decoded, so any random string of 16+ characters
+  works (upstream suggests `openssl rand -base64 32`). It encrypts the
+  stored signing keys, so changing it later needs
+  `pocket-id encryption-key-rotate --new-key ...` rather than just a new
+  value.
+
+  TRUST_PROXY=true trusts X-Forwarded-For from any address, which is what
+  makes audit-log IPs and the built-in rate limiting see real clients
+  rather than the proxy; it also accepts a comma-separated list of proxy
+  IPs/CIDRs if you want to narrow it. SQLite in /app/data is the default
+  database; DB_CONNECTION_STRING takes a postgres:// URL instead. Upstream
+  says not to put the SQLite file on NFS/SMB. MAXMIND_LICENSE_KEY is
+  optional and only adds geolocation to the audit log.
+
+  The image is also published as ghcr.io/pocket-id/pocket-id (the
+  upstream compose file names both), but that repository has more tags
+  than tools/registry.py reads and it reports v2.5.0 there, so this entry
+  uses the Docker Hub copy. On Docker Hub the tool's `latest` returns the
+  floating minor tag `v2.16`; `v2.16.0` is the exact release tag. The
+  entrypoint drops to PUID/PGID (default 1000) and chowns /app/data. The
+  process also binds 1414 for its embedded actor runtime; nothing needs to
+  be routed to it.

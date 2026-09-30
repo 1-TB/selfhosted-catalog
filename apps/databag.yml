@@ -1,0 +1,59 @@
+slug: databag
+name: Databag
+category: communication
+description: Lightweight federated messenger with end-to-end encrypted topics, web and mobile apps, and calls.
+homepage: https://github.com/balzack/databag
+source: https://github.com/balzack/databag
+
+image: balzack/databag
+version: "0.1.18"
+arch: [amd64, arm64]
+
+port: 7000
+mem_limit: 512m
+database: none
+auth: none
+
+env:
+  - name: ADMIN
+    secret: true
+
+volumes:
+  - path: data
+    mount: /var/lib/databag
+
+notes: |
+  ADMIN is the password for the node's admin dashboard (the cog icon at the
+  top right of the web app). The start script writes it into the SQLite
+  config table on every boot, so changing the variable and restarting
+  resets it. The image also sets ADMIN=password, so if it's left unset the
+  dashboard password is "password". The script pastes the value between
+  single quotes in an sqlite3 statement and runs under `set -e`, so a value
+  containing `'` makes the insert fail and stops the container. Use only
+  letters and digits.
+
+  First run: sign in to the dashboard with ADMIN, set Federated Host to
+  databag.${DOMAIN} and save. Databag writes this host into every account
+  profile as the node address that contacts on other servers connect to.
+  Accounts are then created from links generated in the dashboard, which
+  expire after 24 hours. Open sign-up stays off unless you turn on open
+  access (with an account limit) there. Audio and video calls need a
+  STUN/TURN relay, which is also set in the dashboard; none is bundled.
+
+  auth: none because the Android and iOS apps talk to the REST API and the
+  /status WebSocket directly with their own tokens, and contacts on other
+  Databag nodes use the same API for federation; a forward-auth gate
+  breaks both. The proxy must pass WebSockets, and upstream's nginx example
+  removes the body-size limit (client_max_body_size 0) for attachments.
+
+  Everything is under /var/lib/databag: the databag.db SQLite file and
+  every uploaded asset. The start script VACUUMs the database on each boot.
+  Uploaded images and videos are transcoded inside the container with
+  ImageMagick and ffmpeg (video to 720p H.264), and that is what the memory
+  headroom is for. Upstream says the server itself runs on a Raspberry Pi
+  Zero. There is no health endpoint.
+
+  0.1.18 (October 2025) is the newest image tag. Docker Hub's `latest` was
+  last pushed with 0.1.17 in September 2024. The v1.1.x git tags are
+  mobile-app releases, not server images. The only commits since 0.1.18
+  are translations and an example compose file.

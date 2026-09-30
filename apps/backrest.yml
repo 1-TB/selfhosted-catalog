@@ -1,0 +1,72 @@
+slug: backrest
+name: Backrest
+category: files
+description: Web UI and scheduler for restic backups.
+homepage: https://garethgeorge.github.io/backrest/
+source: https://github.com/garethgeorge/backrest
+
+image: ghcr.io/garethgeorge/backrest
+version: "v1.14.1"
+arch: [amd64, arm64]
+
+port: 9898
+mem_limit: 1g
+auth: proxy
+
+env:
+  - name: TZ
+    value: "Etc/UTC"
+
+volumes:
+  - path: config
+    mount: /config
+  - path: data
+    mount: /data
+  - path: cache
+    mount: /cache
+  - path: rclone
+    mount: /root/.config/rclone
+
+notes: |
+  The volumes here are only Backrest's own state. The data it is meant to
+  back up is not: the operator has to bind-mount each source directory
+  into the container (upstream's compose uses /userdata), plus any local
+  restic repository (upstream uses /repos). Those are host paths outside
+  this app's data directory, so the catalogue cannot declare them. Without
+  them it can still manage remote repositories (S3, B2, SFTP, rclone
+  remotes and the rest of restic's backends) and browse or restore their
+  snapshots, but it has nothing local to back up.
+
+  Everything else - repositories, plans, schedules, hooks, notifications -
+  is set in the web UI and saved by the app to /config/config.json. A
+  fresh config starts with authentication disabled, so the UI (which can
+  run arbitrary hook commands) is open to whoever reaches it until the
+  first-run settings dialog is completed: it asks for an instance ID and
+  at least one username and password. Keep the forward-auth gate on until
+  then. To reset a lost login, delete the `users` key from that file and
+  restart. The login can also be switched off again when the proxy in
+  front already authenticates. There is no OIDC support.
+
+  The image's entrypoint defaults BACKREST_PORT to 0.0.0.0:9898,
+  BACKREST_DATA to /data, BACKREST_CONFIG to /config/config.json,
+  XDG_CACHE_HOME to /cache and TMPDIR to /tmp, so none of them need
+  setting. /data holds the operation log, task logs and a generated JWT
+  signing secret; /cache is restic's cache. Upstream's compose also
+  bind-mounts /tmp; that is scratch space, not state, so it is not
+  declared here. The /root/.config/rclone
+  mount holds rclone.conf and is only needed for rclone remotes (run
+  `rclone config` inside the container, or drop the file in). restic and
+  rclone are both baked into the image.
+
+  Cron schedules use the container's local time zone by default, so set
+  TZ to the zone the schedules are written in.
+
+  Multi-instance sync: other Backrest instances connect to
+  /v1sync.BackrestSyncService/ with their own key-based authentication and
+  cannot get past a forward-auth login page, so that path needs excluding
+  from the gate if you use the feature.
+
+  restic runs as a child process inside this container, so mem_limit
+  covers it too. 1g is headroom rather than upstream guidance: restic's
+  memory use grows with the size of the repository index. There is no
+  health endpoint.

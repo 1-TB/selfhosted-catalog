@@ -1,0 +1,63 @@
+slug: tinyauth
+name: Tinyauth
+category: security
+description: Small login server that puts a sign-in page in front of apps via reverse-proxy forward auth.
+homepage: https://tinyauth.app
+source: https://github.com/tinyauthapp/tinyauth
+
+image: ghcr.io/tinyauthapp/tinyauth
+version: "v5.2.0"
+arch: [amd64, arm64]
+
+port: 3000
+mem_limit: 512m
+database: none
+auth: none
+health_path: /api/healthz
+
+env:
+  - name: TINYAUTH_APPURL
+    value: "https://tinyauth.${DOMAIN}"
+  - name: TINYAUTH_AUTH_SECURECOOKIE
+    value: "true"
+  - name: TINYAUTH_AUTH_USERS
+    secret: true
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  This is the forward-auth server itself, so auth: none - its login page
+  has to load for users who are not signed in yet, and the reverse proxy
+  calls it on every request to a protected app at
+  /api/auth/traefik, /api/auth/caddy, /api/auth/nginx or /api/auth/envoy.
+  It can also act as a small OIDC provider for apps
+  (TINYAUTH_OIDC_CLIENTS_<name>_* variables), whose token endpoints are
+  called server-to-server.
+
+  TINYAUTH_AUTH_USERS is a comma-separated list of
+  `username:bcrypt-hash[:totp-secret]`. Generate an entry with
+  `docker run --rm -it ghcr.io/tinyauthapp/tinyauth:v5.2.0 user create --interactive`;
+  bcrypt hashes contain `$`, which has to be written `$$` in a compose file
+  (the command's "format for docker" option does that). With no local
+  users and no OAuth or LDAP provider configured the server exits with
+  "no authentication providers configured". Login through an external
+  OAuth/OIDC provider (e.g. Pocket ID) uses
+  TINYAUTH_OAUTH_PROVIDERS_<name>_* and LDAP (e.g. LLDAP) uses
+  TINYAUTH_LDAP_*.
+
+  The session cookie is set on the parent of TINYAUTH_APPURL's hostname
+  (tinyauth.example.com -> example.com), so every protected app has to be
+  on a subdomain of that same domain. TINYAUTH_AUTH_TRUSTEDPROXIES takes
+  the proxy's IPs/CIDRs (upstream's example uses the docker bridge
+  subnet); it depends on your network, so it is not set here.
+  Per-app access rules can be given as TINYAUTH_APPS_<name>_* variables;
+  reading them from docker labels instead needs the docker socket, which
+  is optional - without it the server logs a warning and carries on.
+
+  Sessions and OIDC keys live in /data (SQLite at /data/tinyauth.db when
+  running in the image). The project moved from ghcr.io/steveiliop56/tinyauth,
+  which stops at v5.0.7, to ghcr.io/tinyauthapp/tinyauth from v5.1.0 on.
+  Upstream warns that configuration changes often between releases, so
+  read the release notes before bumping the version.

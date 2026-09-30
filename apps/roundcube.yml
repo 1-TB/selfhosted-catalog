@@ -1,0 +1,72 @@
+slug: roundcube
+name: Roundcube
+category: communication
+description: Browser-based IMAP webmail client with address book, folders and plugins.
+homepage: https://roundcube.net
+source: https://github.com/roundcube/roundcubemail-docker
+
+image: roundcube/roundcubemail
+version: "1.7.4-apache"
+arch: [amd64, arm64]
+
+port: 80
+mem_limit: 512m
+database: none
+auth: proxy
+
+env:
+  - name: ROUNDCUBEMAIL_DEFAULT_HOST
+  - name: ROUNDCUBEMAIL_DEFAULT_PORT
+    value: "993"
+  - name: ROUNDCUBEMAIL_SMTP_SERVER
+  - name: ROUNDCUBEMAIL_SMTP_PORT
+    value: "587"
+  - name: ROUNDCUBEMAIL_DB_TYPE
+    value: "sqlite"
+  - name: ROUNDCUBEMAIL_DES_KEY
+    secret: true
+    source: generated
+
+volumes:
+  - path: db
+    mount: /var/roundcube/db
+
+notes: |
+  A client only: it logs users in with their own IMAP credentials against
+  an existing mail server (Stalwart, in this catalogue) and holds no mail
+  itself. ROUNDCUBEMAIL_DEFAULT_HOST and ROUNDCUBEMAIL_SMTP_SERVER have no
+  value here because they are the operator's mail hostname, e.g.
+  `ssl://mail.example.com` (IMAPS, port 993) and `tls://mail.example.com`
+  (STARTTLS submission, port 587). Use the public name the mail server's
+  certificate is issued for rather than the container name - PHP verifies
+  the peer by default, and a hostname mismatch fails the login. SMTP
+  reuses the IMAP login (smtp_user/smtp_pass default to %u/%p).
+
+  The tag is the variant-suffixed `-apache` one on purpose: plain version
+  tags stopped at 1.3.6, and the `-fpm` variants have no web server and
+  need a separate nginx container. Upstream's README says full version tags
+  get no base-image updates after release (`1.7.x-apache` is the floating
+  series tag that does), so bump the pin to pick up PHP/Debian fixes.
+  1.6.19 is the LTS line.
+
+  SQLite is the image's own default and is what this entry uses - the
+  entrypoint creates the database under /var/roundcube/db and runs
+  bin/initdb.sh on every start, so there is no migration step. It stores
+  preferences, contacts, identities and sessions, not mail. Upstream calls
+  MySQL "the recommended way" and says to assess SQLite for production; to
+  switch, set ROUNDCUBEMAIL_DB_TYPE to mysql or pgsql plus
+  ROUNDCUBEMAIL_DB_HOST/PORT/USER/PASSWORD/NAME against an empty database.
+
+  ROUNDCUBEMAIL_DES_KEY encrypts the IMAP password held in the session.
+  If it is unset the entrypoint writes a random one into the container's
+  own config.inc.php, which is not in a volume, so every recreate would
+  log everyone out. defaults.inc.php documents a length of exactly 24
+  characters for the default DES-EDE3-CBC cipher (PHP's openssl pads a
+  shorter key with NULs and truncates a longer one), so generate 24.
+
+  The regular image starts as root and chowns the SQLite directory itself;
+  the `-nonroot` tags listen on 8000 instead and ignore
+  ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE. Roundcube's own OAuth2 login needs an
+  IMAP server that accepts the same provider's tokens and is configured in
+  a PHP config file (only the client secret has an env var), so it isn't
+  wired up here. No documented health endpoint.

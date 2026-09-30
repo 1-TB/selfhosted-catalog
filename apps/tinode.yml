@@ -1,0 +1,96 @@
+slug: tinode
+name: Tinode
+category: communication
+description: Instant messaging server with a bundled web client, native Android/iOS apps, groups and channels.
+homepage: https://tinode.co
+source: https://github.com/tinode/chat
+
+image: tinode/tinode-postgres
+version: "0.25.3"
+arch: [amd64]
+
+port: 6060
+mem_limit: 512m
+database: postgres
+auth: none
+
+env:
+  - name: POSTGRES_DSN
+    value: "postgresql://tinode:${TINODE_DB_PASSWORD}@tinode-postgres:5432/tinode_chat?sslmode=disable&connect_timeout=10"
+  - name: WAIT_FOR
+    value: "tinode-postgres:5432"
+  - name: SAMPLE_DATA
+    value: ""
+  - name: AUTH_TOKEN_KEY
+    secret: true
+    source: generated
+  - name: UID_ENCRYPTION_KEY
+    secret: true
+    source: generated
+
+volumes:
+  - path: uploads
+    mount: /opt/tinode/uploads
+
+notes: |
+  POSTGRES_DSN deliberately names a database other than the sidecar's
+  default one. On every start the image runs init-db. If the named database
+  exists but is empty, init-db treats it as "not initialized" and issues
+  `CREATE DATABASE <name>` from the `postgres` maintenance database. So a
+  DSN pointing at `tinode`, which already exists when the Postgres
+  container is started with POSTGRES_USER=tinode, fails with "already
+  exists" and the container exits. With `tinode_chat`, the adapter does
+  its first check in the role's own database (named after POSTGRES_USER)
+  and then creates tinode_chat itself. That needs a role that can create
+  databases; the official postgres image makes POSTGRES_USER a superuser.
+  This comes from reading the adapter source and was not tested end to end.
+  Upstream requires PostgreSQL 13 or newer. The password is placed
+  unescaped into both a URL and the generated JSON config, so use only
+  letters and digits.
+
+  SAMPLE_DATA must be an empty string. The image defaults it to data.json,
+  which on a fresh database creates demo accounts (alice, bob, carol...
+  with passwords like alice123) and the Tino bot. With it empty, init-db
+  creates only the schema, so there are no accounts. Anyone who can reach
+  the web client can sign up; upstream's only built-in restriction is
+  email verification limited to your own domains (SMTP_SERVER plus
+  SMTP_DOMAINS). A root user is optional. To make one, run
+  `./init-db --config=working.config --make_root=<user id>` in /opt/tinode
+  inside the container.
+
+  AUTH_TOKEN_KEY and UID_ENCRYPTION_KEY replace keys the image ships with.
+  The default token-signing key is public, so anyone could mint login
+  tokens with it. Both values are base64-decoded. AUTH_TOKEN_KEY must
+  decode to at least 32 bytes, or the server refuses to start.
+  UID_ENCRYPTION_KEY must decode to exactly 16 bytes because it is an XTEA
+  key. Use `openssl rand -base64 32` and `openssl rand -base64 16`. Leave
+  API_KEY_SALT at the image default: the API key it validates is compiled
+  into the bundled web client and Tinode's Android and iOS apps, and
+  upstream calls it a client identifier rather than access control.
+  Changing it means rebuilding the clients.
+
+  auth: none because the web client and the mobile apps sign in over the
+  WebSocket API (/v0/channels) with Tinode's own accounts, and a
+  forward-auth gate would shut the apps out. The proxy must pass
+  WebSockets. Attachments go to /v0/file/u with a 32 MB default cap, so
+  the proxy's body-size limit needs to allow that.
+
+  The server writes its logs to /var/log/tinode.log inside the container
+  (the start script redirects stderr there), so `docker logs` shows only
+  the init-db output. Upstream's compose suggests mounting /var/log to keep
+  them, and nothing in the image rotates the file. Schema migrations are
+  not automatic. After an upgrade that changes the schema, the server
+  exits with "Invalid database version" until it is started once with
+  UPGRADE_DB=true.
+
+  Postgres variant because the image's config template hard-codes the
+  MongoDB host `mongodb` with replica set rs0, and the MySQL default uses
+  a MySQL 8 collation, while upstream documents MySQL only, not MariaDB.
+  Every variant (tinode/tinode, -mysql, -postgres, -mongodb) is amd64-only,
+  because the Dockerfile downloads the linux-amd64 release archive. Video
+  calls need an ICE/TURN server list given as a mounted file
+  (ICE_SERVERS_FILE), and push needs Firebase or Tinode Push Gateway
+  credentials; neither is set here. The gRPC (16060) and cluster ports
+  aren't needed for a single node. The image's HEALTHCHECK only checks
+  that 6060 is open, and there is no HTTP health endpoint. Upstream still
+  calls the project beta-quality.

@@ -1,0 +1,71 @@
+slug: lldap
+name: LLDAP
+category: security
+description: Lightweight LDAP user directory with a web UI for managing users and groups.
+homepage: https://github.com/lldap/lldap
+source: https://github.com/lldap/lldap
+
+image: lldap/lldap
+version: "v0.6.3"
+arch: [amd64, arm64]
+
+port: 17170
+mem_limit: 512m
+database: none
+auth: none
+health_path: /health
+
+env:
+  - name: LLDAP_HTTP_URL
+    value: "https://lldap.${DOMAIN}"
+  - name: LLDAP_JWT_SECRET
+    secret: true
+    source: generated
+  - name: LLDAP_KEY_SEED
+    secret: true
+    source: generated
+  - name: LLDAP_LDAP_USER_PASS
+    secret: true
+
+volumes:
+  - path: data
+    mount: /data
+
+notes: |
+  `port` is the web UI and HTTP API (17170). The LDAP protocol itself is
+  plain TCP on 3890, which is what every consuming app binds to - reach it
+  as `lldap:3890` on the shared container network; it is not HTTP and does
+  not go through the reverse proxy. LDAPS on 6360 is off unless
+  LLDAP_LDAPS_OPTIONS__ENABLED=true and a cert/key are provided.
+
+  auth: none because it is the user directory other auth layers sit on:
+  the UI has its own login (the admin, plus self-service password changes
+  for every user), password-reset links in emails must open for users who
+  are logged out, and a forward-auth gate backed by this same directory
+  would be circular.
+
+  The admin user (`admin` unless LLDAP_LDAP_USER_DN says otherwise) is
+  created on the first start with LLDAP_LDAP_USER_PASS, which must be at
+  least 8 characters - the server asserts this and exits otherwise. It is
+  only read when the admin is created; change it in the UI afterwards.
+  In a compose file a `$` in it has to be written as `$$`.
+
+  LLDAP_JWT_SECRET is required (the server exits without it); upstream
+  asks for a random string of preferably 32+ characters.
+  LLDAP_KEY_SEED derives the private key that protects stored passwords;
+  upstream recommends 12+ characters. Set it before the first start: the
+  config file the entrypoint copies into /data on first run
+  (lldap_config.toml, from the image's template) carries a placeholder
+  seed that applies whenever the variable is missing, and changing the
+  seed later makes the server refuse to start until forced with
+  LLDAP_FORCE_UPDATE_PRIVATE_KEY=true, which invalidates every existing
+  password. Every setting in that file can be overridden with an
+  `LLDAP_` variable, so it never needs editing.
+
+  The LDAP base DN defaults to dc=example,dc=com; set LLDAP_LDAP_BASE_DN
+  before the first start if you want your own, since every client is
+  configured against it. SQLite at /data/users.db is the default;
+  LLDAP_DATABASE_URL takes a postgres:// or mysql:// URL instead. Password
+  reset by email needs the LLDAP_SMTP_OPTIONS__* variables. The registry
+  also carries date-stamped nightly builds (e.g. 2026-09-22) and
+  `-rootless` variants; v0.6.3 is the latest stable release.
