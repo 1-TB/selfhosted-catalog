@@ -10,7 +10,7 @@ One YAML file per app, in `apps/`. The filename must match the `slug`.
 | `name` | string | Display name, as the project spells it. |
 | `category` | string | One of the categories listed below. |
 | `image` | string | Repository only, no tag and no digest. |
-| `version` | string | An exact tag. Never `latest`. |
+| `version` | string | An exact tag. Never `latest`, except `ente`, whose official images publish no numbered tags. |
 | `arch` | list | Architectures the image is actually published for. See below. |
 | `port` | int | The port the app listens on inside the container. |
 

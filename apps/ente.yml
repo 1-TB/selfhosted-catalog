@@ -1,0 +1,92 @@
+slug: ente
+name: Ente
+category: media
+description: End-to-end encrypted photo and video backup.
+homepage: https://ente.com
+source: https://github.com/ente-io/ente
+
+image: ghcr.io/ente/server
+version: "latest"
+arch: [amd64, arm64]
+
+port: 8080
+health_path: /ping
+mem_limit: 1g
+database: postgres
+needs: [minio, web]
+auth: none
+
+env:
+  - name: ENTE_DB_HOST
+    value: "ente-postgres"
+  - name: ENTE_DB_PORT
+    value: "5432"
+  - name: ENTE_DB_NAME
+    value: "ente"
+  - name: ENTE_DB_USER
+    value: "ente"
+  - name: ENTE_DB_PASSWORD
+    value: "${ENTE_DB_PASSWORD}"
+  - name: ENTE_DB_SSLMODE
+    value: "disable"
+  - name: ENTE_S3_ARE_LOCAL_BUCKETS
+    value: "true"
+  - name: ENTE_S3_USE_PATH_STYLE_URLS
+    value: "true"
+  - name: ENTE_S3_B2_EU_CEN_ENDPOINT
+    value: "minio.${DOMAIN}:3200"
+  - name: ENTE_S3_B2_EU_CEN_REGION
+    value: "eu-central-2"
+  - name: ENTE_S3_B2_EU_CEN_BUCKET
+    value: "b2-eu-cen"
+  - name: ENTE_S3_B2_EU_CEN_KEY
+    secret: true
+    source: generated
+  - name: ENTE_S3_B2_EU_CEN_SECRET
+    secret: true
+    source: generated
+  - name: ENTE_KEY_ENCRYPTION
+    secret: true
+    source: generated
+  - name: ENTE_KEY_HASH
+    secret: true
+    source: generated
+  - name: ENTE_JWT_SECRET
+    secret: true
+    source: generated
+  - name: ENTE_APPS_PUBLIC_ALBUMS
+    value: "https://albums.${DOMAIN}"
+  - name: ENTE_APPS_ACCOUNTS
+    value: "https://accounts.${DOMAIN}"
+
+notes: |
+  Official GHCR images publish only commit SHAs and latest — there is
+  no numbered release to pin. latest is used here on purpose.
+
+  This is museum, the API. A working install also needs Postgres, an
+  S3-compatible store (MinIO in the quickstart), and ghcr.io/ente/web
+  for the Photos UI on :3000 (public albums on :3002). The web
+  container takes ENTE_API_ORIGIN pointing at museum's public URL.
+  Upstream's compose adds a socat sidecar so museum can reach MinIO at
+  localhost:3200; pointing ENTE_S3_B2_EU_CEN_ENDPOINT at a hostname
+  both museum and the clients can resolve avoids that.
+
+  The S3 endpoint is handed to clients as a pre-signed URL, so it must
+  be reachable from phones and browsers, not only from the museum
+  container. The bucket config keys (b2-eu-cen and friends) are
+  historical names museum requires; the provider itself can be any S3.
+  are_local_buckets=true turns off TLS and storage-class headers for
+  MinIO; set it false for a real HTTPS bucket.
+
+  ENTE_KEY_ENCRYPTION is 32 bytes of base64, ENTE_KEY_HASH is 64 bytes
+  of base64, and ENTE_JWT_SECRET is 32 bytes of URL-safe base64
+  (`openssl rand 32 | base64 | tr '+/' '-_'`). Losing those keys
+  makes existing data unreadable. Museum stores nothing of its own on
+  disk — photos live in the bucket, metadata in Postgres — so there is
+  no volume to declare.
+
+  Login is email OTP (no OIDC). Codes go to the museum logs unless
+  SMTP is configured. The first registered user becomes admin. Do not
+  put a forward-auth proxy in front: the mobile apps and the web
+  client talk to /ping and the API directly. Upstream pins
+  postgres:15. Health is GET /ping.
