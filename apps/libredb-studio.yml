@@ -6,13 +6,14 @@ homepage: https://libredb.org
 source: https://github.com/libredb/libredb-studio
 
 image: ghcr.io/libredb/libredb-studio
-version: "0.9.66"
+version: "0.17.0"
 arch: [amd64, arm64]
 
 port: 3000
 mem_limit: 512m
 database: none
-auth: proxy
+auth: oidc
+redirect_path: /api/auth/oidc/callback
 
 env:
   - name: ADMIN_PASSWORD
@@ -26,5 +27,6 @@ volumes:
 
 notes: |
   Auto-generates JWT_SECRET and an admin password on first run if unset;
-  set both explicitly for a production install. Supports OIDC login, but
-  the callback path isn't documented, so left as proxy auth.
+  set both explicitly for a production install. Ships its own email and
+  password login as well, so the OIDC client is optional; set
+  NEXT_PUBLIC_AUTH_PROVIDER=oidc and the OIDC_* variables to use it.
