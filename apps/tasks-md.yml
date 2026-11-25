@@ -6,7 +6,7 @@ homepage: https://github.com/BaldissaraMatheus/Tasks.md
 source: https://github.com/BaldissaraMatheus/Tasks.md
 
 image: baldissaramatheus/tasks.md
-version: "3.3"
+version: "3.3.0"
 arch: [amd64, arm64]
 
 port: 8080

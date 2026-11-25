@@ -6,7 +6,7 @@ homepage: https://librebooking.github.io/librebooking/
 source: https://github.com/LibreBooking/librebooking
 
 image: librebooking/librebooking
-version: "5.3.0"
+version: "7.2.0"
 arch: [amd64, arm64]
 
 port: 8080
@@ -45,3 +45,8 @@ notes: |
   (a `crontab` file mounted at that path plus `volumes_from` the main
   container) - the main container never runs its own cron. First boot
   needs the /install wizard, gated by LB_INSTALL_PASSWORD.
+
+  Upstream removed every image published before 2026-10-21 from Docker
+  Hub after rebuilding on a patched PHP base, so older pins no longer
+  resolve. After moving an existing install to a newer release, open
+  /install/configure.php once to upgrade the database.

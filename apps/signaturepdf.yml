@@ -6,7 +6,7 @@ homepage: https://pdf.24eme.fr
 source: https://github.com/24eme/signaturepdf
 
 image: xgaia/signaturepdf
-version: "1.10"
+version: "1.10.0"
 arch: [amd64]
 
 port: 80

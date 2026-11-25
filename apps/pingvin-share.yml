@@ -6,7 +6,7 @@ homepage: https://stonith404.github.io/pingvin-share/
 source: https://github.com/stonith404/pingvin-share
 
 image: stonith404/pingvin-share
-version: "v1.13"
+version: "v1.13.0"
 arch: [amd64, arm64]
 
 port: 3000
@@ -18,3 +18,9 @@ volumes:
     mount: /opt/app/backend/data
   - path: images
     mount: /opt/app/frontend/public/img
+
+notes: |
+  Archived upstream since 2025-06-29, so v1.13.0 is the last release and
+  gets no more fixes. Upstream points users to Pingvin Share X
+  (`pingvin-share-x` here), a maintained fork with the same env vars,
+  mount paths and SQLite file.

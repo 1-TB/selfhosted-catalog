@@ -6,7 +6,7 @@ homepage: https://github.com/gollum/gollum
 source: https://github.com/gollum/gollum
 
 image: gollumwiki/gollum
-version: "6.1"
+version: "6.1.0"
 arch: [amd64, arm64]
 
 port: 4567

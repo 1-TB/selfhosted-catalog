@@ -6,7 +6,7 @@ homepage: https://omnitools.app
 source: https://github.com/iib0011/omni-tools
 
 image: iib0011/omni-tools
-version: "0.6"
+version: "0.6.0"
 arch: [amd64, arm64]
 
 port: 80
