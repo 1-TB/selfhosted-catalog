@@ -37,12 +37,12 @@ RETRIES = 5
 RELEASE_RE = re.compile(r"^v?(\d+)\.(\d+)(?:\.(\d+))?(?:[.\-+].*)?$")
 # `pre` and `next` only as their own markers (`4.6.0-pre.1`, `5.7.0-pre0`,
 # `2.0.0-next.1`), not inside a word. `a` and `b` only as a short alpha or
-# beta marker (`v1.1.0-b.1`, `2.0.0-a3`), not when the digits run on into a
-# commit hash (`2024.5.13-a0bc346`).
+# beta marker of up to four digits (`v1.1.0-b.1`, `2.0.0-a3`), not when the
+# characters run on into a commit hash (`2024.5.13-a0bc346`, `-a123456`).
 PRERELEASE_RE = re.compile(
     r"(rc|alpha|beta|dev|nightly|snapshot|canary|test|preview|pre(?=[.\-_\d]|$)"
     r"|(?<=[.\-_])next(?=[.\-_\d]|$)"
-    r"|(?<=[.\-_])[ab]\.?\d+(?![0-9a-f]))",
+    r"|(?<=[.\-_])[ab]\.?\d{1,4}(?![0-9a-f]))",
     re.IGNORECASE,
 )
 # A date stamp: 2026.08.01, 2026-09-22 or 20260801, with the month and day

@@ -49,4 +49,6 @@ notes: |
   Upstream removed every image published before 2026-10-21 from Docker
   Hub after rebuilding on a patched PHP base, so older pins no longer
   resolve. After moving an existing install to a newer release, open
-  /install/configure.php once to upgrade the database.
+  /install/, enter LB_INSTALL_PASSWORD and run its database upgrade.
+  /install/configure.php only merges new settings into config.php and
+  leaves the database as it was.

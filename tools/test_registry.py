@@ -45,6 +45,9 @@ class Latest(unittest.TestCase):
         # IT Tools tags its releases `<date>-<short sha>`; a hash starting with
         # `a` or `b` must not read as an alpha or beta marker.
         self.assertEqual(latest(["2024.5.13-a0bc346", "2023.12.21-5ed3693"]), "2024.5.13-a0bc346")
+        # A hash can also be `a` or `b` followed by nothing but digits.
+        self.assertEqual(latest(["2024.5.13-a123456", "2023.12.21-5ed3693"]), "2024.5.13-a123456")
+        self.assertEqual(latest(["2024.5.13-b9876543", "2023.12.21-5ed3693"]), "2024.5.13-b9876543")
 
     def test_keeps_variant_suffixes(self):
         self.assertEqual(latest(["1.20.0-ls123", "1.19.0"]), "1.20.0-ls123")
