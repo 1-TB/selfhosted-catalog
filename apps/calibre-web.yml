@@ -6,8 +6,8 @@ homepage: https://github.com/janeczku/calibre-web
 source: https://github.com/janeczku/calibre-web
 
 image: lscr.io/linuxserver/calibre-web
-version: "version-v5.7.2"
-arch: [amd64]
+version: "version-0.6.27"
+arch: [amd64, arm64]
 
 port: 8083
 mem_limit: 512m

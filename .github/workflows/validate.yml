@@ -7,24 +7,28 @@ on:
     # Weekly, to catch an upstream dropping an architecture or retagging.
     - cron: '0 6 * * 1'
 
+permissions:
+  contents: read
+
 jobs:
   schema:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
       - run: pip install pyyaml
       - run: python tools/validate.py
+      - run: python -m unittest discover -s tools
 
   arch:
     # Only on the schedule: it talks to several registries and is slow.
     if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
       - run: pip install pyyaml

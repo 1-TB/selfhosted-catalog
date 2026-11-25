@@ -9,7 +9,7 @@ that the boring research behind adding an app — reading a README, digging the
 port out of a Dockerfile, working out whether the thing runs on arm64 — is
 written down once in a form a script can read.
 
-70 apps so far. Every entry is validated in CI and its architectures are
+355 apps so far. Every entry is validated in CI and its architectures are
 checked against the registry.
 
 ## Why not just read the upstream compose file
@@ -69,6 +69,7 @@ tools/validate.py              check every entry against the schema
 tools/registry.py latest REPO  highest release tag for an image
 tools/registry.py arch REPO TAG  architectures that tag was built for
 tools/check-arch.sh            compare every entry against the registry
+tools/test_registry.py         offline tests for the tag picking
 ```
 
 These need python and network access. Nothing here needs docker or a registry
@@ -85,7 +86,9 @@ Add a file to `apps/`, named after the slug, and run `tools/validate.py`.
 Things that will get an entry rejected:
 
 - A floating tag. `latest`, `stable`, `dev` and bare major versions are not
-  pinnable, and an entry that can't be pinned isn't much use.
+  pinnable, and an entry that can't be pinned isn't much use. Nor is a minor
+  line like `1.42` when the project also publishes `1.42.1`: the validator
+  can't tell those apart, so check `tools/registry.py tags <image>`.
 - A missing or guessed `arch`. Check it: `tools/registry.py arch <image> <tag>`.
 - A secret with a value in it.
 - A volume path that escapes the app's own data directory.
