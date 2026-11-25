@@ -35,9 +35,15 @@ RETRIES = 5
 # because plenty of projects ship `2.4.1-alpine` or `1.20.0-ls123` as the real
 # release, but anything that smells prerelease is filtered separately.
 RELEASE_RE = re.compile(r"^v?(\d+)\.(\d+)(?:\.(\d+))?(?:[.\-+].*)?$")
-# `pre` only as its own marker (`4.6.0-pre.1`, `5.7.0-pre0`), not inside a word.
+# `pre` and `next` only as their own markers (`4.6.0-pre.1`, `5.7.0-pre0`,
+# `2.0.0-next.1`), not inside a word. `a` and `b` only as a short alpha or
+# beta marker (`v1.1.0-b.1`, `2.0.0-a3`), not when the digits run on into a
+# commit hash (`2024.5.13-a0bc346`).
 PRERELEASE_RE = re.compile(
-    r"(rc|alpha|beta|dev|nightly|snapshot|canary|test|preview|pre(?=[.\-_\d]|$))", re.I
+    r"(rc|alpha|beta|dev|nightly|snapshot|canary|test|preview|pre(?=[.\-_\d]|$)"
+    r"|(?<=[.\-_])next(?=[.\-_\d]|$)"
+    r"|(?<=[.\-_])[ab]\.?\d+(?![0-9a-f]))",
+    re.IGNORECASE,
 )
 # A date stamp: 2026.08.01, 2026-09-22 or 20260801, with the month and day
 # both two digits. Real for a few projects, but it sorts badly against semver
