@@ -12,7 +12,7 @@
 # docker and no login, so it runs anywhere python does, and it routes Docker
 # Hub through the Hub API instead of spending the anonymous manifest quota.
 # That quota matters here more than anywhere — checking the whole catalogue is
-# 70 lookups, and once the limit is hit the registry returns nothing at all,
+# hundreds of lookups, and once the limit is hit the registry returns nothing at all,
 # which would read as "every image lost its architectures".
 set -uo pipefail
 
@@ -56,7 +56,7 @@ fail=0
 printf '%s\n' "${files[@]}" | xargs -P "$JOBS" -I{} bash -c 'entry "$@"' _ {} || fail=1
 
 # An UNRESOLVED sweep across every entry almost always means rate limiting or
-# no network, not 70 broken images. Say so, because the alternative reading
+# no network, not hundreds of broken images. Say so, because the alternative reading
 # sends someone editing files that are fine.
 if [ "$fail" -ne 0 ] && [ ${#files[@]} -gt 5 ]; then
   echo
